@@ -29,8 +29,8 @@ public class AudioManager : MonoBehaviour
             if (IsSourceIdle(i))
             {
                 PlayClipFromSourceArray(sourceArray[i], clip, volume);
+                break;
             }
-            break;
         }
     }
 

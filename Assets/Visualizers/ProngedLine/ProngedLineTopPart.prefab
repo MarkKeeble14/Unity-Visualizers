@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 7142856522332667448}
   - component: {fileID: 7142856522332667445}
   - component: {fileID: 7142856522332667450}
-  - component: {fileID: -2575980949619769481}
-  - component: {fileID: -5051815338482398951}
+  - component: {fileID: 7518113806580434608}
   m_Layer: 5
-  m_Name: BottomPart
+  m_Name: ProngedLineTopPart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,6 +29,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-2575980949619769481
+--- !u!114 &7518113806580434608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,23 +86,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7142856522332667449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50729f5e78626bc43b89fb1df6a862f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 54cb8d33609a45f4eb65b259664df002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shadowColor: {r: 0, g: 0, b: 0, a: 0.5}
-  shadowDistance: {x: 10, y: 10}
-  m_UseGraphicAlpha: 1
-  iterations: 50
-  shadowSpread: {x: 2.5, y: 2.5}
---- !u!114 &-5051815338482398951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7142856522332667449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8b74da78ace2a44e915243f353b963e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  slowAdust: 0
+  defaultHeight: 0
+  adjustSpeed: 25

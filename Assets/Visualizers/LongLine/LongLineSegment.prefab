@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7142856522332667448}
   - component: {fileID: 7142856522332667445}
   - component: {fileID: 7142856522332667450}
+  - component: {fileID: 2876120411134825936}
   m_Layer: 5
-  m_Name: Part
+  m_Name: LongLineSegment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,6 +29,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -75,3 +77,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2876120411134825936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142856522332667449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54cb8d33609a45f4eb65b259664df002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowAdust: 1
+  defaultHeight: 5
+  adjustSpeed: 50

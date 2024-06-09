@@ -97,4 +97,14 @@ public static class RandomHelper
     {
         return UnityEngine.Random.value <= chance;
     }
+
+    public static bool EvaluateChanceTo(Vector2 chanceTo)
+    {
+        return (UnityEngine.Random.value * chanceTo.y) >= chanceTo.x;
+    }
+
+    public static bool EvaluateChanceTo(float x, float y)
+    {
+        return (UnityEngine.Random.value * y) >= x;
+    }
 }

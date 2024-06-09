@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 3465347465345289130}
   - component: {fileID: 5952818077481513072}
   - component: {fileID: 7214581875382840760}
+  - component: {fileID: 4365240339340660847}
+  - component: {fileID: 5252503949136689349}
+  - component: {fileID: 109146645116770097}
   m_Layer: 5
   m_Name: MaxSegmentRadialVisualizer
   m_TagString: Untagged
@@ -29,6 +32,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -68,6 +72,7 @@ MonoBehaviour:
   MinAngle: 0
   MaxAngle: 360
   StartAngle: 0
+  makePerpindicular: 0
 --- !u!114 &7214581875382840760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,12 +85,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32674f93a71dffd45ac138240f326038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateComponents: 0
-  linePrefab: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
-  multiplier: 5
-  defaultScale: {x: 0.025, y: 0.025, z: 1}
-  adjustSpeed: 25
-  distance: 175
-  useSlowAdjust: 0
-  scaleOn: 01000000
+  segmentPrefab: {fileID: 0}
+  attachmentType: 0
   colorType: 0
+  multiplier: 5
+  useSlowAdjust: 0
+  distance: 175
+--- !u!114 &4365240339340660847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frequencyId: 0
+  signalMultiplier: 0.1
+  useBuffer: 1
+  bypass: 0
+  band: 5
+--- !u!114 &5252503949136689349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listenOnFrequencies: 00000000
+  bypass: 0
+  useMinValueRequirement: 1
+  minValueRequirement: 0.25
+  slowAdust: 1
+  defaultValue: 2
+  adjustSpeed: 25
+  multiplier: 1
+  scaleOn: 0
+--- !u!114 &109146645116770097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listenOnFrequencies: 00000000
+  bypass: 0
+  useMinValueRequirement: 1
+  minValueRequirement: 0.25
+  slowAdust: 1
+  defaultValue: 2
+  adjustSpeed: 25
+  multiplier: 1
+  scaleOn: 1

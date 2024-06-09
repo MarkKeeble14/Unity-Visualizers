@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.XR;
 
-public class BandBroadcaster : AudioSignalBroadcaster
+public class BandBroadcaster : SignalBroadcaster
 {
     [Header("Settings")]
     [SerializeField] private bool useBuffer;
@@ -10,8 +11,8 @@ public class BandBroadcaster : AudioSignalBroadcaster
     [SerializeField] private int band;
     public int Band { get { return band; } set { band = value; } }
 
-    protected override void TryBroadcast()
+    protected override float GetBroadcastValue()
     {
-            BroadcastMessage("RecieveBroadcast", VisualizerManager._Instance.GetBandValue(band, useBuffer) * signalMultiplier);
+        return VisualizerManager._Instance.GetBandValue(band, useBuffer) * signalMultiplier;
     }
 }

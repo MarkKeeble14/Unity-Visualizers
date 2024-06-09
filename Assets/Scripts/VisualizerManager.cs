@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(AudioSource))]
 public class VisualizerManager : MonoBehaviour
@@ -15,12 +16,14 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Sprite trackArt;
     [SerializeField] private Color userDefinedDominantColor;
     [SerializeField] private Color userDefinedSecondaryColor;
+    [SerializeField] private Color userDefinedTertiaryColor;
     [SerializeField] private Gradient userDefinedGradient;
     public Color UserDefinedDominantColor => userDefinedDominantColor;
     public Color UserDefinedSecondaryColor => userDefinedSecondaryColor;
+    public Color UserDefinedTertiaryColor => userDefinedTertiaryColor;
     public Gradient UserDefinedGradient => userDefinedGradient;
 
-    [SerializeField] private float[] audioSamples = new float[512];
+    private float[] audioSamples = new float[512];
     public float[] AudioSamples => audioSamples;
     public float ZeroSample { get; private set; }
 
@@ -30,21 +33,23 @@ public class VisualizerManager : MonoBehaviour
 
     private AudioSource audioSource;
 
+    [Header("Audio Sampling Settings")]
     [SerializeField] private float audioSampleSmoothing = 100;
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
 
-    [Header("References")]
-    [SerializeField] private Image background;
-    [SerializeField] private Image coverArt;
-    [SerializeField] private TextMeshProUGUI trackTitleText;
-    [SerializeField] private Image durationFill;
-    [SerializeField] private TextMeshProUGUI endTimeText;
+    public float PlaythroughPercent
+    {
+        get
+        {
+            float playthroughPercent = audioSource.time / audioSource.clip.length;
+            if (audioSource.time == 0) playthroughPercent = 1;
+            return playthroughPercent;
+        }
+    }
 
     private string GetEndTimeText(float time)
     {
-        // 180
-        // minutes = 3
         float minutes = Mathf.FloorToInt(time / 60);
         float seconds = Mathf.FloorToInt(time - (minutes * 60));
         return minutes + ":" + seconds;
@@ -63,17 +68,21 @@ public class VisualizerManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = track;
 
+        BroadcastTrackInfo();
+    }
+
+    public void BeginPlayback()
+    {
         // 
         audioSource.Play();
+    }
 
+    private void BroadcastTrackInfo()
+    {
         //
-        coverArt.sprite = trackArt;
-        background.sprite = trackArt;
-        trackTitleText.text = trackName;
-        trackTitleText.color = userDefinedDominantColor;
-        durationFill.color = userDefinedDominantColor;
-        endTimeText.text = GetEndTimeText(track.length);
-        endTimeText.color = userDefinedSecondaryColor;
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetEndTimeText(track.length), userDefinedDominantColor, userDefinedSecondaryColor, 
+            userDefinedTertiaryColor, userDefinedGradient);
+        FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 
     // Update is called once per frame
@@ -92,11 +101,6 @@ public class VisualizerManager : MonoBehaviour
 
         // Band Buffer
         CalcBandBuffer();
-
-        // Change Duration Bar Fill
-        float fillAmount = audioSource.time / audioSource.clip.length;
-        if (audioSource.time == 0) fillAmount = 1;
-        durationFill.fillAmount = fillAmount;
     }
 
     public float GetBandValue(int band, bool useBuffer) { return useBuffer ? bandBuffer[band] : frequencyBands[band]; }

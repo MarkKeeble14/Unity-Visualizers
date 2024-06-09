@@ -1,5 +1,8 @@
 ﻿public enum AttachmentType
 {
     BAND,
-    SAMPLE
+    FIRST_64_SAMPLES,
+    FIRST_128_SAMPLES,
+    FIRST_256_SAMPLES,
+    MAX_SAMPLES,
 }

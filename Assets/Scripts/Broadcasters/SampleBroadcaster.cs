@@ -2,14 +2,14 @@
 using UnityEngine;
 using UnityEngine.XR;
 
-public class SampleBroadcaster : AudioSignalBroadcaster
+public class SampleBroadcaster : SignalBroadcaster
 {
     [Header("Attach To")]
     [SerializeField] private int sample;
     public int Sample { get { return sample; } set { sample = value; } }
 
-    protected override void TryBroadcast()
+    protected override float GetBroadcastValue()
     {
-        BroadcastMessage("RecieveBroadcast", VisualizerManager._Instance.AudioSamples[sample] * signalMultiplier);
+        return VisualizerManager._Instance.AudioSamples[sample] * signalMultiplier;
     }
 }

@@ -14,7 +14,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
     [SerializeField] protected bool useSlowAdjust;
 
     protected List<AttachParameter> attachedParameterList = new List<AttachParameter>();
-    protected List<AudioSignalBroadcaster> broadcasterList = new List<AudioSignalBroadcaster>();
+    protected List<SignalBroadcaster> broadcasterList = new List<SignalBroadcaster>();
 
     protected virtual void MakeVisualizer()
     {
@@ -23,32 +23,46 @@ public abstract class PremadeVisualizer : MonoBehaviour
 
     protected void MakeDefaultVisualizer()
     {
-        switch (attachmentType)
+        int n = 0;
+        if (attachmentType == AttachmentType.FIRST_64_SAMPLES)
+            n = 64;
+        if (attachmentType == AttachmentType.FIRST_128_SAMPLES)
+            n = 128;
+        if (attachmentType == AttachmentType.FIRST_256_SAMPLES)
+            n = 256;
+        if (attachmentType == AttachmentType.MAX_SAMPLES)
+            n = 512;
+
+        // Not a First N Samples Visualizer
+        if (n == 0)
         {
-            case AttachmentType.BAND:
-                for (int i = 0; i < 8; i++)
-                {
-                    GameObject spawned = Instantiate(segmentPrefab, transform);
+            switch (attachmentType)
+            {
+                case AttachmentType.BAND:
+                    for (int i = 0; i < 8; i++)
+                    {
+                        GameObject spawned = Instantiate(segmentPrefab, transform);
 
-                    AudioSignalBroadcaster broadcaster = spawned.AddComponent<BandBroadcaster>();
-                    ((BandBroadcaster)broadcaster).Band = i;
+                        SignalBroadcaster broadcaster = spawned.AddComponent<BandBroadcaster>();
+                        ((BandBroadcaster)broadcaster).Band = i;
 
-                    TrackSegment(spawned);
-                    SetColor(spawned.GetComponent<Image>(), i, 8);
-                }
-                break;
-            case AttachmentType.SAMPLE:
-                for (int i = 0; i < 512; i++)
-                {
-                    GameObject spawned = Instantiate(segmentPrefab, transform);
+                        TrackSegment(spawned);
+                        SetColor(spawned.GetComponent<Image>(), i, 8);
+                    }
+                    break;
+            }
+        } else // First N Samples Visualizer
+        {
+            for (int i = 0; i < n; i++)
+            {
+                GameObject spawned = Instantiate(segmentPrefab, transform);
 
-                    AudioSignalBroadcaster broadcaster = spawned.AddComponent<SampleBroadcaster>();
-                    ((SampleBroadcaster)broadcaster).Sample = i;
+                SignalBroadcaster broadcaster = spawned.AddComponent<SampleBroadcaster>();
+                ((SampleBroadcaster)broadcaster).Sample = i;
 
-                    TrackSegment(spawned);
-                    SetColor(spawned.GetComponent<Image>(), i, 512);
-                }
-                break;
+                TrackSegment(spawned);
+                SetColor(spawned.GetComponent<Image>(), i, n);
+            }
         }
     }
 
@@ -64,7 +78,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
             // htb.Set(multiplier, defaultHeight, adjustSpeed);
             parameter.SetSlowAdjust(useSlowAdjust);
         }
-        foreach (AudioSignalBroadcaster broadcaster in broadcasterList)
+        foreach (SignalBroadcaster broadcaster in broadcasterList)
         {
             broadcaster.UpdateSettings(multiplier);
         }
@@ -85,7 +99,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
     protected void TrackSegment(GameObject segment)
     {
         // Broadcaster
-        broadcasterList.Add(segment.GetComponent<AudioSignalBroadcaster>());
+        broadcasterList.Add(segment.GetComponent<SignalBroadcaster>());
 
         // Attached Parameters
         attachedParameterList.Add(segment.GetComponent<AttachParameter>());
@@ -101,6 +115,10 @@ public abstract class PremadeVisualizer : MonoBehaviour
 
             case VisualizerColorType.SECONDARY_COLOR:
                 image.color = VisualizerManager._Instance.UserDefinedSecondaryColor;
+                break;
+
+            case VisualizerColorType.TERTIARY_COLOR:
+                image.color = VisualizerManager._Instance.UserDefinedTertiaryColor;
                 break;
 
             case VisualizerColorType.GRADIENT:

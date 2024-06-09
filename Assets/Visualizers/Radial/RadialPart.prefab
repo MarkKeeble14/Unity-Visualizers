@@ -89,6 +89,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54cb8d33609a45f4eb65b259664df002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Bypass: 0
+  listenOnFrequencies: 00000000
   slowAdust: 1
   defaultValue: 2.5
   adjustSpeed: 50
+  multiplier: 1

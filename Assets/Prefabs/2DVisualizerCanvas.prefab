@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 5787959618853942474}
   - component: {fileID: 5787959618853942475}
   - component: {fileID: 3503268943751656771}
+  - component: {fileID: 8633941188417608966}
+  - component: {fileID: 8602309152806917895}
   m_Layer: 5
   m_Name: TrackTitle
   m_TagString: Untagged
@@ -215,6 +217,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directions: []
+--- !u!114 &8633941188417608966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959618853942321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad40df0705b31594088eade1869b8d37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  useMinValueRequirement: 0
+  minValueRequirement: 0
+  slowAdust: 0
+  defaultValue: 0
+  adjustSpeed: 25
+  multiplier: 1
+  rotateOn: 2
+--- !u!114 &8602309152806917895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959618853942321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea67737fe45494049a87edb07ead5c1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  startDirection: 2
+  speed: 0.25
+  minMaxValue: {x: -1, y: 1}
 --- !u!1 &5787959619002184948
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,8 +622,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6937115398991045946}
   - {fileID: 6937115397160620917}
+  - {fileID: 6937115398991045946}
   m_Father: {fileID: 5787959619069687073}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1762,7 +1800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1858,7 +1896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7214581875382840760, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: multiplier
-      value: 3000
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 7214581875382840760, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: segmentPrefab
@@ -1964,7 +2002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289127, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289127, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2048,7 +2086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: multiplier
-      value: 3500
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: adjustSpeed

@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/DontLook/DontLookVisualizer.unity
+    guid: 1c07f1c6d5ef9d44bb7d124e5162f1d7
   m_configObjects: {}

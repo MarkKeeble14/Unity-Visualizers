@@ -15,6 +15,7 @@ public class SetImageToCoverArt : MonoBehaviour, IRecieveTrackInfo
 
     void IRecieveTrackInfo.RecieveTrackInfo(TrackInfo info)
     {
+        if (image == null) return;
         image.sprite = info.CoverArt;
     }
 }

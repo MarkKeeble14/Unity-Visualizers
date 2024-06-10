@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dfd545425e3250428bf7760d3dd13c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceToSpawnSomething: {x: 1, y: 5}
+  chanceToSpawnSomething: {x: 1, y: 1}
   optionsToSpawn:
     options:
     - key: {fileID: 5794350434654669742, guid: 0113fbebad4ed1f4499102e07067f491, type: 3}

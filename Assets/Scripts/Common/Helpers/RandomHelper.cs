@@ -100,11 +100,13 @@ public static class RandomHelper
 
     public static bool EvaluateChanceTo(Vector2 chanceTo)
     {
-        return (UnityEngine.Random.value * chanceTo.y) >= chanceTo.x;
+        if (chanceTo.x == 0) return false;
+        return (UnityEngine.Random.value * chanceTo.y) >= (chanceTo.y - chanceTo.x);
     }
 
     public static bool EvaluateChanceTo(float x, float y)
     {
-        return (UnityEngine.Random.value * y) >= x;
+        if (x == 0) return false;
+        return (UnityEngine.Random.value * y) >= (y - x);
     }
 }

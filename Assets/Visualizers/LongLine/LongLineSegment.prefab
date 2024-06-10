@@ -89,7 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54cb8d33609a45f4eb65b259664df002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0

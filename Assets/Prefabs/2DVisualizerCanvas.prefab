@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5787959618853942325}
   - component: {fileID: 5787959618853942474}
   - component: {fileID: 5787959618853942475}
+  - component: {fileID: 3503268943751656771}
   m_Layer: 5
   m_Name: TrackTitle
   m_TagString: Untagged
@@ -151,7 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea67737fe45494049a87edb07ead5c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   startDirection: 0
   speed: 1
@@ -168,7 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee07e691b40010e4ebaab0e2f8a579c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -201,7 +200,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc9d4e14521d8d4c83541956410c378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  match: 0
+  colorType: 0
+  colorIndex: 0
+--- !u!114 &3503268943751656771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959618853942321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions: []
 --- !u!1 &5787959619002184948
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +232,7 @@ GameObject:
   - component: {fileID: 5787959619002184834}
   - component: {fileID: 5787959619002184835}
   - component: {fileID: 5787959619002184839}
+  - component: {fileID: 1062039855911247164}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -296,7 +310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 0.05
   useBuffer: 1
   bypass: 0
@@ -313,7 +326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 1
   minValueRequirement: 0.15
@@ -334,7 +346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 1
   minValueRequirement: 0.15
@@ -355,7 +366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b43ef59a7b1fe1d499996c93020a1a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 1
   signalMultiplier: 1
   startDirection: 0
   speed: 5
@@ -371,7 +381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad40df0705b31594088eade1869b8d37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 01000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -392,6 +401,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fda436d03c7ffc439701fd5292e63c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1062039855911247164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959619002184948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions: []
 --- !u!1 &5787959619069687074
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,6 +616,7 @@ GameObject:
   - component: {fileID: 5787959619157782723}
   - component: {fileID: 5787959619157782732}
   - component: {fileID: 5787959619157782722}
+  - component: {fileID: 1890774413776717066}
   m_Layer: 5
   m_Name: Cover
   m_TagString: Untagged
@@ -754,7 +777,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   useBuffer: 1
   bypass: 0
@@ -771,7 +793,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -792,7 +813,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -813,7 +833,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea67737fe45494049a87edb07ead5c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 1
   signalMultiplier: 1
   startDirection: 0
   speed: 1
@@ -830,7 +849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad40df0705b31594088eade1869b8d37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 01000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -851,6 +869,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fda436d03c7ffc439701fd5292e63c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1890774413776717066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959619157782576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions: []
 --- !u!1 &5787959619230004380
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,6 +973,7 @@ GameObject:
   - component: {fileID: 5787959619331156607}
   - component: {fileID: 5787959619331156605}
   - component: {fileID: 5787959619331156606}
+  - component: {fileID: 646567311893032741}
   m_Layer: 5
   m_Name: EndTime
   m_TagString: Untagged
@@ -962,12 +994,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5787959619900404269}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5787959619331156603
 CanvasRenderer:
@@ -1078,7 +1110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea67737fe45494049a87edb07ead5c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   startDirection: 0
   speed: 1
@@ -1095,12 +1126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee07e691b40010e4ebaab0e2f8a579c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
   slowAdust: 1
-  defaultValue: 36
+  defaultValue: 64
   adjustSpeed: 25
   multiplier: 1
   text: {fileID: 5787959619331156580}
@@ -1128,7 +1158,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc9d4e14521d8d4c83541956410c378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  match: 1
+  colorType: 0
+  colorIndex: 0
+--- !u!114 &646567311893032741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959619331156582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions: []
 --- !u!1 &5787959619483630974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,12 +1206,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5787959619900404269}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.5}
-  m_SizeDelta: {x: 0, y: -1}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5787959619483630963
 CanvasRenderer:
@@ -1231,7 +1275,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e675eb5b387714283fa530de874bc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  match: 2
+  colorType: 1
+  colorIndex: 0
 --- !u!1 &5787959619632183771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,6 +1335,7 @@ GameObject:
   - component: {fileID: 5787959619900404259}
   - component: {fileID: 5787959619900404268}
   - component: {fileID: 5787959619900404258}
+  - component: {fileID: 8633221271471585728}
   m_Layer: 5
   m_Name: Duration
   m_TagString: Untagged
@@ -1309,15 +1355,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5787959619483630973}
   - {fileID: 5787959619331156581}
+  - {fileID: 5787959619483630973}
   m_Father: {fileID: 5787959619093594181}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 12.5}
-  m_SizeDelta: {x: 0, y: 25}
+  m_AnchoredPosition: {x: 0, y: 25}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5787959619900404259
 CanvasRenderer:
@@ -1374,6 +1420,32 @@ MonoBehaviour:
   m_UseGraphicAlpha: 1
   iterations: 25
   shadowSpread: {x: 2.5, y: 50}
+--- !u!114 &8633221271471585728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959619900404270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 7
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &5787959620227181485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,6 +1640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeRate: 0.125
   delay: 0.5
+  paused: 0
 --- !u!1001 &5787959619489115805
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6413788118135270205}
   - component: {fileID: 1295133467051189678}
   - component: {fileID: 6065993059783569579}
+  - component: {fileID: 4630862152619677037}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -126,7 +127,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7002ea36bfafded4c93e2382f0ad97d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -147,7 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ab5c30542110647b18bc84fbb095c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -156,6 +155,23 @@ MonoBehaviour:
   adjustSpeed: 25
   multiplier: 5
   light: {fileID: 1665319223827245638}
+--- !u!114 &4630862152619677037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64756399544970092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 6413788118135270205}
+    value:
+    - {fileID: 1295133467051189678}
+    - {fileID: 6065993059783569579}
 --- !u!1 &4376952548609669394
 GameObject:
   m_ObjectHideFlags: 0

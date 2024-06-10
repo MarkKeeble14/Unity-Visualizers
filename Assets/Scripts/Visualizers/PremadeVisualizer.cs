@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +11,13 @@ public abstract class PremadeVisualizer : MonoBehaviour
     [Header("Settings")]
     [SerializeField] protected AttachmentType attachmentType;
     [SerializeField] private VisualizerColorType colorType;
+    [SerializeField] private int colorIndex;
     [SerializeField] protected float multiplier = 25;
     [SerializeField] protected bool useSlowAdjust;
 
     protected List<AttachParameter> attachedParameterList = new List<AttachParameter>();
     protected List<SignalBroadcaster> broadcasterList = new List<SignalBroadcaster>();
+    protected List<Image> imageList = new List<Image>();
 
     protected virtual void MakeVisualizer()
     {
@@ -46,8 +49,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
                         SignalBroadcaster broadcaster = spawned.AddComponent<BandBroadcaster>();
                         ((BandBroadcaster)broadcaster).Band = i;
 
-                        TrackSegment(spawned);
-                        SetColor(spawned.GetComponent<Image>(), i, 8);
+                        TrackSegment(spawned, broadcaster, i, 8);
                     }
                     break;
             }
@@ -60,8 +62,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
                 SignalBroadcaster broadcaster = spawned.AddComponent<SampleBroadcaster>();
                 ((SampleBroadcaster)broadcaster).Sample = i;
 
-                TrackSegment(spawned);
-                SetColor(spawned.GetComponent<Image>(), i, n);
+                TrackSegment(spawned, broadcaster, i, n);
             }
         }
     }
@@ -70,17 +71,20 @@ public abstract class PremadeVisualizer : MonoBehaviour
 
     protected virtual void UpdateSpecificSettings() { }
 
-    [ContextMenu("UpdateComponents")]
-    protected void UpdateComponents()
+    [ContextMenu("UpdateAttachments")]
+    protected void UpdateAttachments()
     {
         foreach (AttachParameter parameter in attachedParameterList)
         {
-            // htb.Set(multiplier, defaultHeight, adjustSpeed);
             parameter.SetSlowAdjust(useSlowAdjust);
         }
         foreach (SignalBroadcaster broadcaster in broadcasterList)
         {
             broadcaster.UpdateSettings(multiplier);
+        }
+        for (int i = 0; i < imageList.Count; i++)
+        {
+            imageList[i].color = VisualizerManager._Instance.GetColor(colorType, colorIndex, new Vector2(i, imageList.Count));
         }
     }
 
@@ -93,37 +97,21 @@ public abstract class PremadeVisualizer : MonoBehaviour
     {
         PreMakingVisualizer();
         MakeVisualizer();
-        UpdateComponents();
+        UpdateAttachments();
     }
 
-    protected void TrackSegment(GameObject segment)
+    protected void TrackSegment(GameObject segment, SignalBroadcaster broadcaster, int index, int max)
     {
         // Broadcaster
-        broadcasterList.Add(segment.GetComponent<SignalBroadcaster>());
+        broadcasterList.Add(broadcaster);
 
         // Attached Parameters
         attachedParameterList.Add(segment.GetComponent<AttachParameter>());
-    }
 
-    protected void SetColor(Image image, int v, int max)
-    {
-        switch (colorType)
-        {
-            case VisualizerColorType.DOMINANT_COLOR:
-                image.color = VisualizerManager._Instance.UserDefinedDominantColor;
-                break;
+        // Image
+        imageList.Add(segment.GetComponent<Image>());
 
-            case VisualizerColorType.SECONDARY_COLOR:
-                image.color = VisualizerManager._Instance.UserDefinedSecondaryColor;
-                break;
-
-            case VisualizerColorType.TERTIARY_COLOR:
-                image.color = VisualizerManager._Instance.UserDefinedTertiaryColor;
-                break;
-
-            case VisualizerColorType.GRADIENT:
-                image.color = VisualizerManager._Instance.UserDefinedGradient.Evaluate((float)v / max);
-                break;
-        }
+        // Connect the broadcaster with it attachments
+        segment.GetComponent<SignalDirector>().AddDirection(broadcaster, segment.GetComponents<AttachParameter>().ToList());
     }
 }

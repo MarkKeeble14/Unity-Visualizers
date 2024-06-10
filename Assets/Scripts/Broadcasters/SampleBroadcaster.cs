@@ -8,7 +8,7 @@ public class SampleBroadcaster : SignalBroadcaster
     [SerializeField] private int sample;
     public int Sample { get { return sample; } set { sample = value; } }
 
-    protected override float GetBroadcastValue()
+    public override float GetBroadcastValue()
     {
         return VisualizerManager._Instance.AudioSamples[sample] * signalMultiplier;
     }

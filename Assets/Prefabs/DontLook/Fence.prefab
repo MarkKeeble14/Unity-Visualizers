@@ -143,6 +143,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -201,7 +209,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (2)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -217,6 +225,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -275,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (5)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -291,6 +307,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -349,7 +373,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (1)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -365,6 +389,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -423,7 +455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (4)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -439,6 +471,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -497,7 +537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (3)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -513,6 +553,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -571,7 +619,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
@@ -587,6 +635,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4703698494956916920}
     m_Modifications:
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: chanceTo.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -645,7 +701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
-      value: SM-6-Raven (6)
+      value: Raven
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}

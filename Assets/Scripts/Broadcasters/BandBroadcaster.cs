@@ -11,7 +11,7 @@ public class BandBroadcaster : SignalBroadcaster
     [SerializeField] private int band;
     public int Band { get { return band; } set { band = value; } }
 
-    protected override float GetBroadcastValue()
+    public override float GetBroadcastValue()
     {
         return VisualizerManager._Instance.GetBandValue(band, useBuffer) * signalMultiplier;
     }

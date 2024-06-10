@@ -26,14 +26,12 @@ public class CirclingFloatBroadcaster : SignalBroadcaster
         }
     }
 
-    protected override void Update()
+    protected void Update()
     {
         currentValue += Time.deltaTime * speed * directionMultiplier;
-
-        base.Update();
     }
 
-    protected override float GetBroadcastValue()
+    public override float GetBroadcastValue()
     {
         return (currentValue % 360f) * signalMultiplier;
     }

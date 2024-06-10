@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c548e3aa272ed7948a5ef77ab799643f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minMaxOffsetX: {x: -0.5, y: 0.5}
+  minMaxOffsetX: {x: 0, y: 0}
   minMaxOffsetY: {x: -7.5, y: -2.5}
   minMaxOffsetZ: {x: -0.5, y: 0.5}
   spawnOnlayer:
@@ -202,6 +202,7 @@ GameObject:
   - component: {fileID: 7736471603533336861}
   - component: {fileID: 3256851989862841110}
   - component: {fileID: 8375374119661444520}
+  - component: {fileID: 7481726476910942187}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -299,7 +300,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   useBuffer: 1
   bypass: 0
@@ -316,7 +316,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7002ea36bfafded4c93e2382f0ad97d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -337,7 +336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ab5c30542110647b18bc84fbb095c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 0
   minValueRequirement: 0
@@ -346,6 +344,23 @@ MonoBehaviour:
   adjustSpeed: 25
   multiplier: 25
   light: {fileID: 8295581567553768801}
+--- !u!114 &7481726476910942187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310542720451954140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 7736471603533336861}
+    value:
+    - {fileID: 3256851989862841110}
+    - {fileID: 8375374119661444520}
 --- !u!1 &8392802871252394072
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,11 +467,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -554,11 +569,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -656,11 +671,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -758,11 +773,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -860,11 +875,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -962,11 +977,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -1064,11 +1079,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.x
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -163324007133350286, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: chanceTo.y
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
@@ -1104,11 +1119,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.886
+      value: 0.767
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.103
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalRotation.w

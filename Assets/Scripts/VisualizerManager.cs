@@ -14,14 +14,11 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private AudioClip track;
     [SerializeField] private string trackName;
     [SerializeField] private Sprite trackArt;
-    [SerializeField] private Color userDefinedDominantColor;
-    [SerializeField] private Color userDefinedSecondaryColor;
-    [SerializeField] private Color userDefinedTertiaryColor;
-    [SerializeField] private Gradient userDefinedGradient;
-    public Color UserDefinedDominantColor => userDefinedDominantColor;
-    public Color UserDefinedSecondaryColor => userDefinedSecondaryColor;
-    public Color UserDefinedTertiaryColor => userDefinedTertiaryColor;
-    public Gradient UserDefinedGradient => userDefinedGradient;
+    [SerializeField] private Color[] trackColors;
+    [SerializeField] private Gradient[] trackGradients;
+
+    public Color GetTrackColor(int index) { return trackColors[index]; }
+    public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
 
     private float[] audioSamples = new float[512];
     public float[] AudioSamples => audioSamples;
@@ -37,6 +34,9 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float audioSampleSmoothing = 100;
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
+
+    [Header("Other Settings")]
+    [SerializeField] private bool startByDefault;
 
     public float PlaythroughPercent
     {
@@ -69,6 +69,13 @@ public class VisualizerManager : MonoBehaviour
         audioSource.clip = track;
 
         BroadcastTrackInfo();
+
+        if (startByDefault)
+        {
+            if (Fader._Instance != null)
+                Fader._Instance.FadeOutBlocker();
+            BeginPlayback();
+        }
     }
 
     public void BeginPlayback()
@@ -77,11 +84,26 @@ public class VisualizerManager : MonoBehaviour
         audioSource.Play();
     }
 
+    public Color GetColor(VisualizerColorType type, int index, Vector2 positionalData)
+    {
+        switch (type)
+        {
+            case VisualizerColorType.COLOR:
+                return GetTrackColor(index);
+            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(positionalData.x / positionalData.y);
+            case VisualizerColorType.TIME_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
+            default:
+                throw new System.Exception(); // TODO: Custom Exception
+        }
+    }
+
+    [ContextMenu("RebroadcastTrackInfo")]
     private void BroadcastTrackInfo()
     {
         //
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetEndTimeText(track.length), userDefinedDominantColor, userDefinedSecondaryColor, 
-            userDefinedTertiaryColor, userDefinedGradient);
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetEndTimeText(track.length));
         FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 

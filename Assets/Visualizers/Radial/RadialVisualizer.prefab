@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 4365240339340660847}
   - component: {fileID: 5252503949136689349}
   - component: {fileID: 109146645116770097}
+  - component: {fileID: 5575566752482503838}
   m_Layer: 5
-  m_Name: MaxSegmentRadialVisualizer
+  m_Name: RadialVisualizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32674f93a71dffd45ac138240f326038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  segmentPrefab: {fileID: 0}
+  segmentPrefab: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
   attachmentType: 0
   colorType: 0
   multiplier: 5
@@ -120,7 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 1
   minValueRequirement: 0.25
@@ -141,7 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listenOnFrequencies: 00000000
   bypass: 0
   useMinValueRequirement: 1
   minValueRequirement: 0.25
@@ -150,3 +149,16 @@ MonoBehaviour:
   adjustSpeed: 25
   multiplier: 1
   scaleOn: 1
+--- !u!114 &5575566752482503838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions: []

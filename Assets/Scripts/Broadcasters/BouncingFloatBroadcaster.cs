@@ -27,7 +27,7 @@ public class BouncingFloatBroadcaster : SignalBroadcaster
         }
     }
 
-    protected override void Update()
+    protected void Update()
     {
         currentValue = Mathf.MoveTowards(currentValue, targetValue, speed * Time.deltaTime);
         if (currentValue >= minMaxValue.y)
@@ -37,11 +37,9 @@ public class BouncingFloatBroadcaster : SignalBroadcaster
         {
             targetValue = minMaxValue.y;
         }
-
-        base.Update();
     }
 
-    protected override float GetBroadcastValue()
+    public override float GetBroadcastValue()
     {
         return currentValue * signalMultiplier;
     }

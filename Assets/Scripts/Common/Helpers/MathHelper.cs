@@ -4,6 +4,38 @@ using UnityEngine;
 
 public class MathHelper
 {
+    public enum AlterationMethod
+    {
+        LERP,
+        MOVE_TOWARDS
+    }
+
+    public static float GetNextValue(float currentValue, float targetValue, float rateOfChange, AlterationMethod method, bool multByDeltaTime)
+    {
+        switch (method)
+        {
+            case AlterationMethod.LERP:
+                return Mathf.Lerp(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
+            case AlterationMethod.MOVE_TOWARDS:
+                return Mathf.MoveTowards(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
+            default:
+                throw new System.Exception(); // TODO: Custom Exception
+        }
+    }
+
+    public static Vector3 GetNextValue(Vector3 currentValue, Vector3 targetValue, float rateOfChange, AlterationMethod method, bool multByDeltaTime)
+    {
+        switch (method)
+        {
+            case AlterationMethod.LERP:
+                return Vector3.Lerp(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
+            case AlterationMethod.MOVE_TOWARDS:
+                return Vector3.MoveTowards(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
+            default:
+                throw new System.Exception(); // TODO: Custom Exception
+        }
+    }
+
     public static float Normalize(float x, float min, float max, float a, float b)
     {
         return (b - a) * ((x - min) / (max - min)) + a;

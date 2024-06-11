@@ -2,42 +2,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LookAround : MonoBehaviour
+public class LookAround : RecievesInput
 {
     [SerializeField] private float lookSpeed;
     [SerializeField] private Vector2 minMaxLook;
     private Vector2 currentLookVector;
-    private bool hasInput;
+    private float returnTimer;
+    [SerializeField] private float returnTimerDuration = .25f;
+
+    public override void RecieveInput(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.A:
+                LookHorizontal(-1);
+                break;
+            case KeyCode.D:
+                LookHorizontal(1);
+                break;
+            case KeyCode.W:
+                LookVertical(1);
+                break;
+            case KeyCode.S:
+                LookVertical(-1);
+                break;
+        }
+    }
+
+    private void LookHorizontal(float dir)
+    {
+        currentLookVector.x = Mathf.Lerp(currentLookVector.x, minMaxLook.x * dir, lookSpeed * Time.deltaTime);
+        returnTimer = returnTimerDuration;
+    }
+
+    private void LookVertical(float dir)
+    {
+        currentLookVector.y = Mathf.Lerp(currentLookVector.y, minMaxLook.y * dir, lookSpeed * Time.deltaTime);
+        returnTimer = returnTimerDuration;
+    }
 
     private void Update()
     {
-        hasInput = false;
-
         // Add Input
         if (Input.GetKey(KeyCode.A))
-        {
-            currentLookVector.x = Mathf.Lerp(currentLookVector.x, -minMaxLook.x, lookSpeed * Time.deltaTime);
-            hasInput = true;
-        }
+            LookHorizontal(-1);
         if (Input.GetKey(KeyCode.D))
-        {
-            currentLookVector.x = Mathf.Lerp(currentLookVector.x, minMaxLook.x, lookSpeed * Time.deltaTime);
-            hasInput = true;
-        }
+            LookHorizontal(1);
         if (Input.GetKey(KeyCode.W))
-        {
-            currentLookVector.y = Mathf.Lerp(currentLookVector.y, minMaxLook.y, lookSpeed * Time.deltaTime);
-            hasInput = true;
-        }
+            LookVertical(1);
         if (Input.GetKey(KeyCode.S))
-        {
-            currentLookVector.y = Mathf.Lerp(currentLookVector.y, -minMaxLook.y, lookSpeed * Time.deltaTime);
-            hasInput = true;
-        }
+            LookVertical(-1);
 
         // Reset if no input is found
-        if (!hasInput)
+        if (returnTimer <= 0)
             currentLookVector = Vector2.Lerp(currentLookVector, Vector2.zero, lookSpeed * Time.deltaTime);
+        else
+            returnTimer -= Time.deltaTime;
 
         // Set rotation
         transform.localEulerAngles = new Vector3(-currentLookVector.y, currentLookVector.x, 0);

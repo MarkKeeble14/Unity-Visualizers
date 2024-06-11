@@ -47,7 +47,7 @@ MonoBehaviour:
   spawnAtType: 0
   spawningObject: {fileID: 4979128660123056593, guid: cf6d4aa9063bfdb43bcdec06aacb6b5b, type: 3}
   chanceToSpawnBatch: {x: 0, y: 1}
-  minMaxInBatch: {x: 4, y: 6}
+  minMaxInBatch: {x: 1, y: 3}
   batchMinMaxXSpawn: {x: 0, y: 0}
   batchMinMaxYSpawn: {x: 0, y: 0}
   batchMinMaxZSpawn: {x: 0, y: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
   minMaxYOffset: {x: 0, y: 0}
   minMaxZOffset: {x: 0, y: 0}
   timeBetweenSpawningBatches: 0
-  minMaxDelayInBatch: {x: 0, y: 0}
+  minMaxDelayInBatch: {x: 0, y: 0.125}
 --- !u!1 &4170141221895067581
 GameObject:
   m_ObjectHideFlags: 0

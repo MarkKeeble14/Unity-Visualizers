@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using System;
 
 [RequireComponent(typeof(AudioSource))]
 public class VisualizerManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Sprite trackArt;
     [SerializeField] private Color[] trackColors;
     [SerializeField] private Gradient[] trackGradients;
+
+    public Action OnSongEnd;
 
     public Color GetTrackColor(int index) { return trackColors[index]; }
     public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
@@ -30,6 +33,7 @@ public class VisualizerManager : MonoBehaviour
 
     private AudioSource audioSource;
 
+
     [Header("Audio Sampling Settings")]
     [SerializeField] private float audioSampleSmoothing = 100;
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
@@ -37,6 +41,8 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Other Settings")]
     [SerializeField] private bool startByDefault;
+    [SerializeField] private float startSongAtSeconds;
+    private bool hasCalledOnSongEnd = true;
 
     public float PlaythroughPercent
     {
@@ -45,6 +51,14 @@ public class VisualizerManager : MonoBehaviour
             float playthroughPercent = audioSource.time / audioSource.clip.length;
             if (audioSource.time == 0) playthroughPercent = 1;
             return playthroughPercent;
+        }
+    }
+
+    public float SecondsPlayed
+    {
+        get
+        {
+            return audioSource.time;
         }
     }
 
@@ -81,7 +95,10 @@ public class VisualizerManager : MonoBehaviour
     public void BeginPlayback()
     {
         // 
+        audioSource.time = startSongAtSeconds;
         audioSource.Play();
+
+        hasCalledOnSongEnd = false;
     }
 
     public Color GetColor(VisualizerColorType type, int index, Vector2 positionalData)
@@ -123,6 +140,12 @@ public class VisualizerManager : MonoBehaviour
 
         // Band Buffer
         CalcBandBuffer();
+
+        if (PlaythroughPercent >= 1 && !hasCalledOnSongEnd && SecondsPlayed > 0)
+        {
+            OnSongEnd!.Invoke();
+            hasCalledOnSongEnd = true;
+        }
     }
 
     public float GetBandValue(int band, bool useBuffer) { return useBuffer ? bandBuffer[band] : frequencyBands[band]; }

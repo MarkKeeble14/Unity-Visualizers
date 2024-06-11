@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: -5694187335795527664}
   - component: {fileID: 3087893356829448553}
   - component: {fileID: -5201291938968131777}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pillar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchScaleOnAllAxis: 1
-  minMaxScaleX: {x: 2, y: 12.5}
+  minMaxScaleX: {x: 5, y: 15}
   minMaxScaleY: {x: 1, y: 2}
   minMaxScaleZ: {x: 1, y: 2}
 --- !u!114 &-5201291938968131777
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minMaxOffsetX: {x: 0, y: 0}
-  minMaxOffsetY: {x: -7.5, y: -2.5}
+  minMaxOffsetY: {x: -10, y: -1.5}
   minMaxOffsetZ: {x: -0.5, y: 0.5}
   spawnOnlayer:
     serializedVersion: 2
@@ -372,8 +372,7 @@ GameObject:
   - component: {fileID: 778866278595998563}
   - component: {fileID: 2456776941795838505}
   - component: {fileID: 1386409111205162685}
-  - component: {fileID: 1732297142286077390}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -445,19 +444,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1732297142286077390
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8392802871252394072}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.49999994, y: 2.3, z: 0.4}
-  m_Center: {x: 1.05, y: 0, z: 0}
 --- !u!1001 &1477607727514740360
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -476,6 +462,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -507,11 +501,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.886
+      value: 0.9037
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.103
+      value: 0.051
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -545,10 +539,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -578,6 +568,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -609,7 +607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.783
+      value: 0.79099995
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -647,10 +645,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (3)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -680,6 +674,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -711,7 +713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.178
+      value: 1.2049
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -749,10 +751,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (4)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -782,6 +780,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -813,7 +819,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.087
+      value: 1.101
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -851,10 +857,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (6)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -884,6 +886,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -915,7 +925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.087
+      value: 1.106
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -953,10 +963,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (5)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -986,6 +992,14 @@ PrefabInstance:
     - target: {fileID: 64756399544970092, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
@@ -1017,7 +1031,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.886
+      value: 0.907
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1055,10 +1069,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raven (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -1089,6 +1099,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473735660354525649, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
+      propertyPath: spawnOnlayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 3491638140709925672, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: minMaxScaleX.x
       value: 0.1
@@ -1115,11 +1133,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.913
+      value: 0.839
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.767
+      value: 0.79
       objectReference: {fileID: 0}
     - target: {fileID: 4032374832563676072, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1156,10 +1174,6 @@ PrefabInstance:
     - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Name
       value: Raven
-      objectReference: {fileID: 0}
-    - target: {fileID: 4376952548609669394, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4698315197058499019, guid: 5aa50f7a2a448564884e034bc164ee9b, type: 3}
       propertyPath: m_Layer

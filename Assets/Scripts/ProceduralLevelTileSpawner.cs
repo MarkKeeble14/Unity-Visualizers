@@ -12,14 +12,16 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
     [SerializeField] private float spawnAfterDistance;
     [SerializeField] private Vector3 nextSpawnPos;
     [SerializeField] private Vector3 nextSpawnDistance;
-    private float distanceSinceLastSpawn;
-    private Vector3 lastSpawnedAt;
 
-    [SerializeField] private float beginDestroyingAfterDistance;
-    private float totalDistanceTravelled;
-    private List<GameObject> spawnedTiles = new List<GameObject>();
-
+    [SerializeField] private int beginDestroyingTilesAfterNumTriggers = 2;
     [SerializeField] private int initialSpawnBuffer = 10;
+    private int destroyTriggersCount;
+    private List<KeyValuePair<GameObject, DestroyLevelTileTrigger>> spawnedTiles = new();
+
+    [Header("Last Tile")]
+    [SerializeField] private List<GameEvent> activateOnSpawningLastTile;
+    private bool lastTile;
+    public bool LastTile { get { return lastTile; } set {  lastTile = value; } }
 
     private void Start()
     {
@@ -29,34 +31,48 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        distanceSinceLastSpawn = Vector3.Distance(following.position, lastSpawnedAt);
-        if (distanceSinceLastSpawn >= spawnAfterDistance)
-        {
-            SpawnTile();
-        }
-    }
-
     private void SpawnTile()
     {
         // Spawn tile
         GameObject spawned = Instantiate(levelTile, nextSpawnPos, Quaternion.identity);
-        spawnedTiles.Add(spawned);
         spawned.transform.parent = transform;
 
-        // Track info
-        totalDistanceTravelled += distanceSinceLastSpawn;
-        nextSpawnPos = nextSpawnPos + nextSpawnDistance;
-        lastSpawnedAt = following.position;
+        // Attach destroy level tile trigger
+        DestroyLevelTileTrigger destroyTrigger = spawned.GetComponentInChildren<DestroyLevelTileTrigger>();
+        destroyTrigger.SetTarget(following);
+        destroyTrigger.OnTargetEnter += OnEnterDestroyTileTrigger;
 
-        // Check if need to destroy
-        if (totalDistanceTravelled >= beginDestroyingAfterDistance)
+        // Track spawned Tile
+        spawnedTiles.Add(new(spawned, destroyTrigger));
+
+        // Track info
+        nextSpawnPos = nextSpawnPos + nextSpawnDistance;
+
+        if (lastTile)
         {
-            GameObject toDestroy = spawnedTiles[0];
-            spawnedTiles.RemoveAt(0);
-            Destroy(toDestroy);
+            foreach (GameEvent e in activateOnSpawningLastTile)
+            {
+                e.Activate();
+            }
         }
+    }
+
+    private void OnEnterDestroyTileTrigger()
+    {
+        destroyTriggersCount++;
+        if (destroyTriggersCount > beginDestroyingTilesAfterNumTriggers)
+        {
+            KeyValuePair<GameObject, DestroyLevelTileTrigger> toDestroy = spawnedTiles[0];
+            spawnedTiles.RemoveAt(0);
+            Destroy(toDestroy.Key);
+
+            SpawnTile();
+        }
+    }
+
+    public void SetLastTile(GameObject newLevelTile)
+    {
+        levelTile = newLevelTile;
+        lastTile = true;
     }
 }

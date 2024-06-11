@@ -6,6 +6,7 @@ public abstract class AttachParameter : MonoBehaviour
 {
     [Header("Flow Settings")]
     [SerializeField] private bool bypass;
+    public bool Bypass { get { return bypass; } set {  bypass = value; } }
     [SerializeField] private bool useMinValueRequirement;
     [SerializeField] private float minValueRequirement;
 

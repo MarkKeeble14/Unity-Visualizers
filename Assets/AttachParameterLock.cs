@@ -4,9 +4,9 @@ using UnityEngine;
 public abstract class AttachParameterLock : AttachParameter
 {
     [Header("Lock Settings")]
-    [SerializeField] protected int unlockedValue;
-    [SerializeField] private bool instantChange;
+    [SerializeField] protected float unlockedValue;
     [SerializeField] private float changeRate;
+    [SerializeField] private bool instantChange;
     private bool locked = true;
 
     protected abstract void InstantUnlock();

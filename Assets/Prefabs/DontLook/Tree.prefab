@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchScaleOnAllAxis: 1
-  minMaxScaleX: {x: 1, y: 1.75}
+  minMaxScaleX: {x: 2.5, y: 5}
   minMaxScaleY: {x: 1, y: 2.5}
   minMaxScaleZ: {x: 1, y: 2.5}
 --- !u!114 &7976099372319685067

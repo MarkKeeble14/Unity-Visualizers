@@ -47,9 +47,9 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 1
-  m_Range: 100
+  m_Range: 0
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -110,10 +110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   useBuffer: 0
-  bypass: 0
+  bandType: 0
   band: 6
 --- !u!114 &1295133467051189678
 MonoBehaviour:
@@ -128,12 +127,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
+  defaultValue: 0.25
   adjustSpeed: 25
-  multiplier: 1
+  multiplier: 0.25
   light: {fileID: 1665319223827245638}
 --- !u!114 &6065993059783569579
 MonoBehaviour:
@@ -148,12 +146,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 5
-  adjustSpeed: 25
-  multiplier: 5
+  defaultValue: 0
+  adjustSpeed: 2.5
+  multiplier: 7.5
   light: {fileID: 1665319223827245638}
 --- !u!114 &4630862152619677037
 MonoBehaviour:

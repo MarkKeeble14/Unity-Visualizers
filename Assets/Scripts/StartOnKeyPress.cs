@@ -11,7 +11,10 @@ public class StartOnKeyPress : MonoBehaviour
     {
         if (Input.GetKeyDown(key))
         {
-            Fader._Instance.FadeOutBlocker();
+            if (Fader._Instance != null)
+            {
+                Fader._Instance.FadeOutBlocker();
+            }
             VisualizerManager._Instance.BeginPlayback();
         }
     }

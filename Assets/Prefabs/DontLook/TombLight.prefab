@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3491759859258909815}
   - component: {fileID: 363882223268843908}
   - component: {fileID: 3675232047541399277}
+  - component: {fileID: 84188455959819804}
   m_Layer: 0
   m_Name: TombLight
   m_TagString: Untagged
@@ -109,11 +110,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 1
   useBuffer: 1
-  bypass: 0
-  band: 7
+  bandType: 1
+  band: 0
 --- !u!114 &363882223268843908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,8 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0
   adjustSpeed: 1
@@ -150,3 +149,23 @@ MonoBehaviour:
   - key: {fileID: 3491759859258909815}
     value:
     - {fileID: 363882223268843908}
+    - {fileID: 84188455959819804}
+--- !u!114 &84188455959819804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5822176829346383516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab5c30542110647b18bc84fbb095c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 0}
+  slowAdust: 0
+  defaultValue: 10
+  adjustSpeed: 25
+  multiplier: 2.5
+  light: {fileID: 1249943820606287214}

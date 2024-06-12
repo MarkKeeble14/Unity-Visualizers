@@ -13,26 +13,6 @@ public enum AudioChannel
     RIGHT
 }
 
-public struct AudioBandsData
-{
-    public float[] FrequencyBands;
-    public float[] FrequencyBandBuffer;
-    public float[] FrequencyBandBufferDecrease;
-    public float[] HighestValuePerFrequencyBand;
-    public float[] AudioBands;
-    public float[] AudioBandsBuffer;
-
-    public AudioBandsData(int numBands)
-    {
-        FrequencyBands = new float[numBands];
-        FrequencyBandBuffer = new float[numBands];
-        FrequencyBandBufferDecrease = new float[numBands];
-        HighestValuePerFrequencyBand = new float[numBands];
-        AudioBands = new float[numBands];
-        AudioBandsBuffer = new float[numBands];
-}
-}
-
 [RequireComponent(typeof(AudioSource))]
 public class VisualizerManager : MonoBehaviour
 {
@@ -48,10 +28,7 @@ public class VisualizerManager : MonoBehaviour
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
 
-    [SerializeField] private List<int> requestBandsOfLengths = new();
-    private Dictionary<int, AudioBandsData> audioBandsData;
-
-    // Audio (8 Bands)
+    // Audio Data
     private float[] frequencyBands = new float[8];
     private float[] frequencyBandBuffer = new float[8];
     private float[] frequencyBandBufferDecrease = new float[8];
@@ -76,6 +53,9 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float startSongAtSeconds;
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
+
+    [Header("Recording Settings")]
+    [SerializeField] private float afterTrackRecordingBufferTime = 10f;
 
     // Events
     public Action OnSongEnd;
@@ -174,11 +154,16 @@ public class VisualizerManager : MonoBehaviour
 
     public void BeginPlayback()
     {
-        // 
         if (startSongAtSeconds > audioSource.clip.length)
             Debug.LogWarning("Attempted to start the track at a position longer than the track itself");
 
+        // Set the point where the AudioSource begins
         audioSource.time = startSongAtSeconds;
+
+        // Set the max duration of time a recording can go on for
+        RecordingManager._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
+
+        // Play the Track
         audioSource.Play();
     }
 

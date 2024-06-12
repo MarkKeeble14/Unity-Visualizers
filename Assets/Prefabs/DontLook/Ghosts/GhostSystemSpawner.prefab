@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: 928101706865757247}
   - component: {fileID: 4503172622710537087}
   - component: {fileID: 8997447869632615505}
+  - component: {fileID: 4073138910822149282}
   m_Layer: 0
   m_Name: GhostSystemSpawner
   m_TagString: Untagged
@@ -137,16 +138,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 1
-  minValueRequirement: 3
+  shouldExecuteLock: {fileID: 4073138910822149282}
   slowAdust: 0
   defaultValue: 0
   adjustSpeed: 25
   multiplier: 1
   spawner: {fileID: 1594635045201897501}
   useCooldown: 1
-  cooldown: 10
+  cooldown: 3
   cooldownRate: 1
+--- !u!114 &4073138910822149282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 3
 --- !u!1 &4602946957525573646
 GameObject:
   m_ObjectHideFlags: 0

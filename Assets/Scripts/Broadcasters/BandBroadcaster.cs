@@ -4,8 +4,8 @@ using UnityEngine.XR;
 public class BandBroadcaster : SignalBroadcaster
 {
     [Header("Settings")]
-    [SerializeField] private bool useBuffer;
-    [SerializeField] private bool bypass;
+    [SerializeField] private bool useBuffer = true;
+    [SerializeField] private BandType bandType = BandType.FREQUENCY;
 
     [Header("Attach To")]
     [SerializeField] private int band;
@@ -13,6 +13,14 @@ public class BandBroadcaster : SignalBroadcaster
 
     public override float GetBroadcastValue()
     {
-        return VisualizerManager._Instance.GetBandValue(band, useBuffer) * signalMultiplier;
+        switch (bandType)
+        {
+            case BandType.FREQUENCY:
+                return VisualizerManager._Instance.GetFrequencyBandValue(band, useBuffer) * signalMultiplier;
+            case BandType.AUDIO:
+                return VisualizerManager._Instance.GetAudioBandValue(band, useBuffer) * signalMultiplier;
+            default:
+                throw new System.Exception(); // TODO: Custom Exception
+        }
     }
 }

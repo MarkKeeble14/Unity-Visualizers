@@ -6,6 +6,33 @@ using UnityEngine;
 using System.Linq;
 using System;
 
+public enum AudioChannel
+{
+    STEREO,
+    LEFT,
+    RIGHT
+}
+
+public struct AudioBandsData
+{
+    public float[] FrequencyBands;
+    public float[] FrequencyBandBuffer;
+    public float[] FrequencyBandBufferDecrease;
+    public float[] HighestValuePerFrequencyBand;
+    public float[] AudioBands;
+    public float[] AudioBandsBuffer;
+
+    public AudioBandsData(int numBands)
+    {
+        FrequencyBands = new float[numBands];
+        FrequencyBandBuffer = new float[numBands];
+        FrequencyBandBufferDecrease = new float[numBands];
+        HighestValuePerFrequencyBand = new float[numBands];
+        AudioBands = new float[numBands];
+        AudioBandsBuffer = new float[numBands];
+}
+}
+
 [RequireComponent(typeof(AudioSource))]
 public class VisualizerManager : MonoBehaviour
 {
@@ -18,23 +45,28 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Color[] trackColors;
     [SerializeField] private Gradient[] trackGradients;
 
-    public Action OnSongEnd;
+    private float[] leftAudioSamples = new float[512];
+    private float[] rightAudioSamples = new float[512];
 
-    public Color GetTrackColor(int index) { return trackColors[index]; }
-    public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
+    [SerializeField] private List<int> requestBandsOfLengths = new();
+    private Dictionary<int, AudioBandsData> audioBandsData;
 
-    private float[] audioSamples = new float[512];
-    public float[] AudioSamples => audioSamples;
-    public float ZeroSample { get; private set; }
-
+    // Audio (8 Bands)
     private float[] frequencyBands = new float[8];
-    private float[] bandBuffer = new float[8];
-    private float[] bandBufferDecrease = new float[8];
+    private float[] frequencyBandBuffer = new float[8];
+    private float[] frequencyBandBufferDecrease = new float[8];
+    private float[] highestValuePerFrequencyBand = new float[8];
+    private float[] audioBands = new float[8];
+    private float[] audioBandsBuffer = new float[8];
 
-    private AudioSource audioSource;
+    [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
+    private float amplitude;
+    private float amplitudeBuffer;
+    private float highestAmplitude;
 
     [Header("Audio Sampling Settings")]
+    [SerializeField] private AudioChannel channel;
     [SerializeField] private float audioSampleSmoothing = 100;
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
@@ -42,7 +74,22 @@ public class VisualizerManager : MonoBehaviour
     [Header("Other Settings")]
     [SerializeField] private bool startByDefault;
     [SerializeField] private float startSongAtSeconds;
-    private bool hasCalledOnSongEnd = true;
+    private bool hasSongStarted = false;
+    private float lastAudioSourceTime;
+
+    // Events
+    public Action OnSongEnd;
+    public Action OnSongStart;
+
+    // References
+    private AudioSource audioSource;
+
+    // Properties
+    public float HighestAmplitude => highestAmplitude;
+    public float AverageAmplitude { get { return amplitude / highestAmplitude; } }
+    public float AverageAmplitudeBuffer { get { return amplitudeBuffer / AverageAmplitude; } }
+    public float[] AudioSamples => leftAudioSamples;
+    public float ZeroSample { get; private set; }
 
     public float PlaythroughPercent
     {
@@ -62,13 +109,6 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    private string GetEndTimeText(float time)
-    {
-        float minutes = Mathf.FloorToInt(time / 60);
-        float seconds = Mathf.FloorToInt(time - (minutes * 60));
-        return minutes + ":" + seconds;
-    }
-
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
@@ -79,6 +119,8 @@ public class VisualizerManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        CreateAudioProfile();
+
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = track;
 
@@ -92,13 +134,52 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    // Update is called once per frame
+    private void Update()
+    {
+        // Spectrum Data
+        GetSpectrumAudioSource();
+
+        if (leftAudioSamples != null && leftAudioSamples.Length > 0)
+        {
+            ZeroSample = leftAudioSamples[0] * audioSampleSmoothing;
+        }
+
+        // Make Frequency Bands
+        MakeFrequencyBands();
+
+        // Band Buffer
+        CalcBandBuffer();
+
+        // Create Audio Bands
+        CreateAudioBands();
+
+        GetAmplitude();
+
+        // Determine if Song has Started/Ended
+        if (!hasSongStarted && audioSource.time != lastAudioSourceTime)
+        {
+            hasSongStarted = true;
+            OnSongStart?.Invoke();
+        }
+
+        if (hasSongStarted && audioSource.time == 0)
+        {
+            hasSongStarted = false;
+            OnSongEnd?.Invoke();
+        }
+
+        lastAudioSourceTime = audioSource.time;
+    }
+
     public void BeginPlayback()
     {
         // 
+        if (startSongAtSeconds > audioSource.clip.length)
+            Debug.LogWarning("Attempted to start the track at a position longer than the track itself");
+
         audioSource.time = startSongAtSeconds;
         audioSource.Play();
-
-        hasCalledOnSongEnd = false;
     }
 
     public Color GetColor(VisualizerColorType type, int index, Vector2 positionalData)
@@ -124,36 +205,26 @@ public class VisualizerManager : MonoBehaviour
         FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 
-    // Update is called once per frame
-    private void Update()
+    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
+    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
+    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
+    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
+
+    private string GetEndTimeText(float time)
     {
-        // Spectrum Data
-        GetSpectrumAudioSource();
-
-        if (audioSamples != null && audioSamples.Length > 0)
-        {
-            ZeroSample = audioSamples[0] * audioSampleSmoothing;
-        }
-
-        // Make Frequency Bands
-        MakeFrequencyBands();
-
-        // Band Buffer
-        CalcBandBuffer();
-
-        if (PlaythroughPercent >= 1 && !hasCalledOnSongEnd && SecondsPlayed > 0)
-        {
-            OnSongEnd!.Invoke();
-            hasCalledOnSongEnd = true;
-        }
+        float minutes = Mathf.FloorToInt(time / 60);
+        float seconds = Mathf.FloorToInt(time - (minutes * 60));
+        return minutes + ":" + seconds;
     }
 
-    public float GetBandValue(int band, bool useBuffer) { return useBuffer ? bandBuffer[band] : frequencyBands[band]; }
+    public Color GetTrackColor(int index) { return trackColors[index]; }
+    public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
 
 
     private void GetSpectrumAudioSource()
     {
-        audioSource.GetSpectrumData(audioSamples, 0, FFTWindow.Blackman);
+        audioSource.GetSpectrumData(leftAudioSamples, 0, FFTWindow.Blackman);
+        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);
     }
 
     private void MakeFrequencyBands()
@@ -172,7 +243,18 @@ public class VisualizerManager : MonoBehaviour
 
             for (int j = 0; j < sampleCount; j++)
             {
-                average += audioSamples[count] * (count + 1);
+                switch (channel)
+                {
+                    case AudioChannel.STEREO:
+                        average += (leftAudioSamples[count] + rightAudioSamples[count]) * (count + 1);
+                        break;
+                    case AudioChannel.LEFT:
+                        average += leftAudioSamples[count] * (count + 1);
+                        break;
+                    case AudioChannel.RIGHT:
+                        average += rightAudioSamples[count] * (count + 1);
+                        break;
+                }
                 count++;
             }
 
@@ -182,21 +264,52 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    private void CreateAudioBands()
+    {
+        for (int i = 0; i < audioBands.Length; i++)
+        {
+            if (frequencyBands[i] > highestValuePerFrequencyBand[i])
+            {
+                highestValuePerFrequencyBand[i] = frequencyBands[i];
+            }
+            audioBands[i] = frequencyBands[i] / highestValuePerFrequencyBand[i];
+            audioBandsBuffer[i] = frequencyBandBuffer[i] / highestValuePerFrequencyBand[i];
+        }
+    }
+
     private void CalcBandBuffer()
     {
         for (int g = 0; g < 8; g++)
         {
-            if (frequencyBands[g] > bandBuffer[g])
+            if (frequencyBands[g] > frequencyBandBuffer[g])
             {
-                bandBuffer[g] = frequencyBands[g];
-                bandBufferDecrease[g] = defaultBandBufferDecrease;
+                frequencyBandBuffer[g] = frequencyBands[g];
+                frequencyBandBufferDecrease[g] = defaultBandBufferDecrease;
             }
 
-            if (frequencyBands[g] < bandBuffer[g])
+            if (frequencyBands[g] < frequencyBandBuffer[g])
             {
-                bandBuffer[g] -= bandBufferDecrease[g];
-                bandBufferDecrease[g] *= bandBufferDecreaseMultPerFrame;
+                frequencyBandBuffer[g] -= frequencyBandBufferDecrease[g];
+                frequencyBandBufferDecrease[g] *= bandBufferDecreaseMultPerFrame;
             }
         }
+    }
+
+    private void GetAmplitude()
+    {
+        amplitude = 0;
+        amplitudeBuffer = 0;
+        for (int i = 0; i < frequencyBands.Length; i++)
+        {
+            amplitude += frequencyBands[i];
+            amplitudeBuffer += frequencyBandBuffer[i];
+        }
+        if (amplitude > highestAmplitude) highestAmplitude = amplitude;
+    }
+
+    private void CreateAudioProfile()
+    {
+        for (int i = 0; i < highestValuePerFrequencyBand.Length; i++)
+            highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
     }
 }

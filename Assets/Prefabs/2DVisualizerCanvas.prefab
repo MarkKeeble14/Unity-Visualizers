@@ -171,8 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 96
   adjustSpeed: 25
@@ -230,8 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 0
   defaultValue: 0
   adjustSpeed: 25
@@ -271,6 +269,7 @@ GameObject:
   - component: {fileID: 5787959619002184835}
   - component: {fileID: 5787959619002184839}
   - component: {fileID: 1062039855911247164}
+  - component: {fileID: 1256437114955758947}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -350,7 +349,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signalMultiplier: 0.05
   useBuffer: 1
-  bypass: 0
   band: 0
 --- !u!114 &5787959619002184844
 MonoBehaviour:
@@ -365,8 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 1
-  minValueRequirement: 0.15
+  shouldExecuteLock: {fileID: 1256437114955758947}
   slowAdust: 1
   defaultValue: 1
   adjustSpeed: 25
@@ -385,8 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 1
-  minValueRequirement: 0.15
+  shouldExecuteLock: {fileID: 1256437114955758947}
   slowAdust: 1
   defaultValue: 1
   adjustSpeed: 25
@@ -420,8 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 0
   defaultValue: 0
   adjustSpeed: 25
@@ -452,6 +447,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directions: []
+--- !u!114 &1256437114955758947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787959619002184948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 0.15
 --- !u!1 &5787959619069687074
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,7 +656,6 @@ GameObject:
   - component: {fileID: 5787959619157782730}
   - component: {fileID: 5787959619157782729}
   - component: {fileID: 5787959619157782728}
-  - component: {fileID: 5787959619157782733}
   - component: {fileID: 5787959619157782734}
   - component: {fileID: 5787959619157782735}
   - component: {fileID: 5787959619157782723}
@@ -803,22 +810,6 @@ MonoBehaviour:
   dropShadows:
   - {fileID: 5787959619157782729}
   image: {fileID: 5787959619157782582}
---- !u!114 &5787959619157782733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5787959619157782576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signalMultiplier: 1
-  useBuffer: 1
-  bypass: 0
-  band: 0
 --- !u!114 &5787959619157782734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -832,12 +823,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0.75
-  adjustSpeed: 50
-  multiplier: 0.02
+  adjustSpeed: 0.25
+  multiplier: 0.01
   scaleOn: 0
 --- !u!114 &5787959619157782735
 MonoBehaviour:
@@ -852,12 +842,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0.75
-  adjustSpeed: 50
-  multiplier: 0.02
+  adjustSpeed: 0.25
+  multiplier: 0.01
   scaleOn: 1
 --- !u!114 &5787959619157782723
 MonoBehaviour:
@@ -888,8 +877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 0
   defaultValue: 0
   adjustSpeed: 25
@@ -919,7 +907,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directions: []
+  directions:
+  - key: {fileID: 5787959619157782723}
+    value:
+    - {fileID: 5787959619157782732}
 --- !u!1 &5787959619230004380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,8 +1156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 64
   adjustSpeed: 25
@@ -1902,10 +1892,6 @@ PrefabInstance:
       propertyPath: segmentPrefab
       value: 
       objectReference: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
-    - target: {fileID: 7214581875382840760, guid: 765b8429724126549a896c422855c80d, type: 3}
-      propertyPath: attachmentType
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 7445853031623510636, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2077,20 +2063,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
-      propertyPath: spacing
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: colorType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: multiplier
       value: 3000
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
-      propertyPath: adjustSpeed
-      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: defaultHeight

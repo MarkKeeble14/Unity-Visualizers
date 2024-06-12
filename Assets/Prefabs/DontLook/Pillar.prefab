@@ -302,7 +302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signalMultiplier: 1
   useBuffer: 1
-  bypass: 0
+  bandType: 0
   band: 0
 --- !u!114 &3256851989862841110
 MonoBehaviour:
@@ -317,8 +317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0.1
   adjustSpeed: 25
@@ -337,12 +336,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0
   adjustSpeed: 25
-  multiplier: 25
+  multiplier: 12.5
   light: {fileID: 8295581567553768801}
 --- !u!114 &7481726476910942187
 MonoBehaviour:

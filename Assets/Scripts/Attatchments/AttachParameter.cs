@@ -7,19 +7,26 @@ public abstract class AttachParameter : MonoBehaviour
     [Header("Flow Settings")]
     [SerializeField] private bool bypass;
     public bool Bypass { get { return bypass; } set {  bypass = value; } }
-    [SerializeField] private bool useMinValueRequirement;
-    [SerializeField] private float minValueRequirement;
+    [SerializeField] private ParameterLock shouldExecuteLock;
 
     [Header("Adjustment Settings")]
     [SerializeField] protected bool slowAdust;
+    public bool SlowAdjust { get { return slowAdust; } set {  slowAdust = value; } }
+
     [SerializeField] private float defaultValue = 0;
+    public float DefaultValue { get { return defaultValue; } set {  defaultValue = value; } }
+
     [SerializeField] private float adjustSpeed = 25;
+    public float AdjustSpeed { get { return adjustSpeed; } set { adjustSpeed = value; } }
+
     [SerializeField] private float multiplier = 1;
+    public float Multiplier { get { return multiplier; } set { multiplier = value; } }
+
     protected float targetValue;
     protected float currentValue;
     private float lastMessageValue;
 
-    public void SetSlowAdjust(bool newValue) { slowAdust = newValue; }
+    protected virtual void TrySetParameter(float value) { SetParameter(value); }
 
     protected abstract void SetParameter(float value);
 
@@ -29,21 +36,21 @@ public abstract class AttachParameter : MonoBehaviour
         if (bypass) return;
 
         // if a min value requirement has been set and the currently broadcasted message does not transcend it, don't act
-        if (useMinValueRequirement && value < minValueRequirement) return;
+        if (shouldExecuteLock && !shouldExecuteLock.EvaluateCondition(value)) return;
 
-        lastMessageValue = value;
         value *= multiplier;
+        // lastMessageValue = value;
         if (slowAdust)
         {
             // Calculate Adjustment
             targetValue = defaultValue + value;
             currentValue = Mathf.Lerp(currentValue, targetValue, Time.deltaTime * adjustSpeed);
 
-            SetParameter(currentValue);
+            TrySetParameter(currentValue);
         }
         else
         {
-            SetParameter(defaultValue + value);
+            TrySetParameter(defaultValue + value);
         }
     }
 }

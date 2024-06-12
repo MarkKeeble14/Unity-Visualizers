@@ -22,6 +22,7 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
     [SerializeField] private List<GameEvent> activateOnSpawningLastTile;
     private bool lastTile;
     public bool LastTile { get { return lastTile; } set {  lastTile = value; } }
+    private bool spawnedLastTile;
 
     private void Start()
     {
@@ -33,6 +34,8 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
 
     private void SpawnTile()
     {
+        if (spawnedLastTile) return;
+
         // Spawn tile
         GameObject spawned = Instantiate(levelTile, nextSpawnPos, Quaternion.identity);
         spawned.transform.parent = transform;
@@ -50,6 +53,7 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
 
         if (lastTile)
         {
+            spawnedLastTile = true;
             foreach (GameEvent e in activateOnSpawningLastTile)
             {
                 e.Activate();

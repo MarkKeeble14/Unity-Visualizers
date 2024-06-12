@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +13,11 @@ public abstract class PremadeVisualizer : MonoBehaviour
     [SerializeField] protected AttachmentType attachmentType;
     [SerializeField] private VisualizerColorType colorType;
     [SerializeField] private int colorIndex;
-    [SerializeField] protected float multiplier = 25;
-    [SerializeField] protected bool useSlowAdjust;
+    [SerializeField] protected float signalMultiplier;
+    [SerializeField] private float attachmentMultiplier;
+    [SerializeField] private float defaultValue;
+    [SerializeField] private float adjustSpeed;
+    [SerializeField] protected bool useSlowAdjust = true;
 
     protected List<AttachParameter> attachedParameterList = new List<AttachParameter>();
     protected List<SignalBroadcaster> broadcasterList = new List<SignalBroadcaster>();
@@ -31,7 +35,7 @@ public abstract class PremadeVisualizer : MonoBehaviour
             n = 64;
         if (attachmentType == AttachmentType.FIRST_128_SAMPLES)
             n = 128;
-        if (attachmentType == AttachmentType.FIRST_256_SAMPLES)
+        if (attachmentType == AttachmentType.FIRST_256_SAMPLES || attachmentType == AttachmentType.AMPLITUDE_256)
             n = 256;
         if (attachmentType == AttachmentType.MAX_SAMPLES)
             n = 512;
@@ -59,12 +63,21 @@ public abstract class PremadeVisualizer : MonoBehaviour
             {
                 GameObject spawned = Instantiate(segmentPrefab, transform);
 
-                SignalBroadcaster broadcaster = spawned.AddComponent<SampleBroadcaster>();
-                ((SampleBroadcaster)broadcaster).Sample = i;
+                SignalBroadcaster broadcaster;
+
+                if (attachmentType == AttachmentType.AMPLITUDE_256)
+                {
+                    broadcaster = spawned.AddComponent<AmplitudeBroadcaster>();
+                } else
+                {
+                    broadcaster = spawned.AddComponent<SampleBroadcaster>();
+                    ((SampleBroadcaster)broadcaster).Sample = i;
+                }
 
                 TrackSegment(spawned, broadcaster, i, n);
             }
         }
+        UpdateAttachments();
     }
 
     protected abstract void PreMakingVisualizer();
@@ -76,11 +89,14 @@ public abstract class PremadeVisualizer : MonoBehaviour
     {
         foreach (AttachParameter parameter in attachedParameterList)
         {
-            parameter.SetSlowAdjust(useSlowAdjust);
+            parameter.SlowAdjust = useSlowAdjust;
+            parameter.DefaultValue = defaultValue;
+            parameter.AdjustSpeed = adjustSpeed;
+            parameter.Multiplier = attachmentMultiplier;
         }
         foreach (SignalBroadcaster broadcaster in broadcasterList)
         {
-            broadcaster.UpdateSettings(multiplier);
+            broadcaster.UpdateSettings(signalMultiplier);
         }
         for (int i = 0; i < imageList.Count; i++)
         {

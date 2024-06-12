@@ -146,41 +146,14 @@ MonoBehaviour:
   track: {fileID: 8300000, guid: 723c2e87412d16143847b3d7f19745f8, type: 3}
   trackName: Wins
   trackArt: {fileID: 21300000, guid: 27f246f1c900d48409aa822db040d96a, type: 3}
-  userDefinedDominantColor: {r: 0.5019608, g: 0, b: 1, a: 1}
-  userDefinedSecondaryColor: {r: 0, g: 0.8028641, b: 1, a: 1}
-  userDefinedTertiaryColor: {r: 0, g: 0, b: 0, a: 0}
-  userDefinedGradient:
-    serializedVersion: 2
-    key0: {r: 0.5019608, g: 0, b: 1, a: 1}
-    key1: {r: 0, g: 1, b: 1, a: 1}
-    key2: {r: 0.46594435, g: 0, b: 0.7924528, a: 0}
-    key3: {r: 0, g: 1, b: 0.018348932, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 45875
-    ctime3: 65535
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
+  trackColors: []
+  trackGradients: []
+  beginningHighestFrequencyBandValue: 0
   audioSampleSmoothing: 100
   defaultBandBufferDecrease: 0.005
   bandBufferDecreaseMultPerFrame: 1.25
+  startByDefault: 0
+  startSongAtSeconds: 0
 --- !u!114 &1209412595206947800
 MonoBehaviour:
   m_ObjectHideFlags: 0

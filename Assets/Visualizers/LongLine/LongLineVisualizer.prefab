@@ -88,7 +88,10 @@ MonoBehaviour:
   segmentPrefab: {fileID: 0}
   attachmentType: 1
   colorType: 0
-  updateComponents: 0
-  multiplier: 1000
+  colorIndex: 0
+  signalMultiplier: 1750
+  attachmentMultiplier: 1
+  defaultValue: 2.5
+  adjustSpeed: 20
   useSlowAdjust: 1
-  spacing: 0
+  spacing: 2.5

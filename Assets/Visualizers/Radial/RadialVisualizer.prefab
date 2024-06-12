@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5252503949136689349}
   - component: {fileID: 109146645116770097}
   - component: {fileID: 5575566752482503838}
+  - component: {fileID: 8749339565519304311}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -87,11 +88,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segmentPrefab: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
-  attachmentType: 0
+  attachmentType: 2
   colorType: 0
-  multiplier: 5
-  useSlowAdjust: 0
-  distance: 175
+  colorIndex: 0
+  signalMultiplier: 2000
+  attachmentMultiplier: 1
+  defaultValue: 0
+  adjustSpeed: 20
+  useSlowAdjust: 1
+  distance: 125
 --- !u!114 &4365240339340660847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,10 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frequencyId: 0
   signalMultiplier: 0.1
   useBuffer: 1
-  bypass: 0
   band: 5
 --- !u!114 &5252503949136689349
 MonoBehaviour:
@@ -122,8 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 1
-  minValueRequirement: 0.25
+  shouldExecuteLock: {fileID: 8749339565519304311}
   slowAdust: 1
   defaultValue: 2
   adjustSpeed: 25
@@ -142,8 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 1
-  minValueRequirement: 0.25
+  shouldExecuteLock: {fileID: 8749339565519304311}
   slowAdust: 1
   defaultValue: 2
   adjustSpeed: 25
@@ -162,3 +163,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directions: []
+--- !u!114 &8749339565519304311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 0.25

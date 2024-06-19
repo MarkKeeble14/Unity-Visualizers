@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.unify.unified-universal-blur": {
+      "version": "https://github.com/lukakldiashvili/Unified-Universal-Blur.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "7.0.0"
+      },
+      "hash": "65ea8c1c69f215058e9ccef0d492971510a67154"
+    },
     "com.unity.burst": {
       "version": "1.6.6",
       "depth": 1,

@@ -9,6 +9,7 @@ public class LookAround : RecievesInput
     private Vector2 currentLookVector;
     private float returnTimer;
     [SerializeField] private float returnTimerDuration = .25f;
+    [SerializeField] private Transform subject;
 
     public override void RecieveInput(KeyCode key)
     {
@@ -60,6 +61,6 @@ public class LookAround : RecievesInput
             returnTimer -= Time.deltaTime;
 
         // Set rotation
-        transform.localEulerAngles = new Vector3(-currentLookVector.y, currentLookVector.x, 0);
+        subject.localEulerAngles = new Vector3(-currentLookVector.y, currentLookVector.x, 0);
     }
 }

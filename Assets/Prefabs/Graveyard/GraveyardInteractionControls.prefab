@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6188436030851570998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6188436030851570993}
+  - component: {fileID: 6188436030851570995}
+  - component: {fileID: 6188436030851570992}
+  m_Layer: 0
+  m_Name: GraveyardInteractionControls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6188436030851570993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6188436030851570998}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6188436030851570995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6188436030851570998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 590810afe71b8274691d696c8003685a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookSpeed: 1
+  minMaxLook: {x: 25, y: 12.5}
+  returnTimerDuration: 1
+  subject: {fileID: 0}
+--- !u!114 &6188436030851570992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6188436030851570998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61036470a9e33647898a33b48651381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  automating: {fileID: 6188436030851570995}
+  availableSequences:
+    options:
+    - key:
+        input:
+        - keys:
+            options:
+            - key: 61000000
+              value: 50
+            - key: 64000000
+              value: 50
+          minMaxDuration: {x: 3.5, y: 5}
+      value: 40
+    - key:
+        input:
+        - keys:
+            options:
+            - key: 7700000061000000
+              value: 50
+            - key: 7700000064000000
+              value: 50
+          minMaxDuration: {x: 3.5, y: 5}
+      value: 40
+    - key:
+        input:
+        - keys:
+            options:
+            - key: 61000000
+              value: 100
+          minMaxDuration: {x: 3.5, y: 5}
+        - keys:
+            options:
+            - key: 77000000
+              value: 50
+            - key: 64000000
+              value: 50
+          minMaxDuration: {x: 3.5, y: 5}
+      value: 10
+    - key:
+        input:
+        - keys:
+            options:
+            - key: 64000000
+              value: 100
+          minMaxDuration: {x: 3.5, y: 5}
+        - keys:
+            options:
+            - key: 77000000
+              value: 50
+            - key: 61000000
+              value: 50
+          minMaxDuration: {x: 3.5, y: 5}
+      value: 10
+  minMaxTimeBetweenActivations: {x: 10, y: 30}
+  chanceToActivate: {x: 2, y: 3}

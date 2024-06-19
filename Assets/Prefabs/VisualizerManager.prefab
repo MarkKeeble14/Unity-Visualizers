@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 1209412595206947815}
   - component: {fileID: 1209412595206947814}
   - component: {fileID: 1209412595206947813}
-  - component: {fileID: 1209412595206947800}
-  - component: {fileID: 7602441975962690797}
+  - component: {fileID: 7760376721324341659}
   m_Layer: 0
   m_Name: VisualizerManager
   m_TagString: Untagged
@@ -149,12 +148,14 @@ MonoBehaviour:
   trackColors: []
   trackGradients: []
   beginningHighestFrequencyBandValue: 0
+  channel: 0
   audioSampleSmoothing: 100
   defaultBandBufferDecrease: 0.005
   bandBufferDecreaseMultPerFrame: 1.25
   startByDefault: 0
   startSongAtSeconds: 0
---- !u!114 &1209412595206947800
+  afterTrackRecordingBufferTime: 10
+--- !u!114 &7760376721324341659
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -163,20 +164,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1209412595206947812}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f10b807f9b59a448311813d60af93e, type: 3}
+  m_Script: {fileID: 11500000, guid: ae07c4cae55140c4ba9003d338009a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 114
---- !u!114 &7602441975962690797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1209412595206947812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16a8585ae6fffd442829c7b7ebebaadd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 112
+  showRecordingMarker: 1
+  frameRate: 60
+  width: 1920
+  height: 1080
+  fileName: DontLook
+  sampleRate: 48000

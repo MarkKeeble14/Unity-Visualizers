@@ -89,11 +89,12 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    public bool IsPlaybackPaused { get; internal set; }
+
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
-
-        _Instance = this;
+        else _Instance = this;
     }
 
     // Start is called before the first frame update
@@ -108,8 +109,6 @@ public class VisualizerManager : MonoBehaviour
 
         if (startByDefault)
         {
-            if (Fader._Instance != null)
-                Fader._Instance.FadeOutBlocker();
             BeginPlayback();
         }
     }
@@ -161,7 +160,7 @@ public class VisualizerManager : MonoBehaviour
         audioSource.time = startSongAtSeconds;
 
         // Set the max duration of time a recording can go on for
-        RecordingManager._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
+        ScreenRecorder._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
 
         // Play the Track
         audioSource.Play();
@@ -297,4 +296,26 @@ public class VisualizerManager : MonoBehaviour
         for (int i = 0; i < highestValuePerFrequencyBand.Length; i++)
             highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
     }
+
+    public void PausePlayback()
+    {
+        audioSource.Pause();
+    }
+
+    public void ResumePlayback()
+    {
+        audioSource.UnPause();
+    }
+
+    public void ResetPlayback()
+    {
+        audioSource.time = 0;
+        PausePlayback();
+    }
+
+    public void Seek(float amount)
+    {
+        audioSource.time += amount;
+    }
 }
+

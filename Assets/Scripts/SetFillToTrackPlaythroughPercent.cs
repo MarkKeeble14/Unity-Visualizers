@@ -6,6 +6,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class SetFillToTrackPlaythroughPercent : MonoBehaviour
 {
+    [SerializeField] private float fillSpeed;
+    [SerializeField] private MathHelper.AlterationMethod method;
+    private float currentValue;
+
     private Image toFill;
 
     private void Awake()
@@ -15,6 +19,7 @@ public class SetFillToTrackPlaythroughPercent : MonoBehaviour
 
     private void Update()
     {
-        toFill.fillAmount = VisualizerManager._Instance.PlaythroughPercent;
+        currentValue = MathHelper.GetNextValue(currentValue, VisualizerManager._Instance.PlaythroughPercent, fillSpeed, method, true);
+        toFill.fillAmount = currentValue;
     }
 }

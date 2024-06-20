@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,6 +15,8 @@ public class TransitionManager : MonoBehaviour
 
     [SerializeField] private List<SerializableKeyValuePair<string, Transition>> transitions = new();
 
+    [SerializeField] private AudioSource audioSource;
+
     [SerializeField] private TransitionData initialTransition;
 
     private void Awake()
@@ -24,21 +27,24 @@ public class TransitionManager : MonoBehaviour
 
     private void Start()
     {
-        if (initialTransition.transition != null)
-        {
-            initialTransition.transition.InitiateTransition(initialTransition.direction);
-        }
+        if (initialTransition.transition == null) return;
+        initialTransition.transition.InitiateTransition(initialTransition.direction);
     }
 
-    public void Transition(string transitionKey, TransitionDirection direction)
+    public void Transition(string transitionKey, TransitionDirection direction, Action onBegin = null, Action onEnd = null)
     {
         foreach (SerializableKeyValuePair<string, Transition> kvp in transitions)
         {
             if (kvp.Key == transitionKey)
             {
-                kvp.Value.InitiateTransition(direction);
+                kvp.Value.InitiateTransition(direction, onBegin, onEnd);
                 break;
             }
         }
+    }
+
+    public void PlayAudioClip(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 }

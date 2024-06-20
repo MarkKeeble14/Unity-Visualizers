@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.Rendering.Universal;
 
 public enum AudioChannel
 {
@@ -17,6 +18,12 @@ public enum AudioChannel
 public class VisualizerManager : MonoBehaviour
 {
     public static VisualizerManager _Instance { get; private set; }
+
+    [Header("Scenarios")]
+    [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
+    [SerializeField] private GameObject defaultScenary;
+    [SerializeField] private GameObject scenarioSelection;
+    [SerializeField] private CanvasGroup visualizerCanvasGroup;
 
     [Header("Track Info")]
     [SerializeField] private AudioClip track;
@@ -51,11 +58,19 @@ public class VisualizerManager : MonoBehaviour
     [Header("Other Settings")]
     [SerializeField] private bool startByDefault;
     [SerializeField] private float startSongAtSeconds;
+    [SerializeField] private TransitionData initialTransition;
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
 
     [Header("Recording Settings")]
     [SerializeField] private float afterTrackRecordingBufferTime = 10f;
+
+    [Header("Blur Settings")]
+    [SerializeField] private KawaseBlurSettings blurSettings;
+
+    [Header("References")]
+    [SerializeField] private UniversalRendererData urpData;
+    private KawaseBlur kawaseBlurPass;
 
     // Events
     public Action OnSongEnd;
@@ -75,13 +90,20 @@ public class VisualizerManager : MonoBehaviour
     {
         get
         {
-            float playthroughPercent = audioSource.time / audioSource.clip.length;
-            if (audioSource.time == 0) playthroughPercent = 1;
-            return playthroughPercent;
+            if (audioSource.clip == null) return 0;
+            return audioSource.time / audioSource.clip.length;
         }
     }
 
-    public float SecondsPlayed
+    public string SecondsPlayed
+    {
+        get
+        {
+            return GetDurationText(audioSource.time);
+        }
+    }
+
+    public float PlaybackTime
     {
         get
         {
@@ -95,22 +117,52 @@ public class VisualizerManager : MonoBehaviour
     {
         if (_Instance != null) Destroy(gameObject);
         else _Instance = this;
-    }
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-        CreateAudioProfile();
 
         audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Start()
+    {
+        // Only 1 scenario, we'd just go to track selection
+        if (scenarios.Count == 0)
+        {
+            TrackSelection();
+        }
+    }
+
+    private void TrackSelection()
+    {
+        TrackSelected();
+    }
+
+    private void TrackSelected()
+    {
+        // Set canvas group alpha
+        visualizerCanvasGroup.alpha = 1;
+
+        // Create audio profile
+        CreateAudioProfile();
+
+        // Set track
         audioSource.clip = track;
 
+        // Inform listeners of track
         BroadcastTrackInfo();
 
         if (startByDefault)
         {
             BeginPlayback();
         }
+
+        // Fetch Kawase Blur Feature
+        kawaseBlurPass = (KawaseBlur)urpData.rendererFeatures[0];
+
+        // Change Settings
+        SetKawaseBlurFeatureSettings();
+
+        // Play initial transition if there is one
+        if (initialTransition.transition != null)
+            initialTransition.transition.InitiateTransition(initialTransition.direction);
     }
 
     // Update is called once per frame
@@ -185,7 +237,7 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastTrackInfo()
     {
         //
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetEndTimeText(track.length));
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetDurationText(track.length));
         FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 
@@ -194,16 +246,15 @@ public class VisualizerManager : MonoBehaviour
     public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
     public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
 
-    private string GetEndTimeText(float time)
+    private string GetDurationText(float time)
     {
         float minutes = Mathf.FloorToInt(time / 60);
         float seconds = Mathf.FloorToInt(time - (minutes * 60));
-        return minutes + ":" + seconds;
+        return minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds);
     }
 
     public Color GetTrackColor(int index) { return trackColors[index]; }
     public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
-
 
     private void GetSpectrumAudioSource()
     {
@@ -316,6 +367,27 @@ public class VisualizerManager : MonoBehaviour
     public void Seek(float amount)
     {
         audioSource.time += amount;
+    }
+
+    private void SetKawaseBlurFeatureSettings()
+    {
+        kawaseBlurPass.SetActive(blurSettings.Enabled);
+        kawaseBlurPass.settings.blurPasses = blurSettings.BlurPasses;
+        kawaseBlurPass.settings.downsample = blurSettings.Downsample;
+        kawaseBlurPass.settings.copyToFramebuffer = blurSettings.CopyToFrameBuffer;
+    }
+
+    public void SelectScenario(string name)
+    {
+        defaultScenary.SetActive(false);
+        scenarioSelection.SetActive(false); ;
+
+        foreach (SerializableKeyValuePair<string, GameObject> kvp in scenarios)
+        {
+            kvp.Value.SetActive(kvp.Key == name);
+        }
+
+        TrackSelection();
     }
 }
 

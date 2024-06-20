@@ -154,7 +154,16 @@ MonoBehaviour:
   bandBufferDecreaseMultPerFrame: 1.25
   startByDefault: 0
   startSongAtSeconds: 0
+  initialTransition:
+    transition: {fileID: 0}
+    direction: 0
   afterTrackRecordingBufferTime: 10
+  blurSettings:
+    Enabled: 0
+    CopyToFrameBuffer: 0
+    BlurPasses: 0
+    Downsample: 0
+  urpData: {fileID: 11400000, guid: 79b7e20fa3a5f8a4dbbd75b417d211b8, type: 2}
 --- !u!114 &7760376721324341659
 MonoBehaviour:
   m_ObjectHideFlags: 0

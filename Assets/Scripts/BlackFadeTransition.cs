@@ -4,17 +4,12 @@ using UnityEngine.UI;
 public class BlackFadeTransition : GoalBasedTransition
 {
     [SerializeField] private Image image;
-    [SerializeField] private float initializeGoalTo = 1;
+    [SerializeField] private float equalityTolerence = .1f;
     private Color c;
-
-    private void Start()
-    {
-        goal = initializeGoalTo;
-    }
 
     protected override bool HasPropertyReachedGoal()
     {
-        return Mathf.Approximately(image.color.a, goal);
+        return Mathf.Abs(image.color.a - goal) < equalityTolerence;
     }
 
     protected override void MovePropertyTowardsGoal()

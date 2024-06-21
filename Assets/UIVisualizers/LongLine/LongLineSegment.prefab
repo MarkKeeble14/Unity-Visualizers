@@ -90,8 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  useMinValueRequirement: 0
-  minValueRequirement: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 2.5
   adjustSpeed: 50

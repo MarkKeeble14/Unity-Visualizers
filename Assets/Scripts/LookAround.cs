@@ -11,6 +11,26 @@ public class LookAround : RecievesInput
     [SerializeField] private float returnTimerDuration = .25f;
     [SerializeField] private Transform subject;
 
+    public void LookUp()
+    {
+        LookVertical(1);
+    }
+
+    public void LookRight()
+    {
+        LookHorizontal(1);
+    }
+
+    public void LookDown()
+    {
+        LookVertical(-1);
+    }
+
+    public void LookLeft()
+    {
+        LookHorizontal(-1);
+    }
+
     public override void RecieveInput(KeyCode key)
     {
         switch (key)
@@ -44,16 +64,6 @@ public class LookAround : RecievesInput
 
     private void Update()
     {
-        // Add Input
-        if (Input.GetKey(KeyCode.A))
-            LookHorizontal(-1);
-        if (Input.GetKey(KeyCode.D))
-            LookHorizontal(1);
-        if (Input.GetKey(KeyCode.W))
-            LookVertical(1);
-        if (Input.GetKey(KeyCode.S))
-            LookVertical(-1);
-
         // Reset if no input is found
         if (returnTimer <= 0)
             currentLookVector = Vector2.Lerp(currentLookVector, Vector2.zero, lookSpeed * Time.deltaTime);

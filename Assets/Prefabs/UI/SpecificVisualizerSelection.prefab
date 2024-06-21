@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3912840649125743593}
   - component: {fileID: 5900266809177368703}
   - component: {fileID: 2821088276839142054}
+  - component: {fileID: -3506597193860672810}
   m_Layer: 5
   m_Name: SpecificVisualizerSelection
   m_TagString: Untagged
@@ -95,6 +96,22 @@ MonoBehaviour:
   scenarioImage: {fileID: 300752132131965779}
   borderImage: {fileID: 5900266809177368703}
   button: {fileID: 2874868969493569461}
+--- !u!114 &-3506597193860672810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122226797771787619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fadf9c9845f89d4ea07a349418d19dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenSpeed: 1
+  tweenMethod: 0
+  hoveredScale: 1.15
+  unhoveredScale: 1
 --- !u!1 &6239362582330527781
 GameObject:
   m_ObjectHideFlags: 0

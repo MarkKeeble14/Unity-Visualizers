@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
-public abstract class ActWhileKeyDown : MonoBehaviour
+public abstract class ActWhileKeyDown : KeyControl
 {
-    [SerializeField] private KeyCode key;
     protected abstract void Act();
 
     private void Update()

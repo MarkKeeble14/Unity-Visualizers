@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public abstract class ActOnKeyPress : KeyControl
+public abstract class ActOnKeyRelease : KeyControl
 {
     private void Update()
     {
-        if (Input.GetKeyDown(key))
+        if (Input.GetKeyUp(key))
         {
             Act();
         }

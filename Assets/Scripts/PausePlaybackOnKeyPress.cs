@@ -5,7 +5,8 @@
         if (VisualizerManager._Instance.IsPlaybackPaused)
         {
             VisualizerManager._Instance.ResumePlayback();
-        } else
+        }
+        else
         {
             VisualizerManager._Instance.PausePlayback();
         }

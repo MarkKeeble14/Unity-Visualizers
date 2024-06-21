@@ -89,10 +89,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd9807e823919c64dade27d03389b67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitionSpeed: 2
+  transitionSpeed: 3
   moveBy: 0
   image: {fileID: 8987714140481067222}
-  equalityTolerence: 0.0001
+  equalityTolerence: 0.001
 --- !u!1 &2957729803958920524
 GameObject:
   m_ObjectHideFlags: 0

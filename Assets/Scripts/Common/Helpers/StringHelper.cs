@@ -13,4 +13,11 @@ public static class StringHelper
     {
         return System.String.Format("{0}", v);
     }
+
+    public static string GetDurationText(float time)
+    {
+        float minutes = Mathf.FloorToInt(time / 60);
+        float seconds = Mathf.FloorToInt(time - (minutes * 60));
+        return minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds);
+    }
 }

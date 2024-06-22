@@ -49,6 +49,13 @@ public class ScreenRecorder : MonoBehaviour
     private RecorderController recorderController;
     private MovieRecorderSettings videoRecorder;
 
+    public string GetCurrentRecordingDuration(bool returnEmptyIfNotRecording)
+    {
+        if (!IsRecording)
+            return (returnEmptyIfNotRecording ? "" : StringHelper.GetDurationText(0));
+        return StringHelper.GetDurationText(currentRecordingDuration);
+    }
+
     public bool IsRecording
     {
         get

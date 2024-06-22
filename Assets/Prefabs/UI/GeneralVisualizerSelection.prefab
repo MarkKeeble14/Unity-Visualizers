@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fadf9c9845f89d4ea07a349418d19dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tweenSpeed: 1
+  tweenSpeed: 2.5
   tweenMethod: 0
   hoveredScale: 1.15
   unhoveredScale: 1

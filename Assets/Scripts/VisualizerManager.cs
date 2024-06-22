@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Linq;
 using System;
 using UnityEngine.Rendering.Universal;
+using SimpleFileBrowser;
+using System.IO;
 
 public enum AudioChannel
 {
@@ -99,7 +101,7 @@ public class VisualizerManager : MonoBehaviour
     {
         get
         {
-            return GetDurationText(audioSource.time);
+            return StringHelper.GetDurationText(audioSource.time);
         }
     }
 
@@ -132,6 +134,46 @@ public class VisualizerManager : MonoBehaviour
 
     private void TrackSelection()
     {
+        SetLoadAudioFilters();
+        StartCoroutine(ShowLoadDialogCoroutine());
+    }
+
+    private void SetLoadAudioFilters()
+    {
+        // Set filters (optional)
+        // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
+        // if all the dialogs will be using the same filters
+        //FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
+
+        // Set default filter that is selected when the dialog is shown (optional)
+        // Returns true if the default filter is set successfully
+        // In this case, set Images filter as the default filter
+        //FileBrowser.SetDefaultFilter(".mp3");
+    }
+
+    private IEnumerator ShowLoadDialogCoroutine()
+    {
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: file, Allow multiple selection: true
+        // Initial path: default (Documents), Initial filename: empty
+        // Title: "Load File", Submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
+            false, null, null, "Select Files", "Load");
+
+        // Dialog is closed
+        // Print whether the user has selected some files or cancelled the operation (FileBrowser.Success)
+        Debug.Log(FileBrowser.Success);
+
+        if (FileBrowser.Success)
+            OnFilesSelected(FileBrowser.Result); // FileBrowser.Result is null, if FileBrowser.Success is false
+    }
+
+    void OnFilesSelected(string[] filePaths)
+    {
+        // Print paths of the selected files
+        for (int i = 0; i < filePaths.Length; i++)
+            Debug.Log(filePaths[i]);
+
         TrackSelected();
     }
 
@@ -237,7 +279,7 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastTrackInfo()
     {
         //
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, GetDurationText(track.length));
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(track.length));
         FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 
@@ -245,13 +287,6 @@ public class VisualizerManager : MonoBehaviour
     public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
     public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
     public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
-
-    private string GetDurationText(float time)
-    {
-        float minutes = Mathf.FloorToInt(time / 60);
-        float seconds = Mathf.FloorToInt(time - (minutes * 60));
-        return minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds);
-    }
 
     public Color GetTrackColor(int index) { return trackColors[index]; }
     public Gradient GetTrackGradient(int index) { return trackGradients[index]; }

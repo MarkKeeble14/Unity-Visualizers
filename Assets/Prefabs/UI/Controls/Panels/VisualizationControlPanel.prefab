@@ -320,7 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 32
-  action: Pause
+  action: Pause/Unpause
 --- !u!114 &3974946408316535715
 MonoBehaviour:
   m_ObjectHideFlags: 0

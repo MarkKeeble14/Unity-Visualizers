@@ -91,12 +91,12 @@ MonoBehaviour:
   attachmentType: 2
   colorType: 0
   colorIndex: 0
-  signalMultiplier: 2000
+  signalMultiplier: 1500
   attachmentMultiplier: 1
   defaultValue: 0
-  adjustSpeed: 20
+  adjustSpeed: 17.5
   useSlowAdjust: 1
-  distance: 125
+  distance: 150
 --- !u!114 &4365240339340660847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signalMultiplier: 0.1
   useBuffer: 1
+  bandType: 0
   band: 5
 --- !u!114 &5252503949136689349
 MonoBehaviour:

@@ -8,6 +8,8 @@ using System;
 using UnityEngine.Rendering.Universal;
 using SimpleFileBrowser;
 using System.IO;
+using UnityEngine.Networking;
+using static System.Net.Mime.MediaTypeNames;
 
 public enum AudioChannel
 {
@@ -25,40 +27,27 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
     [SerializeField] private GameObject defaultScenary;
     [SerializeField] private GameObject scenarioSelection;
-    [SerializeField] private CanvasGroup visualizerCanvasGroup;
 
     [Header("Track Info")]
     [SerializeField] private AudioClip track;
     [SerializeField] private string trackName;
     [SerializeField] private Sprite trackArt;
-    [SerializeField] private Color[] trackColors;
-    [SerializeField] private Gradient[] trackGradients;
-
-    private float[] leftAudioSamples = new float[512];
-    private float[] rightAudioSamples = new float[512];
-
-    // Audio Data
-    private float[] frequencyBands = new float[8];
-    private float[] frequencyBandBuffer = new float[8];
-    private float[] frequencyBandBufferDecrease = new float[8];
-    private float[] highestValuePerFrequencyBand = new float[8];
-    private float[] audioBands = new float[8];
-    private float[] audioBandsBuffer = new float[8];
-
-    [SerializeField] private float beginningHighestFrequencyBandValue = 5;
-
-    private float amplitude;
-    private float amplitudeBuffer;
-    private float highestAmplitude;
+    [SerializeField] private List<Color> trackColors = new();
+    [SerializeField] private List<Gradient> trackGradients = new();
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
     [SerializeField] private float audioSampleSmoothing = 100;
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
+    [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
     [Header("Other Settings")]
-    [SerializeField] private bool startByDefault;
+    [SerializeField] private bool startImmedietelyUponLoadingTrack;
+    [SerializeField] private bool runSetup = true;
+    [SerializeField] private bool askForTrack = true;
+    [SerializeField] private bool askForCoverArt = true;
+    [SerializeField] private bool askForColors = true;
     [SerializeField] private float startSongAtSeconds;
     [SerializeField] private TransitionData initialTransition;
     private bool hasSongStarted = false;
@@ -71,6 +60,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private KawaseBlurSettings blurSettings;
 
     [Header("References")]
+    [SerializeField] private CanvasGroup visualizerCanvasGroup;
     [SerializeField] private UniversalRendererData urpData;
     private KawaseBlur kawaseBlurPass;
 
@@ -78,8 +68,22 @@ public class VisualizerManager : MonoBehaviour
     public Action OnSongEnd;
     public Action OnSongStart;
 
-    // References
     private AudioSource audioSource;
+
+    private float[] leftAudioSamples = new float[512];
+    private float[] rightAudioSamples = new float[512];
+
+    // Audio Data
+    private float[] frequencyBands = new float[8];
+    private float[] frequencyBandBuffer = new float[8];
+    private float[] frequencyBandBufferDecrease = new float[8];
+    private float[] highestValuePerFrequencyBand = new float[8];
+    private float[] audioBands = new float[8];
+    private float[] audioBandsBuffer = new float[8];
+
+    private float amplitude;
+    private float amplitudeBuffer;
+    private float highestAmplitude;
 
     // Properties
     public float HighestAmplitude => highestAmplitude;
@@ -113,7 +117,7 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public bool IsPlaybackPaused { get; internal set; }
+    public bool IsPlaybackPaused => !audioSource.isPlaying && audioSource.time > 0;
 
     private void Awake()
     {
@@ -125,86 +129,13 @@ public class VisualizerManager : MonoBehaviour
 
     private void Start()
     {
+        PopulateColorsList();
+
         // Only 1 scenario, we'd just go to track selection
         if (scenarios.Count == 0)
         {
-            TrackSelection();
+            StartCoroutine(RunSetup());
         }
-    }
-
-    private void TrackSelection()
-    {
-        SetLoadAudioFilters();
-        StartCoroutine(ShowLoadDialogCoroutine());
-    }
-
-    private void SetLoadAudioFilters()
-    {
-        // Set filters (optional)
-        // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
-        // if all the dialogs will be using the same filters
-        //FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
-
-        // Set default filter that is selected when the dialog is shown (optional)
-        // Returns true if the default filter is set successfully
-        // In this case, set Images filter as the default filter
-        //FileBrowser.SetDefaultFilter(".mp3");
-    }
-
-    private IEnumerator ShowLoadDialogCoroutine()
-    {
-        // Show a load file dialog and wait for a response from user
-        // Load file/folder: file, Allow multiple selection: true
-        // Initial path: default (Documents), Initial filename: empty
-        // Title: "Load File", Submit button text: "Load"
-        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
-            false, null, null, "Select Files", "Load");
-
-        // Dialog is closed
-        // Print whether the user has selected some files or cancelled the operation (FileBrowser.Success)
-        Debug.Log(FileBrowser.Success);
-
-        if (FileBrowser.Success)
-            OnFilesSelected(FileBrowser.Result); // FileBrowser.Result is null, if FileBrowser.Success is false
-    }
-
-    void OnFilesSelected(string[] filePaths)
-    {
-        // Print paths of the selected files
-        for (int i = 0; i < filePaths.Length; i++)
-            Debug.Log(filePaths[i]);
-
-        TrackSelected();
-    }
-
-    private void TrackSelected()
-    {
-        // Set canvas group alpha
-        visualizerCanvasGroup.alpha = 1;
-
-        // Create audio profile
-        CreateAudioProfile();
-
-        // Set track
-        audioSource.clip = track;
-
-        // Inform listeners of track
-        BroadcastTrackInfo();
-
-        if (startByDefault)
-        {
-            BeginPlayback();
-        }
-
-        // Fetch Kawase Blur Feature
-        kawaseBlurPass = (KawaseBlur)urpData.rendererFeatures[0];
-
-        // Change Settings
-        SetKawaseBlurFeatureSettings();
-
-        // Play initial transition if there is one
-        if (initialTransition.transition != null)
-            initialTransition.transition.InitiateTransition(initialTransition.direction);
     }
 
     // Update is called once per frame
@@ -245,6 +176,33 @@ public class VisualizerManager : MonoBehaviour
         lastAudioSourceTime = audioSource.time;
     }
 
+    private void SetupComplete()
+    {
+        // Set canvas group alpha
+        visualizerCanvasGroup.alpha = 1;
+
+        // Create audio profile
+        CreateAudioProfile();
+
+        // Inform listeners of track
+        BroadcastTrackInfo();
+
+        // Fetch Kawase Blur Feature
+        kawaseBlurPass = (KawaseBlur)urpData.rendererFeatures[0];
+
+        // Change Settings
+        SetKawaseBlurFeatureSettings();
+
+        // Play initial transition if there is one
+        if (initialTransition.transition != null)
+            initialTransition.transition.InitiateTransition(initialTransition.direction);
+
+        if (startImmedietelyUponLoadingTrack)
+        {
+            BeginPlayback();
+        }
+    }
+
     public void BeginPlayback()
     {
         if (startSongAtSeconds > audioSource.clip.length)
@@ -258,6 +216,11 @@ public class VisualizerManager : MonoBehaviour
 
         // Play the Track
         audioSource.Play();
+    }
+
+    public Color GetColor(VisualizerColorType type, int index)
+    {
+        return GetColor(type, index, Vector2.zero);
     }
 
     public Color GetColor(VisualizerColorType type, int index, Vector2 positionalData)
@@ -279,7 +242,7 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastTrackInfo()
     {
         //
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(track.length));
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(audioSource.clip.length));
         FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
 
@@ -422,7 +385,186 @@ public class VisualizerManager : MonoBehaviour
             kvp.Value.SetActive(kvp.Key == name);
         }
 
-        TrackSelection();
+        StartCoroutine(RunSetup());
+    }
+
+    private IEnumerator RunSetup()
+    {
+        if (askForTrack)
+            yield return StartCoroutine(RunTrackSelection());
+
+        if (askForCoverArt)
+            yield return StartCoroutine(RunCoverArtSelection());
+
+        if (askForColors)
+            yield return StartCoroutine(RunColorsSelection());
+
+        SetupComplete();
+    }
+
+    private IEnumerator RunTrackSelection()
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
+
+        yield return StartCoroutine(ShowLoadDialogCoroutine(x =>
+        {
+            Debug.Log("Attempting to Load Audio from File: " + x);
+
+            StartCoroutine(LoadAudioClipFromFile(x, 
+                (filePath, clip) =>
+                {
+                    Debug.Log("Successfully Loaded Audio Clip from path = " + x);
+
+                    audioSource.clip = clip;
+                    trackName = GetFileName(filePath);
+
+                }, 
+                x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
+        }, "Select Track", "Load"));
+    }
+
+    private IEnumerator RunCoverArtSelection()
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
+
+        yield return StartCoroutine(ShowLoadDialogCoroutine(x =>
+        {
+            Debug.Log("Attempting to Load Image from File: " + x);
+            LoadImageFromFile(x,
+                (filePath, texture) =>
+                {
+                    Debug.Log("Successfully Loaded Image from path = " + x);
+                    trackArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                },
+            x => Debug.Log("Failed to Load Image from path = " + x));
+        }, "Select Cover Art", "Load"));
+    }
+
+    private IEnumerator ShowLoadDialogCoroutine(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
+    {
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
+            false, null, null, dialogTitle, loadButtonText);
+
+        if (FileBrowser.Success)
+            OnFileSucessfullySelected(FileBrowser.Result[0], toDoWithFile);
+        else
+            OnFailureToSelectFiles();
+    }
+
+    private void OnFileSucessfullySelected(string filePath, Action<string> toDoWithFile)
+    {
+        toDoWithFile(filePath);
+    }
+
+    private void OnFailureToSelectFiles()
+    {
+        throw new Exception(); // TODO: Custom Exception
+    }
+
+    private IEnumerator LoadAudioClipFromFile(string filePath, Action<string, AudioClip> onSucces, Action<string> onFailure)
+    {
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, GetAudioType(filePath)))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error: " + www.error);
+                onFailure(filePath);
+            }
+            else
+            {
+                onSucces(filePath, DownloadHandlerAudioClip.GetContent(www));
+            }
+        }
+    }
+
+    private void LoadImageFromFile(string filePath, Action<string, Texture2D> onSucces, Action<string> onFailure)
+    {
+        byte[] bytes = File.ReadAllBytes(filePath);
+        Texture2D tex = new Texture2D(2, 2);
+        if (tex.LoadImage(bytes))
+        {
+            onSucces(filePath, tex);
+        } else
+        {
+            onFailure(filePath);
+        }
+    }
+
+    private string GetFileExtension(string filePath)
+    {
+        string extension = "";
+        for (int i = filePath.Length - 1; i > 0; --i)
+        {
+            if (filePath[i].Equals('.'))
+                break;
+            extension += filePath[i];
+        }
+        return StringHelper.Reverse(extension);
+    }
+
+    private string GetFileName(string filePath)
+    {
+        string pathWithoutExtension = filePath.Split(GetFileExtension(filePath))[0];
+        string fileName = "";
+        for (int i = pathWithoutExtension.Length - 2; i >= 0; --i)
+        {
+            char c = pathWithoutExtension[i];
+            if (c.Equals('\\'))
+                break;
+            fileName += c;
+        }
+        return StringHelper.Reverse(fileName);
+    }
+
+    private AudioType GetAudioType(string filePath)
+    {
+        switch (GetFileExtension(filePath))
+        {
+            case "wav":
+                return AudioType.WAV;
+            case "mp3":
+                return AudioType.MPEG;
+            case "ogg":
+                return AudioType.OGGVORBIS;
+            default:
+                throw new Exception(); // TODO: Custom Exceptions
+        }
+    }
+
+    private IEnumerator RunColorsSelection()
+    {
+        // Enable UI
+
+        colorsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !colorsUI.activeSelf);
+    }
+
+    [SerializeField] private ColorListElement colorListElement;
+    [SerializeField] private Transform colorsList;
+    [SerializeField] private GameObject colorsUI;
+
+    public void AddColorElement()
+    {
+        trackColors.Add(Color.white);
+        ColorListElement spawned = Instantiate(colorListElement, colorsList);
+        spawned.Set(trackColors.Count - 1, Color.white);
+    }
+
+    private void PopulateColorsList()
+    {
+        for (int i = 0; i < trackColors.Count; ++i)
+        {
+            ColorListElement spawned = Instantiate(colorListElement, colorsList);
+            spawned.Set(i, trackColors[i]);
+        }
+    }
+
+    public void UpdateTrackColor(int index, Color c)
+    {
+        trackColors[index] = c;
     }
 }
 

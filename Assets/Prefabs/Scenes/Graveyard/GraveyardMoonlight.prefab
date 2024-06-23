@@ -129,9 +129,9 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0.01
+  defaultValue: 2.5
   adjustSpeed: 10
-  multiplier: 0.4
+  multiplier: 1
   light: {fileID: 4088317014146891782}
 --- !u!114 &4088317014146891779
 MonoBehaviour:

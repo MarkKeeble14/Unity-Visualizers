@@ -15,13 +15,13 @@ public class BlackFadeTransition : GoalBasedTransition
     protected override void MovePropertyTowardsGoal()
     {
         c = image.color;
-        c.a = MathHelper.GetNextValue(c.a, goal, transitionSpeed, moveBy, true);
+        c.a = MathHelper.GetNextValue(c.a, goal, (goal == 255 ? transitionInSpeed : transitionOutSpeed), moveBy, true);
         image.color = c;
     }
 
     protected override void SetGoalIn()
     {
-        goal = 1;
+        goal = 255;
     }
 
     protected override void SetGoalOut()

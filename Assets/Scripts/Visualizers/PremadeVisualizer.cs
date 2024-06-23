@@ -4,7 +4,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : MonoBehaviour
+public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;
@@ -129,5 +129,13 @@ public abstract class PremadeVisualizer : MonoBehaviour
 
         // Connect the broadcaster with it attachments
         segment.GetComponent<SignalDirector>().AddDirection(broadcaster, segment.GetComponents<AttachParameter>().ToList());
+    }
+
+    public void RecieveTrackInfo(TrackInfo info)
+    {
+        foreach (Image i in imageList)
+        {
+            i.color = VisualizerManager._Instance.GetColor(colorType, colorIndex);
+        }
     }
 }

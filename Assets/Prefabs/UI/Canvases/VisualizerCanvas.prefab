@@ -1754,7 +1754,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: colorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: multiplier
@@ -2010,6 +2010,10 @@ PrefabInstance:
       propertyPath: segmentPrefab
       value: 
       objectReference: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
+    - target: {fileID: 7214581875382840760, guid: 765b8429724126549a896c422855c80d, type: 3}
+      propertyPath: useSlowAdjust
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7445853031623510636, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_Pivot.x
       value: 0

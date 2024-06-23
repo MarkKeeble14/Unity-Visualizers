@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,5 +20,12 @@ public static class StringHelper
         float minutes = Mathf.FloorToInt(time / 60);
         float seconds = Mathf.FloorToInt(time - (minutes * 60));
         return minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds);
+    }
+
+    public static string Reverse(string s)
+    {
+        char[] charArray = s.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
     }
 }

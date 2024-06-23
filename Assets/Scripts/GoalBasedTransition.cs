@@ -3,7 +3,8 @@ using UnityEngine;
 
 public abstract class GoalBasedTransition : Transition
 {
-    [SerializeField] protected float transitionSpeed;
+    [SerializeField] protected float transitionInSpeed;
+    [SerializeField] protected float transitionOutSpeed;
     [SerializeField] protected MathHelper.AlterationMethod moveBy;
     protected float goal;
 

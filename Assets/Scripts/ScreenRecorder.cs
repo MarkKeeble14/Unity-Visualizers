@@ -75,7 +75,7 @@ public class ScreenRecorder : MonoBehaviour
         recorderController = new RecorderController(recorderControllerSettings);
         videoRecorder = ScriptableObject.CreateInstance<MovieRecorderSettings>();
         videoRecorder.name = "VideoRecorder";
-        RecorderOptions.VerboseMode = true;
+        RecorderOptions.VerboseMode = false;
     }
 
     [ContextMenu("StartRecording")]

@@ -85,13 +85,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a39eb20cf271d1b4ea3d6cb019f2185a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  segmentPrefab: {fileID: 0}
-  attachmentType: 1
   colorType: 0
   colorIndex: 0
-  signalMultiplier: 1750
-  attachmentMultiplier: 1
-  defaultValue: 2.5
-  adjustSpeed: 20
+  segmentPrefab: {fileID: 0}
+  attachmentType: 2
+  signalMultiplier: 1500
+  attachmentMultiplier: 7.5
+  defaultValue: 15
+  adjustSpeed: 12.5
   useSlowAdjust: 1
   spacing: 2.5

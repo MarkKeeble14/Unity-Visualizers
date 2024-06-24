@@ -28,4 +28,30 @@ public static class StringHelper
         Array.Reverse(charArray);
         return new string(charArray);
     }
+
+    public static string GetFileExtension(string filePath)
+    {
+        string extension = "";
+        for (int i = filePath.Length - 1; i > 0; --i)
+        {
+            if (filePath[i].Equals('.'))
+                break;
+            extension += filePath[i];
+        }
+        return Reverse(extension);
+    }
+
+    public static string GetFileName(string filePath)
+    {
+        string pathWithoutExtension = filePath.Split(GetFileExtension(filePath))[0];
+        string fileName = "";
+        for (int i = pathWithoutExtension.Length - 2; i >= 0; --i)
+        {
+            char c = pathWithoutExtension[i];
+            if (c.Equals('\\'))
+                break;
+            fileName += c;
+        }
+        return Reverse(fileName);
+    }
 }

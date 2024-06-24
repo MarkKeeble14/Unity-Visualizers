@@ -9,7 +9,6 @@ using UnityEngine.Rendering.Universal;
 using SimpleFileBrowser;
 using System.IO;
 using UnityEngine.Networking;
-using static System.Net.Mime.MediaTypeNames;
 
 public enum AudioChannel
 {
@@ -29,11 +28,12 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private GameObject scenarioSelection;
 
     [Header("Track Info")]
-    [SerializeField] private AudioClip track;
-    [SerializeField] private string trackName;
-    [SerializeField] private Sprite trackArt;
-    [SerializeField] private List<Color> trackColors = new();
-    [SerializeField] private List<Gradient> trackGradients = new();
+    [SerializeField] private TrackInfo preset;
+    private string trackName;
+    private Sprite trackArt;
+    private List<Color> trackColors = new();
+    private List<Gradient> trackGradients = new();
+    private List<TMP_FontAsset> trackFonts = new();
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
@@ -43,11 +43,13 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
     [Header("Other Settings")]
-    [SerializeField] private bool startImmedietelyUponLoadingTrack;
-    [SerializeField] private bool runSetup = true;
+    [SerializeField] private bool usePreset;
     [SerializeField] private bool askForTrack = true;
     [SerializeField] private bool askForCoverArt = true;
     [SerializeField] private bool askForColors = true;
+    [SerializeField] private bool askForFonts = true;
+    [SerializeField] private bool askForVisualizerElements = true;
+    [SerializeField] private bool startImmedietelyUponLoadingTrack;
     [SerializeField] private float startSongAtSeconds;
     [SerializeField] private TransitionData initialTransition;
     private bool hasSongStarted = false;
@@ -61,8 +63,27 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
+    [SerializeField] private GameObject visualizerElementsUI;
     [SerializeField] private UniversalRendererData urpData;
+    [SerializeField] private TMP_FontAsset defaultFont;
+
+    [Header("Visualizer Elements")]
+    [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetElementColorToMatchTrack>> visualizerColorElementDict = new();
+    [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetFontToVisualizerFont>> visualizerFontElementDict = new();
+
+    [Header("Colors")]
+    [SerializeField] private Transform colorsList;
+    [SerializeField] private GameObject colorsUI;
+    [SerializeField] private Transform fontsList;
+    [SerializeField] private GameObject fontsUI;
+
+    [Header("Prefabs")]
+    [SerializeField] private ColorListElement colorListElement;
+    [SerializeField] private FontListElement fontListElement;
     private KawaseBlur kawaseBlurPass;
+
+    private Color blankColor = new Color(0, 0, 0, 0);
+    private Gradient blankGradient = new Gradient();
 
     // Events
     public Action OnSongEnd;
@@ -119,17 +140,47 @@ public class VisualizerManager : MonoBehaviour
 
     public bool IsPlaybackPaused => !audioSource.isPlaying && audioSource.time > 0;
 
+    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
+    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
+    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
+    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
+
+    [ContextMenu("RebroadcastTrackInfo")]
+    private void BroadcastTrackInfo()
+    {
+        // Find all listeners
+        if (trackInfoListeners.Count == 0)
+        {
+            trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
+        }
+
+        // Create Track Info struct
+        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(audioSource.clip.length), 
+            audioSource.clip, trackColors, trackGradients, trackFonts);
+
+        // Send data out
+        trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
+    }
+
+    private List<IRecieveTrackInfo> trackInfoListeners = new();
+
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
         else _Instance = this;
 
+        // Get audio source component
         audioSource = GetComponent<AudioSource>();
+
+        trackFonts.Add(defaultFont);
+
+        LoadPreset();
     }
 
     private void Start()
     {
         PopulateColorsList();
+        PopulateFontsList();
 
         // Only 1 scenario, we'd just go to track selection
         if (scenarios.Count == 0)
@@ -238,21 +289,23 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    [ContextMenu("RebroadcastTrackInfo")]
-    private void BroadcastTrackInfo()
+    public Color GetTrackColor(int index) 
     {
-        //
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(audioSource.clip.length));
-        FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList().ForEach(item => item.RecieveTrackInfo(trackInfo));
+        if (index > trackColors.Count - 1) return blankColor;
+        return trackColors[index]; 
+    
+    }
+    public Gradient GetTrackGradient(int index) 
+    {
+        if (trackGradients.Count - 1 == 0) return blankGradient;
+        return trackGradients[index]; 
     }
 
-    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
-    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
-    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
-    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
-
-    public Color GetTrackColor(int index) { return trackColors[index]; }
-    public Gradient GetTrackGradient(int index) { return trackGradients[index]; }
+    public TMP_FontAsset GetFont(int index)
+    {
+        if (index > trackFonts.Count - 1) return defaultFont;
+        return trackFonts[index];
+    }
 
     private void GetSpectrumAudioSource()
     {
@@ -385,7 +438,22 @@ public class VisualizerManager : MonoBehaviour
             kvp.Value.SetActive(kvp.Key == name);
         }
 
-        StartCoroutine(RunSetup());
+        if (usePreset)
+        {
+            SetupComplete();
+        } else
+        {
+            StartCoroutine(RunSetup());
+        }
+    }
+
+    private void LoadPreset()
+    {
+        audioSource.clip = preset.AudioClip;
+        trackName = preset.Title;
+        trackArt = preset.CoverArt;
+        trackColors = preset.Colors;
+        trackGradients = preset.Gradients;
     }
 
     private IEnumerator RunSetup()
@@ -399,35 +467,52 @@ public class VisualizerManager : MonoBehaviour
         if (askForColors)
             yield return StartCoroutine(RunColorsSelection());
 
+        if (askForFonts)
+            yield return StartCoroutine(RunFontsSelection());
+
+        if (askForVisualizerElements)
+            yield return StartCoroutine(RunVisualizerElementsSelection());
+
         SetupComplete();
     }
 
-    private IEnumerator RunTrackSelection()
+    public IEnumerator RunFontsSelection()
+    {
+        fontsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !fontsUI.activeInHierarchy);
+
+        BroadcastTrackInfo();
+    }
+
+    public IEnumerator RunTrackSelection()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
 
-        yield return StartCoroutine(ShowLoadDialogCoroutine(x =>
+        yield return StartCoroutine(BrowseForSingleFile(x =>
         {
             Debug.Log("Attempting to Load Audio from File: " + x);
 
-            StartCoroutine(LoadAudioClipFromFile(x, 
+            StartCoroutine(LoadAudioClipFromFile(x,
                 (filePath, clip) =>
                 {
                     Debug.Log("Successfully Loaded Audio Clip from path = " + x);
 
                     audioSource.clip = clip;
-                    trackName = GetFileName(filePath);
+                    trackName = StringHelper.GetFileName(filePath);
 
-                }, 
+                },
                 x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
         }, "Select Track", "Load"));
+
+        BroadcastTrackInfo();
     }
 
-    private IEnumerator RunCoverArtSelection()
+    public IEnumerator RunCoverArtSelection()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
 
-        yield return StartCoroutine(ShowLoadDialogCoroutine(x =>
+        yield return StartCoroutine(BrowseForSingleFile(x =>
         {
             Debug.Log("Attempting to Load Image from File: " + x);
             LoadImageFromFile(x,
@@ -438,9 +523,46 @@ public class VisualizerManager : MonoBehaviour
                 },
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
+
+        BroadcastTrackInfo();
     }
 
-    private IEnumerator ShowLoadDialogCoroutine(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
+    public IEnumerator RunColorsSelection()
+    {
+        // Enable UI
+
+        colorsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !colorsUI.activeSelf);
+
+        BroadcastTrackInfo();
+    }
+
+    public IEnumerator RunVisualizerElementsSelection()
+    {
+        // Enable UI
+
+        visualizerElementsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
+
+        SetVisualizerElements();
+
+        BroadcastTrackInfo();
+    }
+
+    public IEnumerator SelectOneFont(Action<string, TMP_FontAsset> onSuccess)
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Font", ".ttf", ".otf"));
+
+        yield return StartCoroutine(BrowseForSingleFile(x =>
+        {
+            TMP_FontAsset font = LoadFontFromFile(x);
+            onSuccess(x, font);
+        }, "Select Font", "Load"));
+    }
+
+    private IEnumerator BrowseForSingleFile(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
     {
         yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
             false, null, null, dialogTitle, loadButtonText);
@@ -449,6 +571,24 @@ public class VisualizerManager : MonoBehaviour
             OnFileSucessfullySelected(FileBrowser.Result[0], toDoWithFile);
         else
             OnFailureToSelectFiles();
+    }
+
+    private IEnumerator BrowseForMultipleFiles(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
+    {
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
+            true, null, null, dialogTitle, loadButtonText);
+
+        if (FileBrowser.Success)
+        {
+            foreach (string filePath in FileBrowser.Result)
+            {
+                OnFileSucessfullySelected(filePath, toDoWithFile);
+            }
+        }
+        else
+        {
+            OnFailureToSelectFiles();
+        }
     }
 
     private void OnFileSucessfullySelected(string filePath, Action<string> toDoWithFile)
@@ -461,7 +601,7 @@ public class VisualizerManager : MonoBehaviour
         throw new Exception(); // TODO: Custom Exception
     }
 
-    private IEnumerator LoadAudioClipFromFile(string filePath, Action<string, AudioClip> onSucces, Action<string> onFailure)
+    private IEnumerator LoadAudioClipFromFile(string filePath, Action<string, AudioClip> onSuccess, Action<string> onFailure)
     {
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, GetAudioType(filePath)))
         {
@@ -474,53 +614,34 @@ public class VisualizerManager : MonoBehaviour
             }
             else
             {
-                onSucces(filePath, DownloadHandlerAudioClip.GetContent(www));
+                onSuccess(filePath, DownloadHandlerAudioClip.GetContent(www));
             }
         }
     }
 
-    private void LoadImageFromFile(string filePath, Action<string, Texture2D> onSucces, Action<string> onFailure)
+    private void LoadImageFromFile(string filePath, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
         byte[] bytes = File.ReadAllBytes(filePath);
         Texture2D tex = new Texture2D(2, 2);
         if (tex.LoadImage(bytes))
         {
-            onSucces(filePath, tex);
+            onSuccess(filePath, tex);
         } else
         {
             onFailure(filePath);
         }
     }
 
-    private string GetFileExtension(string filePath)
+    private TMP_FontAsset LoadFontFromFile(string filePath)
     {
-        string extension = "";
-        for (int i = filePath.Length - 1; i > 0; --i)
-        {
-            if (filePath[i].Equals('.'))
-                break;
-            extension += filePath[i];
-        }
-        return StringHelper.Reverse(extension);
-    }
-
-    private string GetFileName(string filePath)
-    {
-        string pathWithoutExtension = filePath.Split(GetFileExtension(filePath))[0];
-        string fileName = "";
-        for (int i = pathWithoutExtension.Length - 2; i >= 0; --i)
-        {
-            char c = pathWithoutExtension[i];
-            if (c.Equals('\\'))
-                break;
-            fileName += c;
-        }
-        return StringHelper.Reverse(fileName);
+        Debug.Log("Loading Font from File: " + filePath);
+        Font font = new Font(filePath);
+        return TMP_FontAsset.CreateFontAsset(font);
     }
 
     private AudioType GetAudioType(string filePath)
     {
-        switch (GetFileExtension(filePath))
+        switch (StringHelper.GetFileExtension(filePath))
         {
             case "wav":
                 return AudioType.WAV;
@@ -532,19 +653,6 @@ public class VisualizerManager : MonoBehaviour
                 throw new Exception(); // TODO: Custom Exceptions
         }
     }
-
-    private IEnumerator RunColorsSelection()
-    {
-        // Enable UI
-
-        colorsUI.SetActive(true);
-
-        yield return new WaitUntil(() => !colorsUI.activeSelf);
-    }
-
-    [SerializeField] private ColorListElement colorListElement;
-    [SerializeField] private Transform colorsList;
-    [SerializeField] private GameObject colorsUI;
 
     public void AddColorElement()
     {
@@ -564,7 +672,61 @@ public class VisualizerManager : MonoBehaviour
 
     public void UpdateTrackColor(int index, Color c)
     {
+        if (index > trackColors.Count - 1) return;
         trackColors[index] = c;
     }
-}
 
+    public void AddFontElement()
+    {
+        StartCoroutine(BrowseForMultipleFiles(x =>
+        {
+            TMP_FontAsset font = LoadFontFromFile(x);
+            FontListElement spawned = Instantiate(fontListElement, fontsList);
+            spawned.Set(trackFonts.Count, font, x);
+            trackFonts.Add(font);
+        }, "Choose Fonts", "Load"));
+    }
+
+    private void PopulateFontsList()
+    {
+        for (int i = 0; i < trackFonts.Count; ++i)
+        {
+            FontListElement spawned = Instantiate(fontListElement, fontsList);
+            spawned.Set(i, trackFonts[i]);
+        }
+    }
+
+    public void UpdateFont(int index, TMP_FontAsset font)
+    {
+        if (index > trackFonts.Count - 1) return;
+        trackFonts[index] = font;
+    }
+
+    private void SetVisualizerElements()
+    {
+        SetVisualizerColorElements();
+        SetVisualizerFontElements();
+    }
+
+    private void SetVisualizerColorElements()
+    {
+        foreach (SerializableKeyValuePair<SetupElement, SetElementColorToMatchTrack> kvp in visualizerColorElementDict)
+        {
+            kvp.Value.Active = kvp.Key.Active;
+            kvp.Value.ColorIndex = kvp.Key.ColorIndex;
+        }
+    }
+
+    private void SetVisualizerFontElements()
+    {
+        foreach (SerializableKeyValuePair<SetupElement, SetFontToVisualizerFont> kvp in visualizerFontElementDict)
+        {
+            kvp.Value.FontIndex = kvp.Key.FontIndex;
+        }
+    }
+
+    public void ChangeVolume(float amount)
+    {
+        audioSource.volume += amount;
+    }
+}

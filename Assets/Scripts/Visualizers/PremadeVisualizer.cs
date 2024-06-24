@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
+public abstract class PremadeVisualizer : SetElementColorToMatchTrack
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;
 
     [Header("Settings")]
     [SerializeField] protected AttachmentType attachmentType;
-    [SerializeField] private VisualizerColorType colorType;
-    [SerializeField] private int colorIndex;
     [SerializeField] protected float signalMultiplier;
     [SerializeField] private float attachmentMultiplier;
     [SerializeField] private float defaultValue;
@@ -22,6 +21,8 @@ public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
     protected List<AttachParameter> attachedParameterList = new List<AttachParameter>();
     protected List<SignalBroadcaster> broadcasterList = new List<SignalBroadcaster>();
     protected List<Image> imageList = new List<Image>();
+
+    private bool hasMadeVisualizer;
 
     protected virtual void MakeVisualizer()
     {
@@ -77,7 +78,6 @@ public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
                 TrackSegment(spawned, broadcaster, i, n);
             }
         }
-        UpdateAttachments();
     }
 
     protected abstract void PreMakingVisualizer();
@@ -89,31 +89,28 @@ public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
     {
         foreach (AttachParameter parameter in attachedParameterList)
         {
+            parameter.Bypass = !Active;
             parameter.SlowAdjust = useSlowAdjust;
             parameter.DefaultValue = defaultValue;
             parameter.AdjustSpeed = adjustSpeed;
             parameter.Multiplier = attachmentMultiplier;
         }
+
         foreach (SignalBroadcaster broadcaster in broadcasterList)
         {
             broadcaster.UpdateSettings(signalMultiplier);
         }
-        for (int i = 0; i < imageList.Count; i++)
-        {
-            imageList[i].color = VisualizerManager._Instance.GetColor(colorType, colorIndex, new Vector2(i, imageList.Count));
-        }
     }
 
-    protected virtual void Update()
+    protected new void Update()
     {
+        base.Update();
         UpdateSpecificSettings();
     }
 
     private void Start()
     {
         PreMakingVisualizer();
-        MakeVisualizer();
-        UpdateAttachments();
     }
 
     protected void TrackSegment(GameObject segment, SignalBroadcaster broadcaster, int index, int max)
@@ -131,11 +128,27 @@ public abstract class PremadeVisualizer : MonoBehaviour, IRecieveTrackInfo
         segment.GetComponent<SignalDirector>().AddDirection(broadcaster, segment.GetComponents<AttachParameter>().ToList());
     }
 
-    public void RecieveTrackInfo(TrackInfo info)
+    public override void RecieveTrackInfo(TrackInfo info)
     {
-        foreach (Image i in imageList)
+        base.RecieveTrackInfo(info);
+
+        if (!hasMadeVisualizer)
         {
-            i.color = VisualizerManager._Instance.GetColor(colorType, colorIndex);
+            MakeVisualizer();
+            hasMadeVisualizer = true;
+        }
+
+        UpdateAttachments();
+    }
+
+    protected override void SetElementToColor(Color c)
+    {
+        for (int i = 0; i < imageList.Count; i++)
+        {
+            if (!Active)
+                imageList[i].color = c;
+            else
+                imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, new Vector2(i, imageList.Count));
         }
     }
 }

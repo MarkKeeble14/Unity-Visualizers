@@ -132,8 +132,8 @@ MonoBehaviour:
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 0.1
-  adjustSpeed: 25
-  multiplier: 2.5
+  adjustSpeed: 5
+  multiplier: 3.75
   light: {fileID: 1665319223827245638}
 --- !u!114 &6065993059783569579
 MonoBehaviour:
@@ -151,8 +151,8 @@ MonoBehaviour:
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 1
-  adjustSpeed: 2.5
-  multiplier: 12.5
+  adjustSpeed: 5
+  multiplier: 25
   light: {fileID: 1665319223827245638}
 --- !u!114 &4630862152619677037
 MonoBehaviour:
@@ -186,10 +186,10 @@ MonoBehaviour:
   light: {fileID: 1665319223827245638}
   colors:
     options:
+    - key: {r: 1, g: 1, b: 0, a: 1}
+      value: 10
     - key: {r: 1, g: 0, b: 0, a: 1}
-      value: 50
-    - key: {r: 1, g: 0, b: 0, a: 1}
-      value: 50
+      value: 90
 --- !u!114 &5481509326296757046
 MonoBehaviour:
   m_ObjectHideFlags: 0

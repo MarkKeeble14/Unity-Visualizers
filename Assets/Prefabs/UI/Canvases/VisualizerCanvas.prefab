@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6551687303459934169}
   - component: {fileID: 1353630644038784575}
   - component: {fileID: 5788612160787266091}
+  - component: {fileID: 674902207551623995}
   m_Layer: 5
   m_Name: CurrentTime
   m_TagString: Untagged
@@ -217,6 +218,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1b6e788bec9714c847d1c945bcac07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &674902207551623995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379781630923592081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2da153f0f3ff0e4e9a6a2dc8f308694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  text: {fileID: 4692421920290114003}
 --- !u!1 &1807501826889787740
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,6 +657,7 @@ GameObject:
   - component: {fileID: 6058967867251843180}
   - component: {fileID: 9159929179650008979}
   - component: {fileID: 4760510415880633646}
+  - component: {fileID: 6687295963294799140}
   m_Layer: 5
   m_Name: Cover
   m_TagString: Untagged
@@ -891,6 +907,21 @@ MonoBehaviour:
   - key: {fileID: 8150656816053562434}
     value:
     - {fileID: 6058967867251843180}
+--- !u!114 &6687295963294799140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927570689808294083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bce5daeb405f424787b0900a046ff15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorType: 0
+  colorIndex: 0
+  image: {fileID: 3784125142210858750}
 --- !u!1 &4470041388030741948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1080,6 +1111,7 @@ GameObject:
   - component: {fileID: 3324943199677356691}
   - component: {fileID: 4209120673369894089}
   - component: {fileID: 1353561162452376188}
+  - component: {fileID: 2719737812417008288}
   m_Layer: 5
   m_Name: TrackTitle
   m_TagString: Untagged
@@ -1313,6 +1345,20 @@ MonoBehaviour:
   startDirection: 2
   speed: 0.25
   minMaxValue: {x: -1, y: 1}
+--- !u!114 &2719737812417008288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463315811003454622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2da153f0f3ff0e4e9a6a2dc8f308694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  text: {fileID: 6611571563060356526}
 --- !u!1 &6469233316254432249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1452,6 +1498,7 @@ GameObject:
   - component: {fileID: 8913040854735903535}
   - component: {fileID: 1059815453179281731}
   - component: {fileID: 7936164879061847968}
+  - component: {fileID: 2924234893796334349}
   m_Layer: 5
   m_Name: EndTime
   m_TagString: Untagged
@@ -1653,6 +1700,20 @@ MonoBehaviour:
   - key: {fileID: 8602827270467912143}
     value:
     - {fileID: 5443540850983364010}
+--- !u!114 &2924234893796334349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8238302629774638288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2da153f0f3ff0e4e9a6a2dc8f308694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  text: {fileID: 2880485430267212935}
 --- !u!1001 &4041391644735012060
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1768,10 +1829,6 @@ PrefabInstance:
       propertyPath: segmentPrefab
       value: 
       objectReference: {fileID: 7142856522332667449, guid: 2fcd5a4f4a65a2c489cb217a9cf67c96, type: 3}
-    - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
-      propertyPath: attachmentType
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289128, guid: bfddbbf898518da4b89b5dd738b7dbbc, type: 3}
       propertyPath: updateComponents
       value: 0

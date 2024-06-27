@@ -25,11 +25,22 @@ public abstract class AlterFloatGameEvent : GameEvent
 
     private IEnumerator ChangeValue()
     {
-        while (GetValue() != changeTo)
+        if (changeTo > GetValue())
         {
-            SetValue(MathHelper.GetNextValue(GetValue(), changeTo, changeSpeed, alterationMethod, true));
+            while (GetValue() < changeTo)
+            {
+                SetValue(MathHelper.GetNextValue(GetValue(), changeTo, changeSpeed, alterationMethod, true));
 
-            yield return null;
+                yield return null;
+            }
+        } else if (changeTo < GetValue())
+        {
+            while (GetValue() > changeTo)
+            {
+                SetValue(MathHelper.GetNextValue(GetValue(), changeTo, changeSpeed, alterationMethod, true));
+
+                yield return null;
+            }
         }
     }
 }

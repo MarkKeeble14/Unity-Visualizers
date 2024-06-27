@@ -133,7 +133,7 @@ MonoBehaviour:
   slowAdust: 1
   defaultValue: 0.1
   adjustSpeed: 5
-  multiplier: 3.75
+  multiplier: 2.5
   light: {fileID: 1665319223827245638}
 --- !u!114 &6065993059783569579
 MonoBehaviour:
@@ -150,9 +150,9 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 1
-  adjustSpeed: 5
-  multiplier: 25
+  defaultValue: 2.5
+  adjustSpeed: 25
+  multiplier: 5
   light: {fileID: 1665319223827245638}
 --- !u!114 &4630862152619677037
 MonoBehaviour:

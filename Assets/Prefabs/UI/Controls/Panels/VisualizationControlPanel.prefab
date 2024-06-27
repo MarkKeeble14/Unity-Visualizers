@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5179186104405003618}
   - component: {fileID: 4439401998105255761}
   - component: {fileID: 328202613673704810}
+  - component: {fileID: 8172506039179024015}
   m_Layer: 5
   m_Name: SelectionControls
   m_TagString: Untagged
@@ -111,6 +112,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 282
   action: Select Track
+--- !u!114 &8172506039179024015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067486809758696700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25eef4bc2710bc44f809dbba5f304e53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 287
+  action: Load Preset
 --- !u!1 &3993054697554704347
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].Type
@@ -1199,6 +1214,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: controlPanelElements.Array.data[13].KeyControls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].KeyControls.Array.data[0]
       value: 
       objectReference: {fileID: 7037505552289007175}
@@ -1286,6 +1305,10 @@ PrefabInstance:
       propertyPath: controlPanelElements.Array.data[12].KeyControls.Array.data[0]
       value: 
       objectReference: {fileID: 8386348559841355907}
+    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: controlPanelElements.Array.data[13].KeyControls.Array.data[0]
+      value: 
+      objectReference: {fileID: 8172506039179024015}
     - target: {fileID: 3325433689709060317, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

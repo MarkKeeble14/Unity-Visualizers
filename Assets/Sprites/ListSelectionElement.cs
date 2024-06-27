@@ -1,12 +1,24 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public abstract class ListSelectionElement : MonoBehaviour
+[RequireComponent(typeof(LayoutElement))]
+public abstract class ListSelectionElement : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
+    [Header("References")]
     [SerializeField] private TextMeshProUGUI indexText;
+    private LayoutElement layoutElement;
 
     private int index;
     public int Index => index;
+
+    public abstract void OpenListSelection();
+
+    private void Awake()
+    {
+        layoutElement = GetComponent<LayoutElement>();
+    }
 
     public void SetIndex(int index)
     {
@@ -14,5 +26,13 @@ public abstract class ListSelectionElement : MonoBehaviour
         indexText.text = index.ToString();
     }
 
-    public abstract void OpenListSelection();
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        layoutElement.ignoreLayout = true;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        layoutElement.ignoreLayout = false;
+    }
 }

@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using System.Linq;
 using System;
-using UnityEngine.Rendering.Universal;
 using SimpleFileBrowser;
 using System.IO;
 using UnityEngine.Networking;
@@ -22,18 +21,17 @@ public class VisualizerManager : MonoBehaviour
 {
     public static VisualizerManager _Instance { get; private set; }
 
-    [Header("Scenarios")]
-    [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
-    [SerializeField] private GameObject defaultScenary;
-    [SerializeField] private GameObject scenarioSelection;
+    [Header("Default Track Info")]
+    [SerializeField] private TrackInfo trackInfo;
 
-    [Header("Track Info")]
-    [SerializeField] private TrackInfo preset;
-    private string trackName;
-    private Sprite trackArt;
-    private List<Color> trackColors = new();
-    private List<Gradient> trackGradients = new();
-    private List<TMP_FontAsset> trackFonts = new();
+    [Header("Other Settings")]
+    [SerializeField] private bool askForTrack = true;
+    [SerializeField] private bool askForCoverArt = true;
+    [SerializeField] private bool askForColors = true;
+    [SerializeField] private bool askForFonts = true;
+    [SerializeField] private bool askForVisualizerElements = true;
+    [SerializeField] private bool startImmedietelyUponLoadingTrack;
+    [SerializeField] private float startSongAtSeconds;
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
@@ -42,54 +40,47 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
-    [Header("Other Settings")]
-    [SerializeField] private bool usePreset;
-    [SerializeField] private bool askForTrack = true;
-    [SerializeField] private bool askForCoverArt = true;
-    [SerializeField] private bool askForColors = true;
-    [SerializeField] private bool askForFonts = true;
-    [SerializeField] private bool askForVisualizerElements = true;
-    [SerializeField] private bool startImmedietelyUponLoadingTrack;
-    [SerializeField] private float startSongAtSeconds;
-    [SerializeField] private TransitionData initialTransition;
-    private bool hasSongStarted = false;
-    private float lastAudioSourceTime;
-
     [Header("Recording Settings")]
     [SerializeField] private float afterTrackRecordingBufferTime = 10f;
-
-    [Header("Blur Settings")]
-    [SerializeField] private KawaseBlurSettings blurSettings;
 
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
     [SerializeField] private GameObject visualizerElementsUI;
-    [SerializeField] private UniversalRendererData urpData;
-    [SerializeField] private TMP_FontAsset defaultFont;
+    private AudioSource audioSource;
+
+    [Header("Scenarios")]
+    [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
+    [SerializeField] private GameObject defaultScenary;
+    [SerializeField] private GameObject scenarioSelection;
+
+    [Header("Transition Settings")]
+    [SerializeField] private TransitionData initialTransition;
 
     [Header("Visualizer Elements")]
     [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetElementColorToMatchTrack>> visualizerColorElementDict = new();
     [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetFontToVisualizerFont>> visualizerFontElementDict = new();
 
     [Header("Colors")]
-    [SerializeField] private Transform colorsList;
     [SerializeField] private GameObject colorsUI;
+    [SerializeField] private Transform gradientsList;
+    [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
     [SerializeField] private GameObject fontsUI;
 
     [Header("Prefabs")]
     [SerializeField] private ColorListElement colorListElement;
+    [SerializeField] private GradientListElement gradientListElement;
     [SerializeField] private FontListElement fontListElement;
-    private KawaseBlur kawaseBlurPass;
 
-    private Color blankColor = new Color(0, 0, 0, 0);
-    private Gradient blankGradient = new Gradient();
+    private List<IRecieveTrackInfo> trackInfoListeners = new();
+
+    private bool hasSongStarted = false;
+    private float lastAudioSourceTime;
 
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
 
-    private AudioSource audioSource;
 
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
@@ -145,24 +136,20 @@ public class VisualizerManager : MonoBehaviour
     public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
     public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
 
-    [ContextMenu("RebroadcastTrackInfo")]
+    [ContextMenu("BroadcastTrackInfo")]
     private void BroadcastTrackInfo()
     {
-        // Find all listeners
+        // Attempt to find any listeners if the list is empty
         if (trackInfoListeners.Count == 0)
         {
             trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
         }
 
-        // Create Track Info struct
-        TrackInfo trackInfo = new TrackInfo(trackName, trackArt, StringHelper.GetDurationText(audioSource.clip.length), 
-            audioSource.clip, trackColors, trackGradients, trackFonts);
+        if (audioSource.clip == null) return;
 
         // Send data out
         trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
     }
-
-    private List<IRecieveTrackInfo> trackInfoListeners = new();
 
     private void Awake()
     {
@@ -171,15 +158,13 @@ public class VisualizerManager : MonoBehaviour
 
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
-
-        trackFonts.Add(defaultFont);
-
-        LoadPreset();
+        audioSource.clip = trackInfo.AudioClip;
     }
 
     private void Start()
     {
         PopulateColorsList();
+        PopulateGradientsList();
         PopulateFontsList();
 
         // Only 1 scenario, we'd just go to track selection
@@ -238,12 +223,6 @@ public class VisualizerManager : MonoBehaviour
         // Inform listeners of track
         BroadcastTrackInfo();
 
-        // Fetch Kawase Blur Feature
-        kawaseBlurPass = (KawaseBlur)urpData.rendererFeatures[0];
-
-        // Change Settings
-        SetKawaseBlurFeatureSettings();
-
         // Play initial transition if there is one
         if (initialTransition.transition != null)
             initialTransition.transition.InitiateTransition(initialTransition.direction);
@@ -291,20 +270,20 @@ public class VisualizerManager : MonoBehaviour
 
     public Color GetTrackColor(int index) 
     {
-        if (index > trackColors.Count - 1) return blankColor;
-        return trackColors[index]; 
+        if (index > trackInfo.Colors.Count - 1) return trackInfo.Colors[0];
+        return trackInfo.Colors[index]; 
     
     }
     public Gradient GetTrackGradient(int index) 
     {
-        if (trackGradients.Count - 1 == 0) return blankGradient;
-        return trackGradients[index]; 
+        if (trackInfo.Gradients.Count - 1 == 0) return trackInfo.Gradients[0];
+        return trackInfo.Gradients[index]; 
     }
 
     public TMP_FontAsset GetFont(int index)
     {
-        if (index > trackFonts.Count - 1) return defaultFont;
-        return trackFonts[index];
+        if (index > trackInfo.Fonts.Count - 1) return trackInfo.Fonts[0];
+        return trackInfo.Fonts[index];
     }
 
     private void GetSpectrumAudioSource()
@@ -420,14 +399,6 @@ public class VisualizerManager : MonoBehaviour
         audioSource.time += amount;
     }
 
-    private void SetKawaseBlurFeatureSettings()
-    {
-        kawaseBlurPass.SetActive(blurSettings.Enabled);
-        kawaseBlurPass.settings.blurPasses = blurSettings.BlurPasses;
-        kawaseBlurPass.settings.downsample = blurSettings.Downsample;
-        kawaseBlurPass.settings.copyToFramebuffer = blurSettings.CopyToFrameBuffer;
-    }
-
     public void SelectScenario(string name)
     {
         defaultScenary.SetActive(false);
@@ -438,22 +409,7 @@ public class VisualizerManager : MonoBehaviour
             kvp.Value.SetActive(kvp.Key == name);
         }
 
-        if (usePreset)
-        {
-            SetupComplete();
-        } else
-        {
-            StartCoroutine(RunSetup());
-        }
-    }
-
-    private void LoadPreset()
-    {
-        audioSource.clip = preset.AudioClip;
-        trackName = preset.Title;
-        trackArt = preset.CoverArt;
-        trackColors = preset.Colors;
-        trackGradients = preset.Gradients;
+        StartCoroutine(RunSetup());
     }
 
     private IEnumerator RunSetup()
@@ -499,7 +455,7 @@ public class VisualizerManager : MonoBehaviour
                     Debug.Log("Successfully Loaded Audio Clip from path = " + x);
 
                     audioSource.clip = clip;
-                    trackName = StringHelper.GetFileName(filePath);
+                    trackInfo.Title = StringHelper.GetFileName(filePath);
 
                 },
                 x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
@@ -519,7 +475,7 @@ public class VisualizerManager : MonoBehaviour
                 (filePath, texture) =>
                 {
                     Debug.Log("Successfully Loaded Image from path = " + x);
-                    trackArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                    trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
                 },
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
@@ -547,6 +503,34 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
         SetVisualizerElements();
+
+        BroadcastTrackInfo();
+    }
+
+    public IEnumerator RunLoadPresetSelection()
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Presets", ".dat"));
+
+        yield return StartCoroutine(BrowseForSingleFile(x =>
+        {
+            Debug.Log("Attempting to Load Preset from File: " + x);
+            LoadPreset(x,
+                (filePath, visualizerPreset) =>
+                {
+                    Debug.Log("Successfully Loaded Preset from path = " + x);
+
+                    ClearColorsList();
+                    trackInfo.Colors = visualizerPreset.Colors;
+                    PopulateColorsList();
+
+                    ClearGradientsList();
+                    trackInfo.Gradients = visualizerPreset.Gradients;
+                    PopulateGradientsList();
+
+                    BroadcastTrackInfo();
+                },
+            x => Debug.Log("Failed to Load Preset from path = " + x));
+        }, "Select Preset", "Load"));
 
         BroadcastTrackInfo();
     }
@@ -656,24 +640,57 @@ public class VisualizerManager : MonoBehaviour
 
     public void AddColorElement()
     {
-        trackColors.Add(Color.white);
+        trackInfo.Colors.Add(Color.white);
         ColorListElement spawned = Instantiate(colorListElement, colorsList);
-        spawned.Set(trackColors.Count - 1, Color.white);
+        spawned.Set(trackInfo.Colors.Count - 1, Color.white);
     }
 
     private void PopulateColorsList()
     {
-        for (int i = 0; i < trackColors.Count; ++i)
+        for (int i = 0; i < trackInfo.Colors.Count; ++i)
         {
             ColorListElement spawned = Instantiate(colorListElement, colorsList);
-            spawned.Set(i, trackColors[i]);
+            spawned.Set(i, trackInfo.Colors[i]);
+        }
+    }
+
+    private void ClearColorsList()
+    {
+        foreach (Transform child in colorsList.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void AddGradientElement()
+    {
+        Gradient g = new Gradient();
+        trackInfo.Gradients.Add(g);
+        GradientListElement spawned = Instantiate(gradientListElement, gradientsList);
+        spawned.Set(trackInfo.Gradients.Count - 1, g);
+    }
+
+    private void PopulateGradientsList()
+    {
+        for (int i = 0; i < trackInfo.Gradients.Count; ++i)
+        {
+            GradientListElement spawned = Instantiate(gradientListElement, gradientsList);
+            spawned.Set(i, trackInfo.Gradients[i]);
+        }
+    }
+
+    private void ClearGradientsList()
+    {
+        foreach (Transform child in gradientsList.transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 
     public void UpdateTrackColor(int index, Color c)
     {
-        if (index > trackColors.Count - 1) return;
-        trackColors[index] = c;
+        if (index > trackInfo.Colors.Count - 1) return;
+        trackInfo.Colors[index] = c;
     }
 
     public void AddFontElement()
@@ -682,24 +699,24 @@ public class VisualizerManager : MonoBehaviour
         {
             TMP_FontAsset font = LoadFontFromFile(x);
             FontListElement spawned = Instantiate(fontListElement, fontsList);
-            spawned.Set(trackFonts.Count, font, x);
-            trackFonts.Add(font);
+            spawned.Set(trackInfo.Fonts.Count, font, x);
+            trackInfo.Fonts.Add(font);
         }, "Choose Fonts", "Load"));
     }
 
     private void PopulateFontsList()
     {
-        for (int i = 0; i < trackFonts.Count; ++i)
+        for (int i = 0; i < trackInfo.Fonts.Count; ++i)
         {
             FontListElement spawned = Instantiate(fontListElement, fontsList);
-            spawned.Set(i, trackFonts[i]);
+            spawned.Set(i, trackInfo.Fonts[i]);
         }
     }
 
     public void UpdateFont(int index, TMP_FontAsset font)
     {
-        if (index > trackFonts.Count - 1) return;
-        trackFonts[index] = font;
+        if (index > trackInfo.Fonts.Count - 1) return;
+        trackInfo.Fonts[index] = font;
     }
 
     private void SetVisualizerElements()
@@ -728,5 +745,24 @@ public class VisualizerManager : MonoBehaviour
     public void ChangeVolume(float amount)
     {
         audioSource.volume += amount;
+    }
+
+    [ContextMenu("Save Preset")]
+    public void SavePreset()
+    {
+        SaveManager._Instance.SavePreset("Test", new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients));
+    }
+
+    public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
+    {
+        try
+        {
+            VisualizerPreset preset = SaveManager._Instance.LoadPreset(filePath);
+            onSuccess(filePath, preset);
+        } catch (Exception e)
+        {
+            Debug.LogError(e.ToString());
+            onFailure(filePath);
+        }
     }
 }

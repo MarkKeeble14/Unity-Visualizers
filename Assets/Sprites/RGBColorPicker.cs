@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using System;
 using TMPro;
-using System.Collections;
 
 public class RGBColorPicker : MonoBehaviour
 {
@@ -30,64 +29,42 @@ public class RGBColorPicker : MonoBehaviour
 
     private bool isDropperSelectActive;
 
-    [SerializeField] private RenderTexture screenRenderTex;
-    private Texture2D tex;
-
-    private WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
-
 
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
         else _Instance = this;
-
-        screenRenderTex.width = Screen.width;
-        screenRenderTex.height = Screen.height;
     }
-
 
     private void Start()
     {
         SetDisplayColors();
     }
 
-    private IEnumerator UpdateScreenTextureLoop()
+    private void Update()
     {
-        while (isDropperSelectActive)
+        if (isDropperSelectActive)
         {
-            yield return waitForEndOfFrame;
-
-            UpdateScreenTexture();
-
             // Read Color at mouse coordinate
             Color c = GetColorOfHoveredPixel();
             SetR(c.r);
             SetG(c.g);
             SetB(c.b);
-        }
-    }
 
-    private void Update()
-    {
-        if (isDropperSelectActive)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
+            if (Input.GetMouseButtonDown(0)) 
+            { 
+                // Set variable
                 isDropperSelectActive = false;
+
+                ScreenRenderTextureManager._Instance.RescindRenderToTexRequest();
             }
         }
     }
 
-    private void UpdateScreenTexture()
-    {
-        tex = new Texture2D(Screen.width, Screen.height, TextureFormat.ARGB32, false);
-        tex.ReadPixels(new Rect(0, 0, screenRenderTex.width, screenRenderTex.height), 0, 0);
-        tex.Apply();
-    }
-
     private Color GetColorOfHoveredPixel()
     {
-        return tex.GetPixel((int)Input.mousePosition.x, (int)Input.mousePosition.y);
+        Texture2D tex = ScreenRenderTextureManager._Instance.Tex;
+        return (tex == null ? Color.white : ScreenRenderTextureManager._Instance.Tex.GetPixel((int)Input.mousePosition.x, (int)Input.mousePosition.y));
     }
 
     public void Open()
@@ -177,8 +154,10 @@ public class RGBColorPicker : MonoBehaviour
 
     public void ActivateDropperSelection()
     {
+        // Set variable
         isDropperSelectActive = true;
-        StartCoroutine(UpdateScreenTextureLoop());
+
+        ScreenRenderTextureManager._Instance.RequestRenderToTex();
     }
 
     public Color GetCurrentColorRepresentation()

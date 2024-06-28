@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(LayoutElement))]
-public abstract class ListSelectionElement : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+public abstract class ListSelectionElement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TextMeshProUGUI indexText;
@@ -24,15 +24,5 @@ public abstract class ListSelectionElement : MonoBehaviour, IBeginDragHandler, I
     {
         this.index = index;
         indexText.text = index.ToString();
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        layoutElement.ignoreLayout = true;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        layoutElement.ignoreLayout = false;
     }
 }

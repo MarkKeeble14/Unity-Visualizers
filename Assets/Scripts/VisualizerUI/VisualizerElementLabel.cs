@@ -1,0 +1,10 @@
+﻿public enum VisualizerElementLabel
+{
+    TITLE_TEXT,
+    END_TIME_TEXT,
+    CURRENT_TIME_TEXT,
+    COVER_ART,
+    RADIAL_VISUALIZER,
+    LONG_LINE_VISUALIZER,
+    DURATION_BAR
+}

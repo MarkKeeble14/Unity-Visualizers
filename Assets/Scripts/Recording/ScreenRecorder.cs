@@ -25,7 +25,6 @@ using UnityEditor.Recorder.Input;
 /// 
 public class ScreenRecorder : MonoBehaviour
 {
-
     private float maxRecordingTime = 5f;
     public float MaxRecordingTime { get { return maxRecordingTime; } set { maxRecordingTime = value; } }
 

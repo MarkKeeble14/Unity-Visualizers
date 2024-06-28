@@ -1,36 +1,54 @@
 using Newtonsoft.Json;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using UnityEditor.Presets;
 using UnityEngine;
 
 [System.Serializable]
-public struct VisualizerPreset : ISerializationCallbackReceiver
+public struct FontFileData
+{
+    [SerializeField] public string FontName;
+    [SerializeField] public byte[] FileContents;
+
+    public FontFileData(string fontName, byte[] fileContents)
+    {
+        FontName = fontName;
+        FileContents = fileContents;
+    }
+}
+
+[System.Serializable]
+public struct VisualizerPreset
 {
     [SerializeField] public List<Color> Colors;
     [SerializeField] public List<Gradient> Gradients;
-    // [SerializeField] public List<TMP_FontAsset> Fonts;
+    [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> VisualizerElements;
+    [SerializeField] public List<FontFileData> Fonts;
 
-    public VisualizerPreset(List<Color> colors, List<Gradient> gradients)
+    public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElements)
     {
         Colors = colors;
         Gradients = gradients;
+        Fonts = fonts;
+        VisualizerElements = visualizerElements;
     }
 
-    public void OnAfterDeserialize()
+    public override string ToString()
     {
-    }
-
-    public void OnBeforeSerialize()
-    {
-    }
-
-    private void Print()
-    {
-        Debug.Log("Colors: " + Colors.Count + ", Gradients: " + Gradients.Count);
+        string s = "Colors: " + Colors.Count;
+        Colors.ForEach(x => { s += ", " + x; });
+        s += " - Gradients: " + Gradients.Count;
+        s += " - Visualizer Elements";
+        foreach (VisualizerElementLabel item in VisualizerElements.Keys)
+        {
+            s += "," + item + " Enabled?: " + VisualizerElements[item].Enabled + ", Color: " 
+                + VisualizerElements[item].ColorIndex + ", Font: " 
+                + VisualizerElements[item].FontIndex;
+        }
+        s += " - Fonts: " + Fonts.Count;
+        return s;
     }
 }
 
@@ -46,13 +64,12 @@ public class SaveManager : MonoBehaviour
 
     public void SavePreset(string label, VisualizerPreset preset)
     {
-        // Create folders if neccessary
+        // Create folder if neccessary
         string presetsPath = Path.Combine(Application.dataPath, "../Presets");
         if (!Directory.Exists(presetsPath))
         {
             Directory.CreateDirectory(presetsPath);
         }
-
         string encodedFilePath = Path.Combine(presetsPath, label + ".dat");
         encodedFilePath = encodedFilePath.Replace("/", @"\");
 
@@ -66,6 +83,7 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(loadFromPath);
 
         VisualizerPreset loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json);
+        Debug.Log(loadedPreset);
         return loadedPreset;
     }
 }

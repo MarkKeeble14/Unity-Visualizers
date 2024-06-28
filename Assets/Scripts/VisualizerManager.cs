@@ -8,12 +8,28 @@ using System;
 using SimpleFileBrowser;
 using System.IO;
 using UnityEngine.Networking;
+using UnityEngine.Device;
 
 public enum AudioChannel
 {
     STEREO,
     LEFT,
     RIGHT
+}
+
+[System.Serializable]
+public struct VisualizerElementsSettings
+{
+    [SerializeField, HideInInspector] public int ColorIndex;
+    [SerializeField, HideInInspector] public int FontIndex;
+    [SerializeField, HideInInspector] public bool Enabled;
+
+    public VisualizerElementsSettings(int colorIndex, int fontIndex, bool enabled)
+    {
+        ColorIndex = colorIndex;
+        FontIndex = fontIndex;
+        Enabled = enabled;
+    }
 }
 
 [RequireComponent(typeof(AudioSource))]
@@ -23,6 +39,11 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Default Track Info")]
     [SerializeField] private TrackInfo trackInfo;
+    [SerializeField] private TMP_FontAsset defaultFont;
+
+    private Dictionary<string, int> loadedFontIndices = new();
+    private Dictionary<string, FontFileData> loadedFontData = new();
+    private Dictionary<string, TMP_FontAsset> loadedTMPFontAssets = new();
 
     [Header("Other Settings")]
     [SerializeField] private bool askForTrack = true;
@@ -56,10 +77,6 @@ public class VisualizerManager : MonoBehaviour
     [Header("Transition Settings")]
     [SerializeField] private TransitionData initialTransition;
 
-    [Header("Visualizer Elements")]
-    [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetElementColorToMatchTrack>> visualizerColorElementDict = new();
-    [SerializeField] private List<SerializableKeyValuePair<SetupElement, SetFontToVisualizerFont>> visualizerFontElementDict = new();
-
     [Header("Colors")]
     [SerializeField] private GameObject colorsUI;
     [SerializeField] private Transform gradientsList;
@@ -73,6 +90,8 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private FontListElement fontListElement;
 
     private List<IRecieveTrackInfo> trackInfoListeners = new();
+    private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
+    private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
 
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
@@ -80,7 +99,6 @@ public class VisualizerManager : MonoBehaviour
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
-
 
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
@@ -147,8 +165,23 @@ public class VisualizerManager : MonoBehaviour
 
         if (audioSource.clip == null) return;
 
+        UpdateTrackFonts();
+
         // Send data out
         trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
+    }
+
+    [ContextMenu("BroadcastVisualizerElementsInfo")]
+    private void BroadcastVisualizerElementsInfo()
+    {
+        // Attempt to find any listeners if the list is empty
+        if (visualizerElements.Count == 0)
+        {
+            visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
+        }
+
+        // Send data out
+        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
     }
 
     private void Awake()
@@ -159,6 +192,7 @@ public class VisualizerManager : MonoBehaviour
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = trackInfo.AudioClip;
+        trackInfo.Duration = StringHelper.GetDurationText(trackInfo.AudioClip.length);
     }
 
     private void Start()
@@ -166,6 +200,12 @@ public class VisualizerManager : MonoBehaviour
         PopulateColorsList();
         PopulateGradientsList();
         PopulateFontsList();
+
+        // Populate visualizer elements info
+        foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
+        {
+            visualizerElementsInfo.Add(item, new VisualizerElementsSettings(0, 0, true));
+        }
 
         // Only 1 scenario, we'd just go to track selection
         if (scenarios.Count == 0)
@@ -274,16 +314,34 @@ public class VisualizerManager : MonoBehaviour
         return trackInfo.Colors[index]; 
     
     }
+
     public Gradient GetTrackGradient(int index) 
     {
         if (trackInfo.Gradients.Count - 1 == 0) return trackInfo.Gradients[0];
         return trackInfo.Gradients[index]; 
     }
 
+    private string GetFontKeyAtIndex(int index)
+    {
+        foreach (KeyValuePair<string, int> kvp in loadedFontIndices)
+        {
+            if (kvp.Value == index)
+            {
+                return kvp.Key;
+            }
+        }
+        throw new IndexOutOfRangeException();
+    }
+
     public TMP_FontAsset GetFont(int index)
     {
-        if (index > trackInfo.Fonts.Count - 1) return trackInfo.Fonts[0];
-        return trackInfo.Fonts[index];
+        if (index > loadedFontData.Count - 1) return defaultFont;
+        return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
+    }
+
+    public string GetFontName(int index)
+    {
+        return loadedFontData[GetFontKeyAtIndex(index)].FontName;
     }
 
     private void GetSpectrumAudioSource()
@@ -390,6 +448,7 @@ public class VisualizerManager : MonoBehaviour
 
     public void ResetPlayback()
     {
+        hasSongStarted = false;
         audioSource.time = 0;
         PausePlayback();
     }
@@ -456,7 +515,7 @@ public class VisualizerManager : MonoBehaviour
 
                     audioSource.clip = clip;
                     trackInfo.Title = StringHelper.GetFileName(filePath);
-
+                    trackInfo.Duration = StringHelper.GetDurationText(trackInfo.AudioClip.length);
                 },
                 x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
         }, "Select Track", "Load"));
@@ -486,7 +545,6 @@ public class VisualizerManager : MonoBehaviour
     public IEnumerator RunColorsSelection()
     {
         // Enable UI
-
         colorsUI.SetActive(true);
 
         yield return new WaitUntil(() => !colorsUI.activeSelf);
@@ -497,14 +555,13 @@ public class VisualizerManager : MonoBehaviour
     public IEnumerator RunVisualizerElementsSelection()
     {
         // Enable UI
-
         visualizerElementsUI.SetActive(true);
+
+        BroadcastVisualizerElementsInfo();
 
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
-        SetVisualizerElements();
-
-        BroadcastTrackInfo();
+        BroadcastVisualizerElementsInfo();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -518,16 +575,6 @@ public class VisualizerManager : MonoBehaviour
                 (filePath, visualizerPreset) =>
                 {
                     Debug.Log("Successfully Loaded Preset from path = " + x);
-
-                    ClearColorsList();
-                    trackInfo.Colors = visualizerPreset.Colors;
-                    PopulateColorsList();
-
-                    ClearGradientsList();
-                    trackInfo.Gradients = visualizerPreset.Gradients;
-                    PopulateGradientsList();
-
-                    BroadcastTrackInfo();
                 },
             x => Debug.Log("Failed to Load Preset from path = " + x));
         }, "Select Preset", "Load"));
@@ -541,7 +588,7 @@ public class VisualizerManager : MonoBehaviour
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
-            TMP_FontAsset font = LoadFontFromFile(x);
+            TMP_FontAsset font = LoadTMPFontFromFile(x);
             onSuccess(x, font);
         }, "Select Font", "Load"));
     }
@@ -616,12 +663,26 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    private TMP_FontAsset LoadFontFromFile(string filePath)
+    private TMP_FontAsset LoadTMPFontFromFile(string filePath)
     {
         Debug.Log("Loading Font from File: " + filePath);
-        Font font = new Font(filePath);
-        return TMP_FontAsset.CreateFontAsset(font);
+        return LoadTMPFontFromFontAsset(new Font(filePath));
     }
+
+    private TMP_FontAsset LoadTMPFontFromFontAsset(Font font)
+    {
+        TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(font);
+        return asset;
+    }
+
+    private Font LoadFontFromByteArray(byte[] bytes)
+    {
+        string filePath = UnityEngine.Application.dataPath + "/LoadingFont.ttf";
+        Debug.Log("Loading font from byte array - Helper file at: " + filePath);
+        File.WriteAllBytes(filePath, bytes);
+        return new Font(filePath);
+    }
+
 
     private AudioType GetAudioType(string filePath)
     {
@@ -693,53 +754,97 @@ public class VisualizerManager : MonoBehaviour
         trackInfo.Colors[index] = c;
     }
 
+    private void ClearFontsList()
+    {
+        foreach (Transform child in fontsList.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     public void AddFontElement()
     {
         StartCoroutine(BrowseForMultipleFiles(x =>
         {
-            TMP_FontAsset font = LoadFontFromFile(x);
+            string fontName = RegisterNewFont(x);
             FontListElement spawned = Instantiate(fontListElement, fontsList);
-            spawned.Set(trackInfo.Fonts.Count, font, x);
-            trackInfo.Fonts.Add(font);
+            spawned.Set(loadedFontIndices[fontName]);
         }, "Choose Fonts", "Load"));
     }
 
     private void PopulateFontsList()
     {
-        for (int i = 0; i < trackInfo.Fonts.Count; ++i)
+        for (int i = 0; i < loadedFontData.Count; ++i)
         {
             FontListElement spawned = Instantiate(fontListElement, fontsList);
-            spawned.Set(i, trackInfo.Fonts[i]);
+            spawned.Set(i);
         }
     }
 
-    public void UpdateFont(int index, TMP_FontAsset font)
+    public void UpdateFont(string filePath, int index)
     {
-        if (index > trackInfo.Fonts.Count - 1) return;
-        trackInfo.Fonts[index] = font;
-    }
-
-    private void SetVisualizerElements()
-    {
-        SetVisualizerColorElements();
-        SetVisualizerFontElements();
-    }
-
-    private void SetVisualizerColorElements()
-    {
-        foreach (SerializableKeyValuePair<SetupElement, SetElementColorToMatchTrack> kvp in visualizerColorElementDict)
+        string newFontName = StringHelper.GetFileName(filePath);
+        if (loadedFontData.ContainsKey(newFontName))
         {
-            kvp.Value.Active = kvp.Key.Active;
-            kvp.Value.ColorIndex = kvp.Key.ColorIndex;
+            Debug.LogWarning("Ignoring attempt to add a font that already exists");
+            return;
+        }
+
+        // Remove old
+        string keyAtIndex = GetFontKeyAtIndex(index);
+        loadedFontIndices.Remove(keyAtIndex);
+        loadedFontData.Remove(keyAtIndex);
+        loadedTMPFontAssets.Remove(keyAtIndex);
+
+        // Add new
+        RegisterNewFont(filePath, index);
+
+        UpdateTrackFonts();
+    }
+
+    public string RegisterNewFont(string filePath, int index = -1)
+    {
+        byte[] fileContents = File.ReadAllBytes(filePath);
+        FontFileData fontFileData = new FontFileData(StringHelper.GetFileName(filePath), fileContents);
+
+        loadedFontData.Add(fontFileData.FontName, fontFileData);
+        loadedTMPFontAssets.Add(fontFileData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fileContents)));
+        loadedFontIndices.Add(fontFileData.FontName, (index == -1 ? loadedFontIndices.Count : index));
+        return fontFileData.FontName;
+    }
+
+    private void UpdateTrackFonts()
+    {
+        trackInfo.Fonts.Clear();
+
+        string[] keys = loadedFontIndices.Keys.ToArray();
+        int findingElementIndex = 0;
+
+        while (findingElementIndex < keys.Length - 1)
+        {
+            for (int i = 0; i < keys.Count() - 1; ++i)
+            {
+                string key = keys[i];
+                int value = loadedFontIndices[key];
+
+                if (value == findingElementIndex)
+                {
+                    trackInfo.Fonts.Add(loadedTMPFontAssets[key]);
+                    findingElementIndex++;
+                }
+            }
         }
     }
 
-    private void SetVisualizerFontElements()
+    public VisualizerElementsSettings GetVisualizerElementSettings(VisualizerElementLabel label)
     {
-        foreach (SerializableKeyValuePair<SetupElement, SetFontToVisualizerFont> kvp in visualizerFontElementDict)
-        {
-            kvp.Value.FontIndex = kvp.Key.FontIndex;
-        }
+        return visualizerElementsInfo[label];
+    }
+
+    public void UpdateVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
+    {
+        visualizerElementsInfo[label] = newSettings;
+        BroadcastVisualizerElementsInfo();
     }
 
     public void ChangeVolume(float amount)
@@ -750,7 +855,8 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("Save Preset")]
     public void SavePreset()
     {
-        SaveManager._Instance.SavePreset("Test", new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients));
+        SaveManager._Instance.SavePreset(trackInfo.Title, new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients, 
+            loadedFontData.Values.ToList(), visualizerElementsInfo));
     }
 
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
@@ -758,6 +864,40 @@ public class VisualizerManager : MonoBehaviour
         try
         {
             VisualizerPreset preset = SaveManager._Instance.LoadPreset(filePath);
+
+            // Set colors
+            ClearColorsList();
+            trackInfo.Colors = preset.Colors;
+            PopulateColorsList();
+
+            // Set gradients
+            ClearGradientsList();
+            trackInfo.Gradients = preset.Gradients;
+            PopulateGradientsList();
+
+            // Set fonts
+            loadedFontData.Clear();
+            loadedFontIndices.Clear();
+            loadedTMPFontAssets.Clear();
+            ClearFontsList();
+            for (int i = 0; i < preset.Fonts.Count; i++)
+            {
+                FontFileData fontData = preset.Fonts[i];
+                loadedTMPFontAssets.Add(fontData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fontData.FileContents)));
+                loadedFontIndices.Add(fontData.FontName, i);
+                loadedFontData.Add(fontData.FontName, fontData);
+
+                // Create UI
+                FontListElement spawned = Instantiate(fontListElement, fontsList);
+                spawned.Set(i);
+            }
+
+            // Set visualizer elements
+            visualizerElementsInfo = preset.VisualizerElements;
+
+            BroadcastTrackInfo();
+            BroadcastVisualizerElementsInfo();
+
             onSuccess(filePath, preset);
         } catch (Exception e)
         {

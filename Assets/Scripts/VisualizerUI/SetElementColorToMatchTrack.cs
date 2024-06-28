@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class SetElementColorToMatchTrack : VisualizerElement
 {
     [SerializeField] private VisualizerColorType colorType;
-    [SerializeField] private int colorIndex;
-
-    public int ColorIndex { get { return colorIndex; } set { colorIndex = value; } }
     public VisualizerColorType ColorType { get { return colorType; } set { colorType = value; } }
-
-    private Color blankColor = new Color(0, 0, 0, 0);
+    [SerializeField] private int index;
+    public int ColorIndex { get { return index; } set { index = value; } }
 
     protected virtual void Awake()
     {
@@ -24,14 +22,26 @@ public abstract class SetElementColorToMatchTrack : VisualizerElement
     {
         if (!Active)
         {
-            SetElementToColor(blankColor);
+            SetElementToColor(ColorHelper.BlankColor);
             return;
         }
-        SetElementToColor(VisualizerManager._Instance.GetColor(colorType, colorIndex, Vector2.zero));
+        SetElementToColor(VisualizerManager._Instance.GetColor(colorType, index, Vector2.zero));
     }
 
     public override void RecieveTrackInfo(TrackInfo info)
     {
+        SetElementColor();
+    }
+
+    public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
+    {
+        // Base version of function handles enabled/disabled
+        base.RecieveVisualizerElementsInfo(info);
+
+        // Update color index
+        index = info[label].ColorIndex;
+
+        // Update Color
         SetElementColor();
     }
 

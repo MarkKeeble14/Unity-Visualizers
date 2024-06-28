@@ -757,9 +757,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e5548563cc50d4e89406335ecd4f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  label: 0
   labelText: {fileID: 6371492712468172714}
   colorDisplay: {fileID: 1365264166656594396}
   enabledButtonDisplay: {fileID: 8398188570865536308}
+  colorIndexInput: {fileID: 8547099539633756370}
+  fontIndexInput: {fileID: 2876210777805548011}
 --- !u!1 &4985179640977657160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,8 +1243,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 919714982528533909}
-        m_TargetAssemblyTypeName: SetupElement, Assembly-CSharp
-        m_MethodName: UpdateFont
+        m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
+        m_MethodName: UpdateFontIndex
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1617,8 +1620,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 919714982528533909}
-        m_TargetAssemblyTypeName: SetupElement, Assembly-CSharp
-        m_MethodName: UpdateColor
+        m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
+        m_MethodName: UpdateColorIndex
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

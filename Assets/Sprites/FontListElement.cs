@@ -1,21 +1,16 @@
 ﻿using UnityEngine;
 using TMPro;
+using System;
 
 public class FontListElement : ListSelectionElement
 {
     [SerializeField] private TextMeshProUGUI exampleText;
     [SerializeField] private TextMeshProUGUI fontName;
 
-    public void Set(int index, TMP_FontAsset font)
+    public void Set(int index)
     {
         SetIndex(index);
-        SetFontInfo(MakeFontNameFromAsset(font), font);
-    }
-
-    public void Set(int index, TMP_FontAsset font, string filePath)
-    {
-        SetIndex(index);
-        SetFontInfo(StringHelper.GetFileName(filePath), font);
+        SetFontInfo(VisualizerManager._Instance.GetFontName(index), VisualizerManager._Instance.GetFont(index));
     }
 
     public override void OpenListSelection()
@@ -23,8 +18,8 @@ public class FontListElement : ListSelectionElement
         StartCoroutine(VisualizerManager._Instance.SelectOneFont(
             (filePath, font) =>
             {
-                SetFontInfo(StringHelper.GetFileName(filePath), font);
-                VisualizerManager._Instance.UpdateFont(Index, font);
+                VisualizerManager._Instance.UpdateFont(filePath, Index);
+                SetFontInfo(VisualizerManager._Instance.GetFontName(Index), VisualizerManager._Instance.GetFont(Index));
             }));
     }
 
@@ -33,10 +28,5 @@ public class FontListElement : ListSelectionElement
         this.fontName.font = newFont;
         this.fontName.text = fontName;
         exampleText.font = newFont;
-    }
-
-    private string MakeFontNameFromAsset(TMP_FontAsset font)
-    {
-        return font.ToString().Split(" (")[0];
     }
 }

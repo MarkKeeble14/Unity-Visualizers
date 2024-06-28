@@ -8,6 +8,7 @@ public static class JsonCustomSettings
         {
             var settings = new JsonSerializerSettings();
             settings.Converters.Add(new ColorConverter());
+            settings.Converters.Add(new FontConverter());
             return settings;
         };
     }

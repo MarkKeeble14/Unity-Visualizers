@@ -56,7 +56,6 @@ public class ProceduralLevelTileSpawner : MonoBehaviour
             spawnedLastTile = true;
             foreach (GameEvent e in activateOnSpawningLastTile)
             {
-                Debug.Log(e);
                 e.Activate();
             }
         }

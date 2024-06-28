@@ -87,8 +87,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32674f93a71dffd45ac138240f326038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  label: 4
   colorType: 0
-  colorIndex: 0
+  index: 0
   segmentPrefab: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
   attachmentType: 2
   signalMultiplier: 1500

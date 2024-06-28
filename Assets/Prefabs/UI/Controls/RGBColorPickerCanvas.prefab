@@ -126,7 +126,6 @@ MonoBehaviour:
   blueTextField: {fileID: 964172015595282870}
   hexTextField: {fileID: 5267729617702242764}
   picker: {fileID: 2347622104508714697}
-  screenRenderTex: {fileID: 8400000, guid: 18293908ac3823246850d12169f4c68a, type: 2}
 --- !u!1001 &1613732287173493015
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -509,6 +508,26 @@ PrefabInstance:
     - target: {fileID: 6881391217380968667, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ParseHexadecimalColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8085612779336991080, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8085612779336991080, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8085612779336991080, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8085612779336991080, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8085612779336991080, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8263487319972128026, guid: c034560f48883ca49a75ec51ffc31e94, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

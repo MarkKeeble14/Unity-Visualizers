@@ -69,5 +69,6 @@ public class ControlPanel : MonoBehaviour
     public void SetCanvasGroupAlpha(float v)
     {
         canvasGroup.alpha = v;
+        canvasGroup.blocksRaycasts = (v == 0 ? false : true);
     }
 }

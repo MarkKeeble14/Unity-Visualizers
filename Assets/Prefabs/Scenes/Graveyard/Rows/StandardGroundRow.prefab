@@ -814,6 +814,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile
@@ -876,6 +896,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile
@@ -1036,6 +1076,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile
@@ -1098,6 +1158,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile
@@ -1255,16 +1335,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: chanceToSpawnSomething.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: chanceToSpawnSomething.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[1].value
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[3].value
-      value: 35
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[4].value
-      value: 35
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
@@ -1329,16 +1417,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: chanceToSpawnSomething.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: chanceToSpawnSomething.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[1].value
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[3].value
-      value: 35
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: optionsToSpawn.options.Array.data[4].value
-      value: 35
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
@@ -1402,6 +1498,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile
@@ -1464,6 +1580,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7201829734992672364}
     m_Modifications:
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[0].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[1].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[2].value
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[3].value
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: -6435084465565521215, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
+      propertyPath: optionsToSpawn.options.Array.data[4].value
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6264012058555246676, guid: f157dc049c58f22458ac7a3c2cd4780e, type: 3}
       propertyPath: m_Name
       value: GroundTile

@@ -5,29 +5,44 @@ using TMPro;
 
 public class RGBColorPicker : MonoBehaviour
 {
+    [Header("Numbers")]
     [SerializeField, Range(0, 255)] private float r;
     [SerializeField, Range(0, 255)] private float g;
     [SerializeField, Range(0, 255)] private float b;
 
+    [SerializeField] private float inDropperSelectionHeight = 800;
+    [SerializeField] private float defaultHeight = 400;
+    [SerializeField] private float offsetFromBorders = 50;
+
     [Header("References")]
+    [SerializeField] private CanvasGroup rgbPickerCanvasGroup;
     [SerializeField] private Image compositeColorDisplay;
     [SerializeField] private Image redColorComponent;
     [SerializeField] private Image greenColorComponent;
     [SerializeField] private Image blueColorComponent;
+    [SerializeField] private GameObject picker;
 
+    [Header("Inputs")]
     [SerializeField] private TMP_InputField redTextField;
     [SerializeField] private TMP_InputField greenTextField;
     [SerializeField] private TMP_InputField blueTextField;
-
     [SerializeField] private TMP_InputField hexTextField;
+
+    [Header("Color Texture")]
+    [SerializeField] private RectTransform colorPickerTransform;
+    [SerializeField] private GameObject colorTexture;
+
+    [Header("Alt Color Display")]
+    [SerializeField] private Image altCompositeColorDisplay;
+    [SerializeField] private GameObject altColorDisplayContainer;
 
     public static RGBColorPicker _Instance { get; private set; }
 
     public Action<Color> OnColorFinalized;
 
-    [SerializeField] private GameObject picker;
-
     private bool isDropperSelectActive;
+
+    public bool IsPickerHidden => rgbPickerCanvasGroup.alpha == 0;
 
 
     private void Awake()
@@ -38,27 +53,29 @@ public class RGBColorPicker : MonoBehaviour
 
     private void Start()
     {
+        SetColorPickerHeight(defaultHeight);
         SetDisplayColors();
     }
+
+    private Color hoveredPixelColor;
 
     private void Update()
     {
         if (isDropperSelectActive)
         {
             // Read Color at mouse coordinate
-            Color c = GetColorOfHoveredPixel();
-            SetR(c.r);
-            SetG(c.g);
-            SetB(c.b);
+            hoveredPixelColor = GetColorOfHoveredPixel();
+            SetR(hoveredPixelColor.r);
+            SetG(hoveredPixelColor.g);
+            SetB(hoveredPixelColor.b);
 
-            if (Input.GetMouseButtonDown(0)) 
-            { 
-                // Set variable
-                isDropperSelectActive = false;
-
-                ScreenRenderTextureManager._Instance.RescindRenderToTexRequest();
+            if (Input.GetMouseButtonDown(0))
+            {
+                DisableDropperSelection();
             }
         }
+
+        if (IsPickerHidden) { altCompositeColorDisplay.color = hoveredPixelColor; }
     }
 
     private Color GetColorOfHoveredPixel()
@@ -158,6 +175,50 @@ public class RGBColorPicker : MonoBehaviour
         isDropperSelectActive = true;
 
         ScreenRenderTextureManager._Instance.RequestRenderToTex();
+
+        SetColorPickerHeight(inDropperSelectionHeight);
+
+        colorTexture.SetActive(true);
+    }
+
+    private void DisableDropperSelection()
+    {
+        // Set variable
+        isDropperSelectActive = false;
+
+        ScreenRenderTextureManager._Instance.RescindRenderToTexRequest();
+
+        SetColorPickerHeight(defaultHeight);
+
+        colorTexture.SetActive(false);
+    }
+
+    public void HideRGBPicker()
+    {
+        rgbPickerCanvasGroup.alpha = 0;
+        rgbPickerCanvasGroup.blocksRaycasts = false;
+
+        altColorDisplayContainer.SetActive(true);
+    }
+
+    public void ShowRGBPicker()
+    {
+        rgbPickerCanvasGroup.alpha = 1;
+        rgbPickerCanvasGroup.blocksRaycasts = true;
+
+        altColorDisplayContainer.SetActive(false);
+    }
+
+
+    private void SetColorPickerHeight(float height)
+    {
+        Vector2 sizeDelta = colorPickerTransform.sizeDelta;
+        sizeDelta.y = height;
+        colorPickerTransform.sizeDelta = sizeDelta;
+
+        Vector2 anchoredPosition = colorPickerTransform.anchoredPosition;
+        anchoredPosition.y = (height / 2) + offsetFromBorders;
+        colorPickerTransform.anchoredPosition = anchoredPosition;
     }
 
     public Color GetCurrentColorRepresentation()

@@ -74,7 +74,7 @@ public class SaveManager : MonoBehaviour
         encodedFilePath = encodedFilePath.Replace("/", @"\");
 
         Debug.Log("Saving Preset (" + label + ") to: " + encodedFilePath);
-        File.WriteAllText(encodedFilePath, JsonConvert.SerializeObject(preset, Formatting.Indented));
+        File.WriteAllText(encodedFilePath, JsonConvert.SerializeObject(preset, Formatting.None));
     }
 
     public VisualizerPreset LoadPreset(string loadFromPath)

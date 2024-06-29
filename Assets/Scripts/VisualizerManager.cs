@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 using System.Linq;
@@ -9,6 +8,8 @@ using SimpleFileBrowser;
 using System.IO;
 using UnityEngine.Networking;
 using UnityEngine.Device;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 public enum AudioChannel
 {
@@ -48,11 +49,15 @@ public class VisualizerManager : MonoBehaviour
     [Header("Other Settings")]
     [SerializeField] private bool askForTrack = true;
     [SerializeField] private bool askForCoverArt = true;
+    [SerializeField] private bool askForPreset = true;
     [SerializeField] private bool askForColors = true;
     [SerializeField] private bool askForFonts = true;
     [SerializeField] private bool askForVisualizerElements = true;
     [SerializeField] private bool startImmedietelyUponLoadingTrack;
     [SerializeField] private float startSongAtSeconds;
+    [SerializeField] private bool applyPostProcessing;
+    [SerializeField, Range(0, 1)] private float volumeWeight;
+
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
@@ -68,6 +73,8 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
     [SerializeField] private GameObject visualizerElementsUI;
     private AudioSource audioSource;
+    private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
+    private Volume volume;
 
     [Header("Scenarios")]
     [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
@@ -154,6 +161,22 @@ public class VisualizerManager : MonoBehaviour
     public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
     public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
 
+    private List<IRecieveActiveCamera> activeCameraListeners = new();
+
+    [ContextMenu("BroadcastActiveCamera")]
+    private void BroadcastActiveCamera()
+    {
+        // Attempt to find any listeners if the list is empty
+        if (activeCameraListeners.Count == 0)
+        {
+            activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
+        }
+
+        // Send data out
+        activeCameraListeners.ForEach(item => item.RecieveActiveCamera(Camera.main));
+    }
+
+
     [ContextMenu("BroadcastTrackInfo")]
     private void BroadcastTrackInfo()
     {
@@ -193,6 +216,7 @@ public class VisualizerManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = trackInfo.AudioClip;
         trackInfo.Duration = StringHelper.GetDurationText(trackInfo.AudioClip.length);
+        volume = FindObjectOfType<Volume>();
     }
 
     private void Start()
@@ -217,6 +241,13 @@ public class VisualizerManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        // Enable/disable post processing
+        if (activeCameraAdditionalCameraData != null)
+            activeCameraAdditionalCameraData.renderPostProcessing = applyPostProcessing;
+
+        // Change weight
+        volume.weight = volumeWeight;
+
         // Spectrum Data
         GetSpectrumAudioSource();
 
@@ -256,6 +287,7 @@ public class VisualizerManager : MonoBehaviour
     {
         // Set canvas group alpha
         visualizerCanvasGroup.alpha = 1;
+        visualizerCanvasGroup.blocksRaycasts = true;
 
         // Create audio profile
         CreateAudioProfile();
@@ -468,6 +500,10 @@ public class VisualizerManager : MonoBehaviour
             kvp.Value.SetActive(kvp.Key == name);
         }
 
+        BroadcastActiveCamera();
+
+        activeCameraAdditionalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+
         StartCoroutine(RunSetup());
     }
 
@@ -478,6 +514,9 @@ public class VisualizerManager : MonoBehaviour
 
         if (askForCoverArt)
             yield return StartCoroutine(RunCoverArtSelection());
+
+        if (askForPreset)
+            yield return StartCoroutine(RunLoadPresetSelection());
 
         if (askForColors)
             yield return StartCoroutine(RunColorsSelection());
@@ -516,11 +555,11 @@ public class VisualizerManager : MonoBehaviour
                     audioSource.clip = clip;
                     trackInfo.Title = StringHelper.GetFileName(filePath);
                     trackInfo.Duration = StringHelper.GetDurationText(trackInfo.AudioClip.length);
+
+                    BroadcastTrackInfo();
                 },
                 x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
         }, "Select Track", "Load"));
-
-        BroadcastTrackInfo();
     }
 
     public IEnumerator RunCoverArtSelection()
@@ -535,11 +574,11 @@ public class VisualizerManager : MonoBehaviour
                 {
                     Debug.Log("Successfully Loaded Image from path = " + x);
                     trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+                    BroadcastTrackInfo();
                 },
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
-
-        BroadcastTrackInfo();
     }
 
     public IEnumerator RunColorsSelection()
@@ -629,7 +668,7 @@ public class VisualizerManager : MonoBehaviour
 
     private void OnFailureToSelectFiles()
     {
-        throw new Exception(); // TODO: Custom Exception
+        Debug.LogWarning("Cancelled File Selection");
     }
 
     private IEnumerator LoadAudioClipFromFile(string filePath, Action<string, AudioClip> onSuccess, Action<string> onFailure)
@@ -841,6 +880,17 @@ public class VisualizerManager : MonoBehaviour
         return visualizerElementsInfo[label];
     }
 
+    public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetVisualizerElementSettings()
+    {
+        return visualizerElementsInfo;
+    }
+
+    public void SetVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
+    {
+        visualizerElementsInfo = settings;
+        BroadcastVisualizerElementsInfo();
+    }
+
     public void UpdateVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
     {
         visualizerElementsInfo[label] = newSettings;
@@ -855,8 +905,12 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("Save Preset")]
     public void SavePreset()
     {
-        SaveManager._Instance.SavePreset(trackInfo.Title, new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients, 
-            loadedFontData.Values.ToList(), visualizerElementsInfo));
+        VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
+            loadedFontData.Values.ToList(), visualizerElementsInfo);
+
+        UIManager._Instance.PopupInputField("Name your Preset", "Confirm Preset Name", "Use Track Title", 
+            x => { SaveManager._Instance.SavePreset(x, preset); }, 
+            () => SaveManager._Instance.SavePreset(trackInfo.Title, preset));
     }
 
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)

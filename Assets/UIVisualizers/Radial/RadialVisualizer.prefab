@@ -15,8 +15,10 @@ GameObject:
   - component: {fileID: 4365240339340660847}
   - component: {fileID: 5252503949136689349}
   - component: {fileID: 109146645116770097}
-  - component: {fileID: 5575566752482503838}
   - component: {fileID: 8749339565519304311}
+  - component: {fileID: 8962911305081168380}
+  - component: {fileID: 2376133031630716814}
+  - component: {fileID: 5575566752482503838}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -110,10 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signalMultiplier: 0.1
+  signalMultiplier: 0.25
   useBuffer: 1
-  bandType: 0
-  band: 5
+  bandType: 1
+  band: 4
 --- !u!114 &5252503949136689349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bypass: 0
+  bypass: 1
   shouldExecuteLock: {fileID: 8749339565519304311}
   slowAdust: 1
   defaultValue: 2
@@ -152,19 +154,6 @@ MonoBehaviour:
   adjustSpeed: 25
   multiplier: 1
   scaleOn: 1
---- !u!114 &5575566752482503838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465347465345289126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  directions: []
 --- !u!114 &8749339565519304311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,4 +166,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  greaterThan: 0.25
+  greaterThan: 5
+--- !u!114 &8962911305081168380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43ef59a7b1fe1d499996c93020a1a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  startDirection: 0
+  speed: 5
+--- !u!114 &2376133031630716814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35c402a17b0dfcf4291fb4efd943ae0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 0}
+  slowAdust: 0
+  defaultValue: 0
+  adjustSpeed: 25
+  multiplier: 1
+  radialLayoutGroup: {fileID: 5952818077481513072}
+--- !u!114 &5575566752482503838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 8962911305081168380}
+    value:
+    - {fileID: 2376133031630716814}
+  - key: {fileID: 4365240339340660847}
+    value:
+    - {fileID: 5252503949136689349}
+    - {fileID: 109146645116770097}

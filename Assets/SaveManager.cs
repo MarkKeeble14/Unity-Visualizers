@@ -62,7 +62,7 @@ public class SaveManager : MonoBehaviour
         _Instance = this;
     }
 
-    public void SavePreset(string label, VisualizerPreset preset)
+    public string SavePreset(string label, VisualizerPreset preset)
     {
         // Create folder if neccessary
         string presetsPath = Path.Combine(Application.dataPath, "../Presets");
@@ -75,6 +75,7 @@ public class SaveManager : MonoBehaviour
 
         Debug.Log("Saving Preset (" + label + ") to: " + encodedFilePath);
         File.WriteAllText(encodedFilePath, JsonConvert.SerializeObject(preset, Formatting.None));
+        return encodedFilePath;
     }
 
     public VisualizerPreset LoadPreset(string loadFromPath)
@@ -83,7 +84,6 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(loadFromPath);
 
         VisualizerPreset loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json);
-        Debug.Log(loadedPreset);
         return loadedPreset;
     }
 }

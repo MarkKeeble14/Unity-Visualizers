@@ -11,6 +11,7 @@ public class InputFieldPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI acceptButtonText;
     [SerializeField] private TextMeshProUGUI cancelButtonText;
     [SerializeField] private Button acceptButton;
+    [SerializeField] private GameObject copyToClipboardButton;
 
     private bool recievedResponse;
     private bool accepted;
@@ -37,16 +38,20 @@ public class InputFieldPopup : MonoBehaviour
         accepted = false;
     }
 
-    public void Open(string directions, string acceptButtonText, string cancelButtonText, Action<string> onSuccess, Action onFailure)
+    public void Open(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard, Action<string> onSuccess, Action onFailure)
     {
-        StartCoroutine(Show(directions, acceptButtonText, cancelButtonText, onSuccess, onFailure));
+        StartCoroutine(Show(defaultText, directions, acceptButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure));
     }
 
-    private IEnumerator Show(string directions, string acceptButtonText, string cancelButtonText, Action<string> onSuccess, Action onFailure)
+    private IEnumerator Show(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard, 
+        Action<string> onSuccess, Action onFailure)
     {
+        inputField.text = defaultText;
         directionsText.text = directions;
         this.acceptButtonText.text = acceptButtonText;
         this.cancelButtonText.text = cancelButtonText;
+
+        copyToClipboardButton.SetActive(allowCopyToClipboard);
 
         yield return new WaitUntil(() => recievedResponse);
         recievedResponse = false;
@@ -61,5 +66,10 @@ public class InputFieldPopup : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+    }
+
+    public void CopyInputToKeyboard()
+    {
+        UIManager._Instance.CopyTextToClipboard(inputField.text);
     }
 }

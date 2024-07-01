@@ -9,13 +9,28 @@ public class SetupVisualizerElement : MonoBehaviour, IRecieveVisualizerElementsI
     [SerializeField] private VisualizerElementLabel label;
 
     [SerializeField] private TextMeshProUGUI labelText;
-    [SerializeField] private Image colorDisplay;
     [SerializeField] private Image enabledButtonDisplay;
-    [SerializeField] private TMP_InputField colorIndexInput;
-    [SerializeField] private TMP_InputField fontIndexInput;
+
+    [SerializeField] private ColorDropdownMenu colorDropdownMenu;
+    [SerializeField] private FontDropdownMenu fontDropdownMenu;
+
     private bool active;
     private int colorIndex;
     private int fontIndex;
+
+    private void Awake()
+    {
+        colorDropdownMenu.OnSelectElement += x =>
+        {
+            colorIndex = x;
+            UpdateColorIndex();
+        };
+        fontDropdownMenu.OnSelectElement += x =>
+        {
+            fontIndex = x;
+            UpdateFontIndex();
+        };
+    }
 
     public void ToggleActive()
     {
@@ -30,42 +45,12 @@ public class SetupVisualizerElement : MonoBehaviour, IRecieveVisualizerElementsI
 
     private void SetColor()
     {
-        colorIndexInput.text = colorIndex.ToString();
-        colorDisplay.color = VisualizerManager._Instance.GetColor(VisualizerColorType.COLOR, colorIndex);
+        colorDropdownMenu.ActivateElement(colorIndex);
     }
 
     private void SetFont()
     {
-        fontIndexInput.text = fontIndex.ToString();
-        labelText.font = VisualizerManager._Instance.GetFont(fontIndex);
-    }
-
-    private int ParseStringForInt(string str)
-    {
-        int i;
-        if (int.TryParse(str, out i))
-        {
-            return i;
-        }
-        return -1;
-    }
-
-    public void UpdateColorIndex(string s)
-    {
-        int i = ParseStringForInt(s);
-        if (i != -1)
-        {
-            UpdateColorIndex(i);
-        }
-    }
-
-    public void UpdateFontIndex(string s)
-    {
-        int i = ParseStringForInt(s);
-        if (i != -1)
-        {
-            UpdateFontIndex(i);
-        }
+        fontDropdownMenu.ActivateElement(fontIndex);
     }
 
     private void UpdateEnabled(bool b)
@@ -75,17 +60,17 @@ public class SetupVisualizerElement : MonoBehaviour, IRecieveVisualizerElementsI
         VisualizerManager._Instance.UpdateVisualizerElementSettings(label, newSettings);
     }
 
-    private void UpdateColorIndex(int i)
+    private void UpdateColorIndex()
     {
         VisualizerElementsSettings newSettings = GetElementSettings();
-        newSettings.ColorIndex = i;
+        newSettings.ColorIndex = colorIndex;
         VisualizerManager._Instance.UpdateVisualizerElementSettings(label, newSettings);
     }
 
-    private void UpdateFontIndex(int i)
+    private void UpdateFontIndex()
     {
         VisualizerElementsSettings newSettings = GetElementSettings();
-        newSettings.FontIndex = i;
+        newSettings.FontIndex = fontIndex;
         VisualizerManager._Instance.UpdateVisualizerElementSettings(label, newSettings);
     }
 

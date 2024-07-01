@@ -857,19 +857,19 @@ public class VisualizerManager : MonoBehaviour
         trackInfo.Fonts.Clear();
 
         string[] keys = loadedFontIndices.Keys.ToArray();
-        int findingElementIndex = 0;
+        int findingElementAtIndex = 0;
 
-        while (findingElementIndex < keys.Length - 1)
+        while (findingElementAtIndex < keys.Length)
         {
-            for (int i = 0; i < keys.Count() - 1; ++i)
+            for (int i = 0; i < keys.Count(); ++i)
             {
                 string key = keys[i];
                 int value = loadedFontIndices[key];
 
-                if (value == findingElementIndex)
+                if (value == findingElementAtIndex)
                 {
                     trackInfo.Fonts.Add(loadedTMPFontAssets[key]);
-                    findingElementIndex++;
+                    findingElementAtIndex++;
                 }
             }
         }
@@ -908,8 +908,11 @@ public class VisualizerManager : MonoBehaviour
         VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
             loadedFontData.Values.ToList(), visualizerElementsInfo);
 
-        UIManager._Instance.PopupInputField("Name your Preset", "Confirm Preset Name", "Use Track Title", 
-            x => { SaveManager._Instance.SavePreset(x, preset); }, 
+        UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Use Track Title", false,
+            x => { 
+                string path = SaveManager._Instance.SavePreset(x, preset);
+                UIManager._Instance.AddNewPopupMessage("Preset saved to " + path);
+            }, 
             () => SaveManager._Instance.SavePreset(trackInfo.Title, preset));
     }
 

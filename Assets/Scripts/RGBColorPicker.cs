@@ -43,6 +43,7 @@ public class RGBColorPicker : MonoBehaviour
     private bool isDropperSelectActive;
 
     public bool IsPickerHidden => rgbPickerCanvasGroup.alpha == 0;
+    private Color hoveredPixelColor;
 
 
     private void Awake()
@@ -57,10 +58,22 @@ public class RGBColorPicker : MonoBehaviour
         SetDisplayColors();
     }
 
-    private Color hoveredPixelColor;
 
     private void Update()
     {
+        if (redTextField.isFocused && Input.GetKeyDown(KeyCode.Tab))
+        {
+            greenTextField.Select();
+        }
+        if (greenTextField.isFocused && Input.GetKeyDown(KeyCode.Tab))
+        {
+            blueTextField.Select();
+        }
+        if (blueTextField.isFocused && Input.GetKeyDown(KeyCode.Tab))
+        {
+            hexTextField.Select();
+        }
+
         if (isDropperSelectActive)
         {
             // Read Color at mouse coordinate

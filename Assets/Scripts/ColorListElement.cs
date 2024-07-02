@@ -16,8 +16,6 @@ public class ColorListElement : ListSelectionElement
 
     public override void OpenListSelection()
     {
-        Debug.Log("Opening Color Selection for Color #" + Index);
-
         RGBColorPicker._Instance.Open(image.color);
         RGBColorPicker._Instance.OnColorFinalized += OnColorSelected;
     }

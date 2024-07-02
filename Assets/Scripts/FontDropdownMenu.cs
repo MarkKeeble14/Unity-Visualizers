@@ -19,7 +19,14 @@ public class FontDropdownMenu : DropdownMenu, IRecieveTrackInfo
 
     protected override void SetElementActive(int index)
     {
-        TMP_FontAsset f = ((FontDropdownElement)dropdownElements[index]).GetFont();
+        TMP_FontAsset f;
+        if (index >= dropdownElements.Count)
+        {
+            f = VisualizerManager._Instance.GetDefaultFont();
+        } else
+        {
+            f = ((FontDropdownElement)dropdownElements[index]).GetFont();
+        }
         labelText.font = f;
         OnFontSelected?.Invoke(f);
     }

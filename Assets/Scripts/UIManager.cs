@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public static UIManager _Instance { get; private set; }
 
     [SerializeField] private InputFieldPopup inputFieldDialog;
+    [SerializeField] private ActionSelectionPopup actionSelectionPopup;
 
     [SerializeField] private TimerDictionary<string> popupMessageDict = new();
 
@@ -35,8 +36,12 @@ public class UIManager : MonoBehaviour
     public void PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
         Action<string> onSuccess, Action onFailure)
     {
-        inputFieldDialog.gameObject.SetActive(true);
         inputFieldDialog.Open(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+    }
+
+    public void PopupActionSelection(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
+    {
+        actionSelectionPopup.Open(directions, cancelButtonText, onCancel, actions);
     }
 
     private void ShowMessage(string text)

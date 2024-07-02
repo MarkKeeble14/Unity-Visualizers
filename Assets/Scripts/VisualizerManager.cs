@@ -86,7 +86,6 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Colors")]
     [SerializeField] private GameObject colorsUI;
-    [SerializeField] private Transform gradientsList;
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
     [SerializeField] private GameObject fontsUI;
@@ -166,12 +165,8 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("BroadcastActiveCamera")]
     private void BroadcastActiveCamera()
     {
-        // Attempt to find any listeners if the list is empty
-        if (activeCameraListeners.Count == 0)
-        {
-            activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
-        }
-
+        activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
+        
         // Send data out
         activeCameraListeners.ForEach(item => item.RecieveActiveCamera(Camera.main));
     }
@@ -180,11 +175,7 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("BroadcastTrackInfo")]
     private void BroadcastTrackInfo()
     {
-        // Attempt to find any listeners if the list is empty
-        if (trackInfoListeners.Count == 0)
-        {
-            trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
-        }
+        trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
 
         if (audioSource.clip == null) return;
 
@@ -198,6 +189,7 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastVisualizerElementsInfo()
     {
         // Attempt to find any listeners if the list is empty
+        // I don't foresee visualizer elements being spawned as the game progresses, so caching them once at the beggining should be fine
         if (visualizerElements.Count == 0)
         {
             visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
@@ -222,7 +214,6 @@ public class VisualizerManager : MonoBehaviour
     private void Start()
     {
         PopulateColorsList();
-        PopulateGradientsList();
         PopulateFontsList();
 
         // Populate visualizer elements info
@@ -322,21 +313,31 @@ public class VisualizerManager : MonoBehaviour
 
     public Color GetColor(VisualizerColorType type, int index)
     {
-        return GetColor(type, index, Vector2.zero);
+        switch (type)
+        {
+            case VisualizerColorType.COLOR:
+                return GetTrackColor(index);
+            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(0);
+            case VisualizerColorType.TIME_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
+            default:
+                throw new Exception(); // TODO: Custom Exceptions
+        }
     }
 
-    public Color GetColor(VisualizerColorType type, int index, Vector2 positionalData)
+    public Color GetColor(VisualizerColorType type, int index, float f)
     {
         switch (type)
         {
             case VisualizerColorType.COLOR:
                 return GetTrackColor(index);
             case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
-                return GetTrackGradient(index).Evaluate(positionalData.x / positionalData.y);
+                return GetTrackGradient(index).Evaluate(f);
             case VisualizerColorType.TIME_BASED_GRADIENT:
                 return GetTrackGradient(index).Evaluate(PlaythroughPercent);
             default:
-                throw new System.Exception(); // TODO: Custom Exception
+                throw new Exception(); // TODO: Custom Exceptions
         }
     }
 
@@ -369,6 +370,11 @@ public class VisualizerManager : MonoBehaviour
     {
         if (index > loadedFontData.Count - 1) return defaultFont;
         return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
+    }
+
+    public TMP_FontAsset GetDefaultFont()
+    {
+        return defaultFont;
     }
 
     public string GetFontName(int index)
@@ -738,11 +744,29 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public void AddColorElement()
+    public void AddElementToColorsList()
+    {
+        UIManager._Instance.PopupActionSelection("Color or Gradient?", "Cancel", null, new List<ActionSelection>()
+        {
+            new ActionSelection("Color", () => AddColorElement()),
+            new ActionSelection("Gradient", () => AddGradientElement()),
+        });
+
+    }
+
+    private void AddColorElement()
     {
         trackInfo.Colors.Add(Color.white);
         ColorListElement spawned = Instantiate(colorListElement, colorsList);
         spawned.Set(trackInfo.Colors.Count - 1, Color.white);
+    }
+
+    private void AddGradientElement()
+    {
+        Gradient g = new Gradient();
+        trackInfo.Gradients.Add(g);
+        GradientListElement spawned = Instantiate(gradientListElement, colorsList);
+        spawned.Set(trackInfo.Gradients.Count - 1, g);
     }
 
     private void PopulateColorsList()
@@ -751,6 +775,12 @@ public class VisualizerManager : MonoBehaviour
         {
             ColorListElement spawned = Instantiate(colorListElement, colorsList);
             spawned.Set(i, trackInfo.Colors[i]);
+        }
+
+        for (int i = 0; i < trackInfo.Gradients.Count; ++i)
+        {
+            GradientListElement spawned = Instantiate(gradientListElement, colorsList);
+            spawned.Set(i, trackInfo.Gradients[i]);
         }
     }
 
@@ -762,35 +792,18 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public void AddGradientElement()
-    {
-        Gradient g = new Gradient();
-        trackInfo.Gradients.Add(g);
-        GradientListElement spawned = Instantiate(gradientListElement, gradientsList);
-        spawned.Set(trackInfo.Gradients.Count - 1, g);
-    }
-
-    private void PopulateGradientsList()
-    {
-        for (int i = 0; i < trackInfo.Gradients.Count; ++i)
-        {
-            GradientListElement spawned = Instantiate(gradientListElement, gradientsList);
-            spawned.Set(i, trackInfo.Gradients[i]);
-        }
-    }
-
-    private void ClearGradientsList()
-    {
-        foreach (Transform child in gradientsList.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
-
     public void UpdateTrackColor(int index, Color c)
     {
         if (index > trackInfo.Colors.Count - 1) return;
         trackInfo.Colors[index] = c;
+        BroadcastTrackInfo();
+    }
+
+    public void UpdateTrackGradient(int index, Gradient g)
+    {
+        if (index > trackInfo.Gradients.Count - 1) return;
+        trackInfo.Gradients[index] = g;
+        BroadcastTrackInfo();
     }
 
     private void ClearFontsList()
@@ -838,7 +851,7 @@ public class VisualizerManager : MonoBehaviour
         // Add new
         RegisterNewFont(filePath, index);
 
-        UpdateTrackFonts();
+        BroadcastTrackInfo();
     }
 
     public string RegisterNewFont(string filePath, int index = -1)
@@ -925,12 +938,8 @@ public class VisualizerManager : MonoBehaviour
             // Set colors
             ClearColorsList();
             trackInfo.Colors = preset.Colors;
-            PopulateColorsList();
-
-            // Set gradients
-            ClearGradientsList();
             trackInfo.Gradients = preset.Gradients;
-            PopulateGradientsList();
+            PopulateColorsList();
 
             // Set fonts
             loadedFontData.Clear();

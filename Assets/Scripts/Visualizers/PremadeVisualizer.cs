@@ -148,7 +148,14 @@ public abstract class PremadeVisualizer : SetElementColorToMatchTrack
             if (!Active)
                 imageList[i].color = c;
             else
-                imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, new Vector2(i, imageList.Count));
+                imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, (float)i / imageList.Count);
         }
+    }
+
+    public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
+    {
+        base.RecieveVisualizerElementsInfo(info);
+
+        UpdateAttachments();
     }
 }

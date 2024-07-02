@@ -260,7 +260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5735813756493872375
 RectTransform:
   m_ObjectHideFlags: 0
@@ -277,10 +277,10 @@ RectTransform:
   m_Father: {fileID: 4060031233283915178}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 34.375, y: -50}
+  m_SizeDelta: {x: 68.75, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1742613723401488549
 MonoBehaviour:
@@ -397,7 +397,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 5
+  m_FlexibleWidth: 6
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!1 &4060031233031463931
@@ -436,7 +436,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4060031233031463924
 CanvasRenderer:
@@ -468,8 +468,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: The quick brown fox jumps over the lazy dog
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
+  m_sharedMaterial: {fileID: -1474848084261474656, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -493,11 +493,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.6
+  m_fontSize: 31.35
   m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 16
+  m_fontSizeMin: 14
   m_fontSizeMax: 32
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 8617991149052693914}
   - component: {fileID: 7465242031178040525}
   m_Layer: 5
-  m_Name: FontElement
+  m_Name: FontListElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -600,7 +600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.2509804}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -656,7 +656,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexText: {fileID: 4060031233715562726}
-  layoutElement: {fileID: 0}
   exampleText: {fileID: 3695046867052405069}
   fontName: {fileID: 6074922965561337242}
 --- !u!114 &7465242031178040525

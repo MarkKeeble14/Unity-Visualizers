@@ -40,6 +40,7 @@ public class InputFieldPopup : MonoBehaviour
 
     public void Open(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard, Action<string> onSuccess, Action onFailure)
     {
+        gameObject.SetActive(true);
         StartCoroutine(Show(defaultText, directions, acceptButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure));
     }
 

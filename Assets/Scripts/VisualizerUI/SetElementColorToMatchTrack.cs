@@ -25,7 +25,7 @@ public abstract class SetElementColorToMatchTrack : VisualizerElement
             SetElementToColor(ColorHelper.BlankColor);
             return;
         }
-        SetElementToColor(VisualizerManager._Instance.GetColor(colorType, index, Vector2.zero));
+        SetElementToColor(VisualizerManager._Instance.GetColor(colorType, index));
     }
 
     public override void RecieveTrackInfo(TrackInfo info)

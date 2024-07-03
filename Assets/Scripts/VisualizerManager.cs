@@ -10,6 +10,11 @@ using UnityEngine.Networking;
 using UnityEngine.Device;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+using static UnityEngine.Rendering.DebugUI.Table;
+using UnityEngine.XR;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public enum AudioChannel
 {
@@ -21,12 +26,14 @@ public enum AudioChannel
 [System.Serializable]
 public struct VisualizerElementsSettings
 {
+    [SerializeField, HideInInspector] public VisualizerColorType ColorType;
     [SerializeField, HideInInspector] public int ColorIndex;
     [SerializeField, HideInInspector] public int FontIndex;
     [SerializeField, HideInInspector] public bool Enabled;
 
-    public VisualizerElementsSettings(int colorIndex, int fontIndex, bool enabled)
+    public VisualizerElementsSettings(VisualizerColorType colorType, int colorIndex, int fontIndex, bool enabled)
     {
+        ColorType = colorType;
         ColorIndex = colorIndex;
         FontIndex = fontIndex;
         Enabled = enabled;
@@ -58,7 +65,6 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool applyPostProcessing;
     [SerializeField, Range(0, 1)] private float volumeWeight;
 
-
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
     [SerializeField] private float audioSampleSmoothing = 100;
@@ -66,15 +72,30 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
+    [Header("Tapping")]
+    [SerializeField] private int tapBufferCount = 5;
+
+    [Header("BPM Calculations")]
+    [SerializeField] private float varianceSensitivity = 1.3f;
+    private float energyBufferSize;
+    private float currentEnergy;
+    private List<float> energyBuffer = new();
+    private float localEnergy;
+    private float averageLocalEnergy;
+
+    [SerializeField] private int measureBPMOverInterval = 15;
+    private List<int> beatCountsPerSecondBuffer = new();
+    private int beatsLastSecond;
+    private float estimatedBPM;
+    private bool estimatingBPM;
+    private bool tappingBPM;
+    private bool didTap;
+
+    [Header("Beat Detection Settings")]
+    [SerializeField] private float ampSpikeDetectionSensitivity = 0.9f;
+
     [Header("Recording Settings")]
     [SerializeField] private float afterTrackRecordingBufferTime = 10f;
-
-    [Header("References")]
-    [SerializeField] private CanvasGroup visualizerCanvasGroup;
-    [SerializeField] private GameObject visualizerElementsUI;
-    private AudioSource audioSource;
-    private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
-    private Volume volume;
 
     [Header("Scenarios")]
     [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
@@ -84,18 +105,28 @@ public class VisualizerManager : MonoBehaviour
     [Header("Transition Settings")]
     [SerializeField] private TransitionData initialTransition;
 
-    [Header("Colors")]
+    [Header("References")]
+    [SerializeField] private CanvasGroup visualizerCanvasGroup;
+    [SerializeField] private GameObject visualizerElementsUI;
+    [SerializeField] private GameObject tempoMenuUI;
+    [SerializeField] private TMP_InputField tempoTapperInputField;
+    [SerializeField] private Button tempoTapperButton;
     [SerializeField] private GameObject colorsUI;
+    [SerializeField] private GameObject fontsUI;
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
-    [SerializeField] private GameObject fontsUI;
+    private AudioSource audioSource;
+    private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
+    private Volume volume;
 
     [Header("Prefabs")]
     [SerializeField] private ColorListElement colorListElement;
     [SerializeField] private GradientListElement gradientListElement;
     [SerializeField] private FontListElement fontListElement;
 
+    private List<IRecieveActiveCamera> activeCameraListeners = new();
     private List<IRecieveTrackInfo> trackInfoListeners = new();
+    private List<IRecieveTempo> tempoListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
 
@@ -105,6 +136,8 @@ public class VisualizerManager : MonoBehaviour
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
+    public Action<float> OnAmplitudeSpike;
+    public Action<float> OnBeat;
 
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
@@ -155,50 +188,6 @@ public class VisualizerManager : MonoBehaviour
 
     public bool IsPlaybackPaused => !audioSource.isPlaying && audioSource.time > 0;
 
-    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
-    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
-    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
-    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
-
-    private List<IRecieveActiveCamera> activeCameraListeners = new();
-
-    [ContextMenu("BroadcastActiveCamera")]
-    private void BroadcastActiveCamera()
-    {
-        activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
-        
-        // Send data out
-        activeCameraListeners.ForEach(item => item.RecieveActiveCamera(Camera.main));
-    }
-
-
-    [ContextMenu("BroadcastTrackInfo")]
-    private void BroadcastTrackInfo()
-    {
-        trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
-
-        if (audioSource.clip == null) return;
-
-        UpdateTrackFonts();
-
-        // Send data out
-        trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
-    }
-
-    [ContextMenu("BroadcastVisualizerElementsInfo")]
-    private void BroadcastVisualizerElementsInfo()
-    {
-        // Attempt to find any listeners if the list is empty
-        // I don't foresee visualizer elements being spawned as the game progresses, so caching them once at the beggining should be fine
-        if (visualizerElements.Count == 0)
-        {
-            visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
-        }
-
-        // Send data out
-        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
-    }
-
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
@@ -219,7 +208,7 @@ public class VisualizerManager : MonoBehaviour
         // Populate visualizer elements info
         foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
         {
-            visualizerElementsInfo.Add(item, new VisualizerElementsSettings(0, 0, true));
+            visualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
 
         // Only 1 scenario, we'd just go to track selection
@@ -258,6 +247,11 @@ public class VisualizerManager : MonoBehaviour
 
         GetAmplitude();
 
+        // set energy buffer size
+        energyBufferSize = measureBPMOverInterval * 60;
+
+        CheckBeat();
+
         // Determine if Song has Started/Ended
         if (!hasSongStarted && audioSource.time != lastAudioSourceTime)
         {
@@ -273,6 +267,46 @@ public class VisualizerManager : MonoBehaviour
 
         lastAudioSourceTime = audioSource.time;
     }
+
+    private void CheckBeat()
+    {
+        currentEnergy = 0;
+        for (int i = 0; i < 512; ++i)
+        {
+            switch (channel)
+            {
+                case AudioChannel.STEREO:
+                    currentEnergy += leftAudioSamples[i] + rightAudioSamples[i];
+                    break;
+                case AudioChannel.LEFT:
+                    currentEnergy += leftAudioSamples[i];
+                    break;
+                case AudioChannel.RIGHT:
+                    currentEnergy += rightAudioSamples[i];
+                    break;
+            }
+        }
+
+        // calculate local energy
+        localEnergy = 0;
+        foreach (float v in energyBuffer) { localEnergy += v; }
+
+        // calculate average local energy
+        averageLocalEnergy = localEnergy / energyBufferSize;
+
+        // add current energy to energy buffer
+        energyBuffer.Add(currentEnergy);
+
+        // if there are more samples in the energy buffer than are allowed, remove the oldest value
+        if (energyBuffer.Count > energyBufferSize) { energyBuffer.RemoveAt(0); }
+
+        // check for beat
+        if (currentEnergy > averageLocalEnergy * varianceSensitivity) 
+        { 
+            OnBeat?.Invoke(currentEnergy);
+        }
+    }
+
 
     private void SetupComplete()
     {
@@ -294,92 +328,6 @@ public class VisualizerManager : MonoBehaviour
         {
             BeginPlayback();
         }
-    }
-
-    public void BeginPlayback()
-    {
-        if (startSongAtSeconds > audioSource.clip.length)
-            Debug.LogWarning("Attempted to start the track at a position longer than the track itself");
-
-        // Set the point where the AudioSource begins
-        audioSource.time = startSongAtSeconds;
-
-        // Set the max duration of time a recording can go on for
-        ScreenRecorder._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
-
-        // Play the Track
-        audioSource.Play();
-    }
-
-    public Color GetColor(VisualizerColorType type, int index)
-    {
-        switch (type)
-        {
-            case VisualizerColorType.COLOR:
-                return GetTrackColor(index);
-            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
-                return GetTrackGradient(index).Evaluate(0);
-            case VisualizerColorType.TIME_BASED_GRADIENT:
-                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
-            default:
-                throw new Exception(); // TODO: Custom Exceptions
-        }
-    }
-
-    public Color GetColor(VisualizerColorType type, int index, float f)
-    {
-        switch (type)
-        {
-            case VisualizerColorType.COLOR:
-                return GetTrackColor(index);
-            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
-                return GetTrackGradient(index).Evaluate(f);
-            case VisualizerColorType.TIME_BASED_GRADIENT:
-                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
-            default:
-                throw new Exception(); // TODO: Custom Exceptions
-        }
-    }
-
-    public Color GetTrackColor(int index) 
-    {
-        if (index > trackInfo.Colors.Count - 1) return trackInfo.Colors[0];
-        return trackInfo.Colors[index]; 
-    
-    }
-
-    public Gradient GetTrackGradient(int index) 
-    {
-        if (trackInfo.Gradients.Count - 1 == 0) return trackInfo.Gradients[0];
-        return trackInfo.Gradients[index]; 
-    }
-
-    private string GetFontKeyAtIndex(int index)
-    {
-        foreach (KeyValuePair<string, int> kvp in loadedFontIndices)
-        {
-            if (kvp.Value == index)
-            {
-                return kvp.Key;
-            }
-        }
-        throw new IndexOutOfRangeException();
-    }
-
-    public TMP_FontAsset GetFont(int index)
-    {
-        if (index > loadedFontData.Count - 1) return defaultFont;
-        return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
-    }
-
-    public TMP_FontAsset GetDefaultFont()
-    {
-        return defaultFont;
-    }
-
-    public string GetFontName(int index)
-    {
-        return loadedFontData[GetFontKeyAtIndex(index)].FontName;
     }
 
     private void GetSpectrumAudioSource()
@@ -466,12 +414,101 @@ public class VisualizerManager : MonoBehaviour
             amplitudeBuffer += frequencyBandBuffer[i];
         }
         if (amplitude > highestAmplitude) highestAmplitude = amplitude;
+
+        float ampSpikeThreshold = highestAmplitude * ampSpikeDetectionSensitivity;
+        if (amplitude > ampSpikeThreshold) OnAmplitudeSpike?.Invoke(amplitude - ampSpikeThreshold);
     }
 
     private void CreateAudioProfile()
     {
         for (int i = 0; i < highestValuePerFrequencyBand.Length; i++)
             highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
+    }
+
+    public void BeginPlayback()
+    {
+        if (startSongAtSeconds > audioSource.clip.length)
+            Debug.LogWarning("Attempted to start the track at a position longer than the track itself");
+
+        // Set the point where the AudioSource begins
+        audioSource.time = startSongAtSeconds;
+
+        // Set the max duration of time a recording can go on for
+        ScreenRecorder._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
+
+        // Play the Track
+        audioSource.Play();
+    }
+
+    public Color GetColor(VisualizerColorType type, int index)
+    {
+        switch (type)
+        {
+            case VisualizerColorType.COLOR:
+                return GetTrackColor(index);
+            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(0);
+            case VisualizerColorType.TIME_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
+            default:
+                throw new Exception(); // TODO: Custom Exceptions
+        }
+    }
+
+    public Color GetColor(VisualizerColorType type, int index, float f)
+    {
+        switch (type)
+        {
+            case VisualizerColorType.COLOR:
+                return GetTrackColor(index);
+            case VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(f);
+            case VisualizerColorType.TIME_BASED_GRADIENT:
+                return GetTrackGradient(index).Evaluate(PlaythroughPercent);
+            default:
+                throw new Exception(); // TODO: Custom Exceptions
+        }
+    }
+
+    public Color GetTrackColor(int index)
+    {
+        if (index > trackInfo.Colors.Count - 1) return trackInfo.Colors[0];
+        return trackInfo.Colors[index];
+
+    }
+
+    public Gradient GetTrackGradient(int index)
+    {
+        if (trackInfo.Gradients.Count - 1 == 0) return trackInfo.Gradients[0];
+        return trackInfo.Gradients[index];
+    }
+
+    private string GetFontKeyAtIndex(int index)
+    {
+        foreach (KeyValuePair<string, int> kvp in loadedFontIndices)
+        {
+            if (kvp.Value == index)
+            {
+                return kvp.Key;
+            }
+        }
+        throw new IndexOutOfRangeException();
+    }
+
+    public TMP_FontAsset GetFont(int index)
+    {
+        if (index > loadedFontData.Count - 1) return defaultFont;
+        return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
+    }
+
+    public TMP_FontAsset GetDefaultFont()
+    {
+        return defaultFont;
+    }
+
+    public string GetFontName(int index)
+    {
+        return loadedFontData[GetFontKeyAtIndex(index)].FontName;
     }
 
     public void PausePlayback()
@@ -494,6 +531,11 @@ public class VisualizerManager : MonoBehaviour
     public void Seek(float amount)
     {
         audioSource.time += amount;
+    }
+
+    public void ChangeVolume(float amount)
+    {
+        audioSource.volume += amount;
     }
 
     public void SelectScenario(string name)
@@ -545,7 +587,63 @@ public class VisualizerManager : MonoBehaviour
         BroadcastTrackInfo();
     }
 
+    #region Track Selection
+
     public IEnumerator RunTrackSelection()
+    {
+        yield return UIManager._Instance.PopupActionSelection("Load Track from URL or File?", "Cancel", null, new List<ActionSelection>()
+        {
+            new ActionSelection("URL", null, PopoutEnterTrackURL()),
+            new ActionSelection("File", null, BrowseForTrack())
+        });
+    }
+
+    private IEnumerator PopoutEnterTrackURL()
+    {
+        yield return UIManager._Instance.PopupInputField("Track URL", "Enter Track URL", "Confirm", "Cancel", false,
+                    AttemptToDownloadTrackFromURL, OnFailDownloadTrackFromURL());
+    }
+
+    private IEnumerator OnFailDownloadTrackFromURL()
+    {
+        UIManager._Instance.AddNewPopupMessage("Failed to download Track from URL");
+        yield return null;
+    }
+
+    private IEnumerator AttemptToDownloadTrackFromURL(string url)
+    {
+        UIManager._Instance.AddNewPopupMessage("Attempting to Download Track from: " + url);
+
+        // Decide where source is
+
+        // Start Appropriate Coroutine
+        yield return StartCoroutine(DownloadTrackFromYoutube(url,
+            (url, clip) =>
+            {
+                // 
+            }, null));
+    }
+
+    private IEnumerator DownloadTrackFromYoutube(string mediaUrl, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    {
+        using (UnityWebRequest request = UnityWebRequest.Get(mediaUrl))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log("Failure: " + request.error);
+                onFailure(mediaUrl);
+            }
+            else
+            {
+                Debug.Log("Success: " + request.error);
+                onSuccess(mediaUrl, audioSource.clip);
+            }
+        }
+    }
+
+    private IEnumerator BrowseForTrack()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
 
@@ -568,7 +666,44 @@ public class VisualizerManager : MonoBehaviour
         }, "Select Track", "Load"));
     }
 
+    #endregion
+
+    #region Cover Art Selection
     public IEnumerator RunCoverArtSelection()
+    {
+        yield return UIManager._Instance.PopupActionSelection("Load Art from URL or File?", "Cancel", null, new List<ActionSelection>()
+        {
+            new ActionSelection("URL", null, PopoutEnterImageURL()),
+            new ActionSelection("File", null, BrowseForImage())
+        });
+    }
+
+    private IEnumerator PopoutEnterImageURL()
+    {
+        yield return UIManager._Instance.PopupInputField("Image URL", "Enter Image URL", "Confirm", "Cancel", false,
+                    AttemptToDownloadImageFromURL, OnFailDownloadImageFromURL());
+    }
+
+    private IEnumerator OnFailDownloadImageFromURL()
+    {
+        UIManager._Instance.AddNewPopupMessage("Failed to download Image from URL");
+        yield return null;
+    }
+
+    private IEnumerator AttemptToDownloadImageFromURL(string url)
+    {
+        yield return StartCoroutine(DownloadImage(url,
+                            (url, tex) =>
+                            {
+                                UIManager._Instance.AddNewPopupMessage("Successfully downloaded image from: " + url);
+                                Sprite downloadedSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f), 100f);
+                                trackInfo.CoverArt = downloadedSprite;
+                                BroadcastTrackInfo();
+                            },
+                            url => UIManager._Instance.AddNewPopupMessage("Failed to download image from: " + url)));
+    }
+
+    private IEnumerator BrowseForImage()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
 
@@ -586,6 +721,31 @@ public class VisualizerManager : MonoBehaviour
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
     }
+
+    private IEnumerator DownloadImage(string mediaUrl, Action<string, Texture2D> onSuccess, Action<string> onFailure)
+    {
+        UIManager._Instance.AddNewPopupMessage("Attempting to Download Image from: " + mediaUrl);
+
+        Texture2D tex;
+
+        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(mediaUrl))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(request.error);
+                onFailure(mediaUrl);
+            }
+            else
+            {
+                tex = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                onSuccess(mediaUrl, tex);
+            }
+        }
+    }
+
+    #endregion
 
     public IEnumerator RunColorsSelection()
     {
@@ -910,11 +1070,6 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerElementsInfo();
     }
 
-    public void ChangeVolume(float amount)
-    {
-        audioSource.volume += amount;
-    }
-
     [ContextMenu("Save Preset")]
     public void SavePreset()
     {
@@ -967,8 +1122,234 @@ public class VisualizerManager : MonoBehaviour
             onSuccess(filePath, preset);
         } catch (Exception e)
         {
-            Debug.LogError(e.ToString());
+            Debug.LogWarning(e.ToString());
             onFailure(filePath);
         }
+    }
+
+
+    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
+    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
+    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
+    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
+    public float GetEstimatedBPM() { return estimatedBPM; }
+
+    [ContextMenu("BroadcastActiveCamera")]
+    private void BroadcastActiveCamera()
+    {
+        activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
+
+        // Send data out
+        activeCameraListeners.ForEach(item => item.RecieveActiveCamera(Camera.main));
+    }
+
+    [ContextMenu("BroadcastTempo")]
+    private void BroadcastTempo()
+    {
+        tempoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTempo>().ToList();
+
+        // Send data out
+        tempoListeners.ForEach(item => item.RecieveTempo(estimatedBPM));
+    }
+
+
+    [ContextMenu("BroadcastTrackInfo")]
+    private void BroadcastTrackInfo()
+    {
+        trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
+
+        if (audioSource.clip == null) return;
+
+        UpdateTrackFonts();
+
+        // Send data out
+        trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
+    }
+
+    [ContextMenu("BroadcastVisualizerElementsInfo")]
+    private void BroadcastVisualizerElementsInfo()
+    {
+        // Attempt to find any listeners if the list is empty
+        // I don't foresee visualizer elements being spawned as the game progresses, so caching them once at the beggining should be fine
+        if (visualizerElements.Count == 0)
+        {
+            visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
+        }
+
+        // Send data out
+        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
+    }
+
+    public void SyncTempoListeners()
+    {
+        BroadcastTempo();
+    }
+
+    public void OpenTempoMenu()
+    {
+        tempoMenuUI.SetActive(true);
+    }
+
+    public void CloseTempoMenu()
+    {
+        tempoMenuUI.SetActive(false);
+    }
+
+    public void UpdateEstimatedBPM(string s)
+    {
+        float v;
+        if (float.TryParse(s, out v))
+        {
+            UpdateEstimatedBPM(v);
+        }
+    }
+
+    public void UpdateEstimatedBPM(float v)
+    {
+        estimatedBPM = v;
+        BroadcastTempo();
+    }
+
+
+    [ContextMenu("Start Tapping BPM")]
+    public void StartTappingBPM()
+    {
+        StartCoroutine(TapBPM());
+    }
+
+    [ContextMenu("Stop Tapping BPM")]
+    public void StopTappingBPM()
+    {
+        tappingBPM = false;
+    }
+
+    [ContextMenu("Start Estimating BPM")]
+    public void StartEstimateBPM()
+    {
+        StartCoroutine(EstimateBPM());
+    }
+
+    [ContextMenu("Stop Estimating BPM")]
+    public void StopEstimatingBPM()
+    {
+        estimatingBPM = false;
+    }
+
+    private void IncrementBeatsLastSecond(float v)
+    {
+        beatsLastSecond++;
+    }
+
+    public void TapButtonPressed()
+    {
+        if (!tappingBPM)
+        {
+            StartTappingBPM();
+        }
+        else
+        {
+            didTap = true;
+        }
+    }
+
+    private IEnumerator TapBPM()
+    {
+        float lastTap = 0;
+        float averageSecondsBetweenTaps = 0;
+        float timer = 0;
+        List<float> secondsBetweenTaps = new();
+
+        tappingBPM = true;
+        while (tappingBPM)
+        {
+            if (estimatingBPM)
+            {
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+
+            // space or left mosue button to tap
+            if (didTap)
+            {
+                didTap = false;
+
+                // find the time since the last tap and add it to the list
+                secondsBetweenTaps.Add(Mathf.Abs(timer - lastTap));
+
+                if (secondsBetweenTaps.Count > tapBufferCount)
+                {
+                    secondsBetweenTaps.RemoveAt(0);
+                }
+
+                // find average
+                foreach (float f in secondsBetweenTaps)
+                {
+                    averageSecondsBetweenTaps += f;
+                }
+                averageSecondsBetweenTaps /= secondsBetweenTaps.Count;
+
+                // calculate
+                estimatedBPM = 60 / averageSecondsBetweenTaps; // minutes conversion
+
+                SetTapperInputFieldText();
+
+                // update last tap time
+                lastTap = timer;
+            }
+
+            yield return null;
+        }
+
+        BroadcastTempo();
+    }
+
+    private IEnumerator EstimateBPM()
+    {
+        beatsLastSecond = 0;
+        beatCountsPerSecondBuffer.Clear();
+
+        tempoTapperInputField.interactable = false;
+        tempoTapperButton.interactable = false;
+
+        OnBeat += IncrementBeatsLastSecond;
+        estimatingBPM = true;
+
+        while (estimatingBPM)
+        {
+            // wait a second
+            yield return new WaitForSeconds(1);
+
+            // add new value for however many beats occurred since last iteration
+            beatCountsPerSecondBuffer.Add(beatsLastSecond);
+
+            // reset counter
+            beatsLastSecond = 0;
+
+            // remove old value if neccessary
+            if (beatCountsPerSecondBuffer.Count > measureBPMOverInterval)
+            {
+                beatCountsPerSecondBuffer.RemoveAt(0);
+            }
+
+            // calculate bpm
+            float beatsOverLastInterval = 0;
+            foreach (int value in beatCountsPerSecondBuffer) { beatsOverLastInterval += value; }
+            estimatedBPM = beatsOverLastInterval * (60 / measureBPMOverInterval);
+
+            SetTapperInputFieldText();
+        }
+
+        tempoTapperInputField.interactable = true;
+        tempoTapperButton.interactable = true;
+
+        OnBeat -= IncrementBeatsLastSecond;
+
+        BroadcastTempo();
+    }
+
+    private void SetTapperInputFieldText()
+    {
+        tempoTapperInputField.text = Math.Round(estimatedBPM, 2).ToString();
     }
 }

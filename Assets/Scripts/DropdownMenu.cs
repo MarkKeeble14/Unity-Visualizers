@@ -8,9 +8,8 @@ public abstract class DropdownMenu : MonoBehaviour
 {
     [SerializeField] protected TextMeshProUGUI indexText;
     [SerializeField] protected TextMeshProUGUI labelText;
-    [SerializeField] protected Image labelTextBackground;
 
-    [SerializeField] private RectTransform rectTransform;
+    private RectTransform rectTransform;
     [SerializeField] private RectTransform list;
 
     [SerializeField] private DropdownElement templateElement;
@@ -25,6 +24,8 @@ public abstract class DropdownMenu : MonoBehaviour
 
     private void Awake()
     {
+        rectTransform = GetComponent<RectTransform>();
+
         Vector2 sizeDelta = list.sizeDelta;
         Vector2 anchoredPosition = list.anchoredPosition;
 

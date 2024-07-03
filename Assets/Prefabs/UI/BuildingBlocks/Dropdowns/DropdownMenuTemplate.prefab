@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6543229396833111360}
   - component: {fileID: 7722104190406724193}
   - component: {fileID: 4016371988710700432}
-  - component: {fileID: 2903769500115691800}
+  - component: {fileID: 6681637194497677992}
   m_Layer: 5
   m_Name: LabelHolder
   m_TagString: Untagged
@@ -101,7 +101,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 2903769500115691800}
+  m_TargetGraphic: {fileID: 6681637194497677992}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -113,7 +113,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 977742454117961780}
   m_CullTransparentMesh: 1
---- !u!114 &2903769500115691800
+--- !u!114 &6681637194497677992
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -683,7 +683,7 @@ GameObject:
   - component: {fileID: 1110166455565509283}
   - component: {fileID: 1772921695839790641}
   - component: {fileID: 6358472769341040006}
-  - component: {fileID: 7766838742917786931}
+  - component: {fileID: 1116072640944444207}
   m_Layer: 5
   m_Name: Foreground
   m_TagString: Untagged
@@ -748,7 +748,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8600741972240993675}
   m_CullTransparentMesh: 1
---- !u!114 &7766838742917786931
+--- !u!114 &1116072640944444207
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -762,7 +762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

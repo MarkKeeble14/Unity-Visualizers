@@ -12,13 +12,12 @@ GameObject:
   - component: {fileID: 3465347465345289130}
   - component: {fileID: 5952818077481513072}
   - component: {fileID: 7214581875382840760}
-  - component: {fileID: 4365240339340660847}
   - component: {fileID: 5252503949136689349}
   - component: {fileID: 109146645116770097}
-  - component: {fileID: 8749339565519304311}
   - component: {fileID: 8962911305081168380}
   - component: {fileID: 2376133031630716814}
   - component: {fileID: 5575566752482503838}
+  - component: {fileID: 7524726761889318000}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -100,22 +99,6 @@ MonoBehaviour:
   adjustSpeed: 12.5
   useSlowAdjust: 1
   distance: 150
---- !u!114 &4365240339340660847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465347465345289126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signalMultiplier: 0.25
-  useBuffer: 1
-  bandType: 1
-  band: 4
 --- !u!114 &5252503949136689349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,12 +111,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e729bd5614361814cbc4d058e089e097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bypass: 1
-  shouldExecuteLock: {fileID: 8749339565519304311}
+  bypass: 0
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 2
   adjustSpeed: 25
-  multiplier: 1
+  multiplier: 0.15
   scaleOn: 0
 --- !u!114 &109146645116770097
 MonoBehaviour:
@@ -148,25 +131,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  shouldExecuteLock: {fileID: 8749339565519304311}
+  shouldExecuteLock: {fileID: 0}
   slowAdust: 1
   defaultValue: 2
   adjustSpeed: 25
-  multiplier: 1
+  multiplier: 0.15
   scaleOn: 1
---- !u!114 &8749339565519304311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465347465345289126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  greaterThan: 5
 --- !u!114 &8962911305081168380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +187,22 @@ MonoBehaviour:
   - key: {fileID: 8962911305081168380}
     value:
     - {fileID: 2376133031630716814}
-  - key: {fileID: 4365240339340660847}
+  - key: {fileID: 7524726761889318000}
     value:
     - {fileID: 5252503949136689349}
     - {fileID: 109146645116770097}
+--- !u!114 &7524726761889318000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b472d879a6c4541ae6d65db30e85ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  method: 0
+  falloffSpeed: 2.5

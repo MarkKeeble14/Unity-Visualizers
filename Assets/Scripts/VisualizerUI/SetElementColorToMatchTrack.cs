@@ -40,6 +40,7 @@ public abstract class SetElementColorToMatchTrack : VisualizerElement
 
         // Update color index
         index = info[label].ColorIndex;
+        colorType = info[label].ColorType;
 
         // Update Color
         SetElementColor();

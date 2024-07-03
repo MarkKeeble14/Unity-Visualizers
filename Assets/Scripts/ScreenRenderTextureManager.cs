@@ -143,7 +143,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
         foreach (SerializableKeyValuePair<VisualizerElementLabel, Checkbox> kvp in enableVisualizerElementCheckboxes)
         {
             VisualizerElementsSettings cur = currentDict[kvp.Key];
-            result.Add(kvp.Key, new VisualizerElementsSettings(cur.ColorIndex, cur.FontIndex, kvp.Value.Active));
+            result.Add(kvp.Key, new VisualizerElementsSettings(cur.ColorType, cur.ColorIndex, cur.FontIndex, kvp.Value.Active));
         }
         return result;
     }

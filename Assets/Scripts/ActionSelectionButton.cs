@@ -5,16 +5,16 @@ using UnityEngine;
 public class ActionSelectionButton : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
-    public Action OnClick;
+    private Action onClick;
 
-    public void Set(ActionSelection action)
+    public void Set(ActionSelection actionSelection)
     {
-        text.text = action.Text;
-        OnClick += action.Action;
+        text.text = actionSelection.Text;
+        onClick = actionSelection.Action;
     }
 
     public void CallOnClick()
     {
-        OnClick?.Invoke();
+        onClick?.Invoke();
     }
 }

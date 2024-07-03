@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2524593381381155647}
   - component: {fileID: 2524593381381155646}
   - component: {fileID: 2524593381381155645}
+  - component: {fileID: 6685268621118913771}
   m_Layer: 0
   m_Name: GraveyardLight
   m_TagString: Untagged
@@ -190,3 +191,19 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!114 &6685268621118913771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524593381381155619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18aacf86b9b571842823432e45ce9459, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: 0
+  colorType: 0
+  index: 0
+  light: {fileID: 2524593381381155642}

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
 {
+    [SerializeField] private Image colorDisplay;
     public Action<Color> OnColorSelected;
 
     public void RecieveTrackInfo(TrackInfo info)
@@ -19,8 +20,9 @@ public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
 
     protected override void SetElementActive(int index)
     {
+        if (index >= dropdownElements.Count) { return; }
         Color c = ((ColorDropdownElement)dropdownElements[index]).GetColor();
-        labelTextBackground.color = c;
+        colorDisplay.color = c;
         OnColorSelected?.Invoke(c);
     }
 }

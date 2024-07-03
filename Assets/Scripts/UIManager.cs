@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager _Instance { get; private set; }
 
-    [SerializeField] private InputFieldPopup inputFieldDialog;
-    [SerializeField] private ActionSelectionPopup actionSelectionPopup;
+    [SerializeField] private Transform uiStack;
 
     [SerializeField] private TimerDictionary<string> popupMessageDict = new();
 
@@ -16,8 +16,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform popupMessagesList;
 
     [Header("Prefabs")]
-    [SerializeField] private TextMeshProUGUI textPrefab;
-    private Dictionary<string, TextMeshProUGUI> spawnedMessagesDict = new();
+    [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
+    [SerializeField] private ActionSelectionPopup actionSelectionPopupPrefab;
+    [SerializeField] private PopupMessage messagePopupPrefab;
+    private Dictionary<string, PopupMessage> spawnedMessagesDict = new();
 
     private void Awake()
     {
@@ -33,21 +35,30 @@ public class UIManager : MonoBehaviour
         popupMessageDict.Update();
     }
 
-    public void PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
+    public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
         Action<string> onSuccess, Action onFailure)
     {
-        inputFieldDialog.Open(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+        InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
+        yield return inputFieldPopup.Show(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
     }
 
-    public void PopupActionSelection(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
+    public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
+    Func<string, IEnumerator> onSuccess,IEnumerator onFailure)
     {
-        actionSelectionPopup.Open(directions, cancelButtonText, onCancel, actions);
+        InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
+        yield return inputFieldPopup.Show(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+    }
+
+    public IEnumerator PopupActionSelection(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
+    {
+        ActionSelectionPopup actionSelectionPopup = Instantiate(actionSelectionPopupPrefab, uiStack);
+        yield return actionSelectionPopup.Show(directions, cancelButtonText, onCancel, actions);
     }
 
     private void ShowMessage(string text)
     {
-        TextMeshProUGUI spawned = Instantiate(textPrefab, popupMessagesList);
-        spawned.text = text;
+        PopupMessage spawned = Instantiate(messagePopupPrefab, popupMessagesList);
+        spawned.Set(text);
         spawnedMessagesDict.Add(text, spawned);
     }
 
@@ -58,7 +69,7 @@ public class UIManager : MonoBehaviour
 
     private void RemoveMessage(string text)
     {
-        TextMeshProUGUI retrievedText = spawnedMessagesDict[text];
+        PopupMessage retrievedText = spawnedMessagesDict[text];
         Destroy(retrievedText.gameObject);
         spawnedMessagesDict.Remove(text);
     }

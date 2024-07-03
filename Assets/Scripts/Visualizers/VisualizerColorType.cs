@@ -1,4 +1,5 @@
-﻿public enum VisualizerColorType
+﻿[System.Serializable]
+public enum VisualizerColorType
 {
     COLOR,
     TIME_BASED_GRADIENT,

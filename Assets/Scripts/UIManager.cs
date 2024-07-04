@@ -10,16 +10,20 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Transform uiStack;
 
-    [SerializeField] private TimerDictionary<string> popupMessageDict = new();
+    [Header("Messages")]
+    [SerializeField] private Transform popupMessagesList;
+    [SerializeField] private PopupMessage messagePopupPrefab;
+    private TimerDictionary<string> popupMessageDict = new();
+    private Dictionary<string, PopupMessage> spawnedMessagesDict = new();
+
+    [Header("Loading")]
+    [SerializeField] private Transform popupLoadingList;
+    [SerializeField] private PopupLoading loadingPopupPrefab;
+    private List<PopupLoading> spawnedLoadingDict = new();
 
     [Header("References")]
-    [SerializeField] private Transform popupMessagesList;
-
-    [Header("Prefabs")]
     [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
     [SerializeField] private ActionSelectionPopup actionSelectionPopupPrefab;
-    [SerializeField] private PopupMessage messagePopupPrefab;
-    private Dictionary<string, PopupMessage> spawnedMessagesDict = new();
 
     private void Awake()
     {
@@ -55,16 +59,36 @@ public class UIManager : MonoBehaviour
         yield return actionSelectionPopup.Show(directions, cancelButtonText, onCancel, actions);
     }
 
+    public void AddLoading(string message)
+    {
+        PopupLoading spawned = Instantiate(loadingPopupPrefab, popupLoadingList);
+        spawned.Set(message);
+        spawnedLoadingDict.Add(spawned);
+    }
+
+    public void RemoveLoading(string text)
+    {
+        foreach (PopupLoading pop in spawnedLoadingDict)
+        {
+            if (pop.Text.Equals(text))
+            {
+                spawnedLoadingDict.Remove(pop);
+                Destroy(pop.gameObject);
+                return;
+            }
+        }
+    }
+
+    public void AddNewMessage(string message, float duration = 3)
+    {
+        popupMessageDict.Add(message, duration);
+    }
+
     private void ShowMessage(string text)
     {
         PopupMessage spawned = Instantiate(messagePopupPrefab, popupMessagesList);
         spawned.Set(text);
         spawnedMessagesDict.Add(text, spawned);
-    }
-
-    public void AddNewPopupMessage(string message, float duration = 3)
-    {
-        popupMessageDict.Add(message, duration);
     }
 
     private void RemoveMessage(string text)

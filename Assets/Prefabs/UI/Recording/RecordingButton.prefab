@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3860734593854111052}
   - component: {fileID: 6870239607884401268}
   - component: {fileID: 3197674513832086158}
-  - component: {fileID: 3706445593420426148}
   m_Layer: 6
   m_Name: RecordingButton
   m_TagString: Untagged
@@ -138,18 +137,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
---- !u!114 &3706445593420426148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271787312143584543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae5e9c62eb0b9b54c93eef8527cfc705, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2538280727879289971
 GameObject:
   m_ObjectHideFlags: 0

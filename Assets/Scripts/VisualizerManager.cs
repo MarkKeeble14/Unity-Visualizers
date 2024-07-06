@@ -119,9 +119,6 @@ public class VisualizerManager : MonoBehaviour
     [Header("Beat Detection Settings")]
     [SerializeField] private float ampSpikeDetectionSensitivity = 0.9f;
 
-    [Header("Recording Settings")]
-    [SerializeField] private float afterTrackRecordingBufferTime = 10f;
-
     [Header("Scenarios")]
     [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
     [SerializeField] private GameObject defaultScenary;
@@ -503,9 +500,6 @@ public class VisualizerManager : MonoBehaviour
         // Set the point where the AudioSource begins
         audioSource.time = startSongAtSeconds;
 
-        // Set the max duration of time a recording can go on for
-        ScreenRecorder._Instance.MaxRecordingTime = audioSource.clip.length + afterTrackRecordingBufferTime;
-
         // Play the Track
         audioSource.Play();
     }
@@ -655,6 +649,21 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => !fontsUI.activeInHierarchy);
 
         BroadcastTrackInfo();
+    }
+
+    public void EditColors()
+    {
+        StartCoroutine(RunColorsSelection());
+    }
+
+    public void EditFonts()
+    {
+        StartCoroutine(RunFontsSelection());
+    }
+
+    public void LoadPresetFromFile()
+    {
+        StartCoroutine(RunLoadPresetSelection());
     }
 
     #region Track Selection

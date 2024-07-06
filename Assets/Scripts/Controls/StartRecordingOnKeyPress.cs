@@ -5,3 +5,4 @@
         ScreenRecorder._Instance.StartRecording();
     }
 }
+

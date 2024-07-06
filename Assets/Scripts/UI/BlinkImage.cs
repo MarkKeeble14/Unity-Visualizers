@@ -10,6 +10,11 @@ public class BlinkImage : MonoBehaviour
     private float timer;
     private Color c;
 
+    public void ResetTimer()
+    {
+        timer = 0;
+    }
+
     // Update is called once per frame
     void Update()
     {

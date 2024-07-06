@@ -232,9 +232,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5582536943133988357}
-  - component: {fileID: 8094751945582348758}
-  - component: {fileID: 3572999058112028863}
   - component: {fileID: 4302652687841698123}
+  - component: {fileID: 3041773455050944651}
+  - component: {fileID: 6871684361481427828}
   m_Layer: 5
   m_Name: RecordingControls
   m_TagString: Untagged
@@ -262,34 +262,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8094751945582348758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652252658296642761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b3a34ce6a4b4b5419ab51f4ae2e3f57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 46
-  action: Stop
---- !u!114 &3572999058112028863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652252658296642761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a4824bddc786d84981ec6fa00f54d8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 44
-  action: Start
 --- !u!114 &4302652687841698123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,6 +292,34 @@ MonoBehaviour:
     value: 0
   - key: 6
     value: 0
+--- !u!114 &3041773455050944651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652252658296642761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7bae7169a837dd4ca320d9e363661c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 44
+  action: Open UI
+--- !u!114 &6871684361481427828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652252658296642761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42377f6e0a9c2b94fb3c0e41c048b2cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 46
+  action: Close UI
 --- !u!1 &8111479640899805151
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,15 +487,15 @@ PrefabInstance:
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 8094751945582348758}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[7].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 3572999058112028863}
+      objectReference: {fileID: 3041773455050944651}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[7].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 8094751945582348758}
+      objectReference: {fileID: 6871684361481427828}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[8].KeyControls.Array.data[0]
       value: 

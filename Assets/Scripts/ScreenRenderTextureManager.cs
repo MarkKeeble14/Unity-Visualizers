@@ -33,8 +33,18 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
     public Texture2D Tex { get; private set; }
 
-    private Action OnPreUpdateRenderTexture;
-    private Action<Texture2D> OnUpdateRenderTexture;
+    private Action onPreUpdateRenderTexture;
+    private Action<Texture2D> onUpdateRenderTexture;
+
+    public void AddToOnUpdateRenderTexture(Action<Texture2D> tex)
+    {
+        onUpdateRenderTexture += tex;
+    }
+
+    public void RemoveFromOnUpdateRenderTexture(Action<Texture2D> tex)
+    {
+        onUpdateRenderTexture -= tex;
+    }
 
     private int numRenderRequests;
 
@@ -80,16 +90,15 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
     private void UpdateScreenTexture()
     {
-        OnPreUpdateRenderTexture?.Invoke();
+        onPreUpdateRenderTexture?.Invoke();
 
         Tex = new Texture2D(Screen.width, Screen.height, TextureFormat.ARGB32, false);
         Tex.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
         Tex.Apply();
 
         // Invoke callback
-        OnUpdateRenderTexture?.Invoke(Tex);
+        onUpdateRenderTexture?.Invoke(Tex);
     }
-
 
     private IEnumerator Screenshot(string fileName)
     {

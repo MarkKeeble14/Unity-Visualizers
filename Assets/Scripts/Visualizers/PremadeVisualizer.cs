@@ -21,8 +21,38 @@ public abstract class PremadeVisualizer : SetElementColorToMatchTrack
     protected List<AttachParameter> attachedParameterList = new List<AttachParameter>();
     protected List<SignalBroadcaster> broadcasterList = new List<SignalBroadcaster>();
     protected List<Image> imageList = new List<Image>();
+    protected List<RectTransform> segmentList = new List<RectTransform>();
 
     private bool hasMadeVisualizer;
+
+    private void Start()
+    {
+        PreMakingVisualizer();
+    }
+
+    protected new void Update()
+    {
+        base.Update();
+        UpdateSpecificSettings();
+    }
+
+    [ContextMenu("Reconstruct")]
+    public void Reconstruct()
+    {
+        foreach (Transform child in segmentList)
+        {
+            Destroy(child.gameObject);
+        }
+
+        attachedParameterList.Clear();
+        broadcasterList.Clear();
+        imageList.Clear();
+        segmentList.Clear();
+
+        MakeDefaultVisualizer();
+
+        UpdateAttachments();
+    }
 
     protected virtual void MakeVisualizer()
     {
@@ -102,17 +132,6 @@ public abstract class PremadeVisualizer : SetElementColorToMatchTrack
         }
     }
 
-    protected new void Update()
-    {
-        base.Update();
-        UpdateSpecificSettings();
-    }
-
-    private void Start()
-    {
-        PreMakingVisualizer();
-    }
-
     protected void TrackSegment(GameObject segment, SignalBroadcaster broadcaster, int index, int max)
     {
         // Broadcaster
@@ -122,7 +141,9 @@ public abstract class PremadeVisualizer : SetElementColorToMatchTrack
         attachedParameterList.Add(segment.GetComponent<AttachParameter>());
 
         // Image
-        imageList.Add(segment.GetComponent<Image>());
+        imageList.Add(segment.GetComponentInChildren<Image>());
+
+        segmentList.Add(segment.GetComponent<RectTransform>());
 
         // Connect the broadcaster with it attachments
         segment.GetComponent<SignalDirector>().AddDirection(broadcaster, segment.GetComponents<AttachParameter>().ToList());

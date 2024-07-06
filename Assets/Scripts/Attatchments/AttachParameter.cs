@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -24,7 +25,8 @@ public abstract class AttachParameter : MonoBehaviour
 
     protected float targetValue;
     protected float currentValue;
-    private float lastMessageValue;
+
+    private Action<float> onSetParameter;
 
     protected virtual void TrySetParameter(float value) { SetParameter(value); }
 
@@ -45,12 +47,23 @@ public abstract class AttachParameter : MonoBehaviour
             // Calculate Adjustment
             targetValue = defaultValue + value;
             currentValue = Mathf.Lerp(currentValue, targetValue, Time.deltaTime * adjustSpeed);
-
-            TrySetParameter(currentValue);
         }
         else
         {
-            TrySetParameter(defaultValue + value);
+            currentValue = defaultValue + value;
+            
         }
+        TrySetParameter(currentValue);
+        onSetParameter?.Invoke(currentValue);
+    }
+
+    public void AddOnSetParameter(Action<float> action)
+    {
+        onSetParameter += action;
+    }
+
+    public void RemoveOnSetParameter(Action<float> action)
+    {
+        onSetParameter -= action;
     }
 }

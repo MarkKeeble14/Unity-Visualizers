@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8962911305081168380}
   - component: {fileID: 2376133031630716814}
   - component: {fileID: 5575566752482503838}
-  - component: {fileID: 7524726761889318000}
+  - component: {fileID: 7968003072016641068}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -91,7 +91,7 @@ MonoBehaviour:
   label: 4
   colorType: 0
   index: 0
-  segmentPrefab: {fileID: 7142856522332667449, guid: 053d00f7d8908294089d756c21d6b5c1, type: 3}
+  segmentPrefab: {fileID: 7142856522332667449, guid: c91b2e4cfeab7484680c1cf58fdb396c, type: 3}
   attachmentType: 2
   signalMultiplier: 1500
   attachmentMultiplier: 7.5
@@ -99,6 +99,7 @@ MonoBehaviour:
   adjustSpeed: 12.5
   useSlowAdjust: 1
   distance: 150
+  segmentWidth: 10
 --- !u!114 &5252503949136689349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,11 +188,11 @@ MonoBehaviour:
   - key: {fileID: 8962911305081168380}
     value:
     - {fileID: 2376133031630716814}
-  - key: {fileID: 7524726761889318000}
+  - key: {fileID: 7968003072016641068}
     value:
     - {fileID: 5252503949136689349}
     - {fileID: 109146645116770097}
---- !u!114 &7524726761889318000
+--- !u!114 &7968003072016641068
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,6 +204,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b472d879a6c4541ae6d65db30e85ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signalMultiplier: 1
+  signalMultiplier: 0.05
   method: 0
   falloffSpeed: 2.5

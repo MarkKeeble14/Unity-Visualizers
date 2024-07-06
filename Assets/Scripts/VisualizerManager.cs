@@ -1153,12 +1153,11 @@ public class VisualizerManager : MonoBehaviour
 
     public void AddElementToColorsList()
     {
-        UIManager._Instance.PopupActionSelection("Color or Gradient?", "Cancel", null, new List<ActionSelection>()
+        StartCoroutine(UIManager._Instance.PopupActionSelection("Color or Gradient?", "Cancel", null, new List<ActionSelection>()
         {
             new ActionSelection("Color", () => AddColorElement()),
             new ActionSelection("Gradient", () => AddGradientElement()),
-        });
-
+        }));
     }
 
     private void AddColorElement()
@@ -1323,13 +1322,13 @@ public class VisualizerManager : MonoBehaviour
         VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
             loadedFontData.Values.ToList(), visualizerElementsInfo);
 
-        StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Use Track Title", false,
+        StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
             x =>
             {
                 string path = SaveManager._Instance.SavePreset(x, preset);
                 UIManager._Instance.AddNewMessage("Preset saved to " + path);
             },
-            () => SaveManager._Instance.SavePreset(trackInfo.Title, preset)));
+            null));
     }
 
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)

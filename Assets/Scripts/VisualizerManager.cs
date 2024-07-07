@@ -62,6 +62,7 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Other Settings")]
     [SerializeField] private List<string> visualizerSpecificElementKeys = new();
+    [SerializeField] private List<SerializableKeyValuePair<string, float>> visualizerFloatValueKeys = new();
     [SerializeField] private bool askForTrack = true;
     [SerializeField] private bool askForCoverArt = true;
     [SerializeField] private bool askForPreset = true;
@@ -152,9 +153,10 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveTempo> tempoListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
     private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElements = new();
+    private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
-    private Dictionary<string, float> visualizerElementFloatDict = new();
+    private Dictionary<string, float> visualizerFloatValues = new();
 
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
@@ -225,16 +227,18 @@ public class VisualizerManager : MonoBehaviour
         PopulateColorsList();
         PopulateFontsList();
 
-        // populate visualizer elements info
+        // populate dictionaries
         foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
         {
             visualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
-
-        // populate visualizer specific elements info
         foreach (string key in visualizerSpecificElementKeys)
         {
             visualizerSpecificElementsInfo.Add(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+        }
+        foreach (SerializableKeyValuePair<string, float> kvp in visualizerFloatValueKeys)
+        {
+            visualizerFloatValues.Add(kvp.Key, kvp.Value);
         }
     }
 
@@ -1018,11 +1022,13 @@ public class VisualizerManager : MonoBehaviour
 
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerFloatValues();
 
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerFloatValues();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -1306,6 +1312,16 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    public void UpdateFloatSetting(string key, float v)
+    {
+
+    }
+
+    public float GetFloatSetting(string key)
+    {
+        return visualizerFloatValues[key];
+    }
+
     public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string specificElementKey)
     {
         return visualizerSpecificElementsInfo[specificElementKey];
@@ -1323,13 +1339,13 @@ public class VisualizerManager : MonoBehaviour
 
     public void SetVisualizerElementsSettings(string key, float v)
     {
-        if (!visualizerElementFloatDict.ContainsKey(key))
+        if (!visualizerFloatValues.ContainsKey(key))
         {
-            visualizerElementFloatDict.Add(key, v);
+            visualizerFloatValues.Add(key, v);
         }
         else
         {
-            visualizerElementFloatDict[key] = v;
+            visualizerFloatValues[key] = v;
         }
         throw new NotImplementedException();
     }
@@ -1409,6 +1425,7 @@ public class VisualizerManager : MonoBehaviour
             BroadcastTrackInfo();
             BroadcastVisualizerElementsInfo();
             BroadcastVisualizerSpecificsElementsInfo();
+            BroadcastVisualizerFloatValues();
 
             onSuccess(filePath, preset);
         } catch (Exception e)
@@ -1476,6 +1493,15 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerSpecificElements.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
+    }
+
+    [ContextMenu("BroadcastVisualizerFloatValues")]
+    private void BroadcastVisualizerFloatValues()
+    {
+        visualizerFloatValueListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerFloatValues>().ToList();
+
+        // Send data out
+        visualizerFloatValueListeners.ForEach(item => item.RecieveVisualizerFloatValues(visualizerFloatValues));
     }
 
     public void SyncTempoListeners()

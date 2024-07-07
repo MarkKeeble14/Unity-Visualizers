@@ -5,7 +5,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor
+public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor, IRecieveVisualizerFloatValues
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;
@@ -13,7 +13,6 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
     [Header("Settings")]
     [SerializeField] protected AttachmentType attachmentType;
     [SerializeField] protected float signalMultiplier;
-    [SerializeField] private float attachmentMultiplier;
     [SerializeField] private float defaultValue;
     [SerializeField] private float adjustSpeed;
     [SerializeField] protected bool useSlowAdjust = true;
@@ -25,6 +24,10 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     private bool hasMadeVisualizer;
 
+    [Header("Adjustable Settings Keys")]
+    [SerializeField] private string signalMultiplierKey;
+    [SerializeField] private string defaultValueKey;
+
     private void Start()
     {
         PreMakingVisualizer();
@@ -33,8 +36,14 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
     protected new void Update()
     {
         base.Update();
+
         UpdateSpecificSettings();
     }
+
+    protected abstract void PreMakingVisualizer();
+
+    protected virtual void UpdateSpecificSettings() { }
+
 
     [ContextMenu("Reconstruct")]
     public void Reconstruct()
@@ -52,11 +61,6 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         MakeDefaultVisualizer();
 
         UpdateAttachments();
-    }
-
-    protected virtual void MakeVisualizer()
-    {
-        MakeDefaultVisualizer();
     }
 
     protected void MakeDefaultVisualizer()
@@ -110,9 +114,10 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         }
     }
 
-    protected abstract void PreMakingVisualizer();
-
-    protected virtual void UpdateSpecificSettings() { }
+    protected virtual void MakeVisualizer()
+    {
+        MakeDefaultVisualizer();
+    }
 
     [ContextMenu("UpdateAttachments")]
     protected void UpdateAttachments()
@@ -123,7 +128,6 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
             parameter.SlowAdjust = useSlowAdjust;
             parameter.DefaultValue = defaultValue;
             parameter.AdjustSpeed = adjustSpeed;
-            parameter.Multiplier = attachmentMultiplier;
         }
 
         foreach (SignalBroadcaster broadcaster in broadcasterList)
@@ -149,6 +153,17 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         segment.GetComponent<SignalDirector>().AddDirection(broadcaster, segment.GetComponents<AttachParameter>().ToList());
     }
 
+    protected override void SetElementToColor(Color c)
+    {
+        for (int i = 0; i < imageList.Count; i++)
+        {
+            if (!Active)
+                imageList[i].color = c;
+            else
+                imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, (float)i / imageList.Count);
+        }
+    }
+
     public override void RecieveTrackInfo(TrackInfo info)
     {
         base.RecieveTrackInfo(info);
@@ -162,20 +177,17 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         UpdateAttachments();
     }
 
-    protected override void SetElementToColor(Color c)
-    {
-        for (int i = 0; i < imageList.Count; i++)
-        {
-            if (!Active)
-                imageList[i].color = c;
-            else
-                imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, (float)i / imageList.Count);
-        }
-    }
-
     public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
         base.RecieveVisualizerElementsInfo(info);
+
+        UpdateAttachments();
+    }
+
+    public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
+    {
+        signalMultiplier = settings[signalMultiplierKey];
+        defaultValue = settings[defaultValueKey];
 
         UpdateAttachments();
     }

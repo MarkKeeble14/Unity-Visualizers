@@ -17,7 +17,8 @@ GameObject:
   - component: {fileID: 8962911305081168380}
   - component: {fileID: 2376133031630716814}
   - component: {fileID: 5575566752482503838}
-  - component: {fileID: 7968003072016641068}
+  - component: {fileID: 1808868881983977054}
+  - component: {fileID: 2138313966027355802}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -94,12 +95,15 @@ MonoBehaviour:
   segmentPrefab: {fileID: 7142856522332667449, guid: c91b2e4cfeab7484680c1cf58fdb396c, type: 3}
   attachmentType: 2
   signalMultiplier: 1500
-  attachmentMultiplier: 7.5
   defaultValue: 5
   adjustSpeed: 12.5
   useSlowAdjust: 1
+  signalMultiplierKey: RadialVisualizerSignalMultiplier
+  defaultValueKey: RadialVisualizerDefaultValue
   distance: 150
   segmentWidth: 10
+  distanceKey: RadialVisualizerDistance
+  segmentWidthKey: RadialVisualizerSegmentWidth
 --- !u!114 &5252503949136689349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,11 +117,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  shouldExecuteLock: {fileID: 0}
+  shouldExecuteLock: {fileID: 2138313966027355802}
   slowAdust: 1
-  defaultValue: 2
+  defaultValue: 1
   adjustSpeed: 25
-  multiplier: 0.15
+  multiplier: 0.01
   scaleOn: 0
 --- !u!114 &109146645116770097
 MonoBehaviour:
@@ -132,11 +136,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bypass: 0
-  shouldExecuteLock: {fileID: 0}
+  shouldExecuteLock: {fileID: 2138313966027355802}
   slowAdust: 1
-  defaultValue: 2
+  defaultValue: 1
   adjustSpeed: 25
-  multiplier: 0.15
+  multiplier: 0.01
   scaleOn: 1
 --- !u!114 &8962911305081168380
 MonoBehaviour:
@@ -188,11 +192,11 @@ MonoBehaviour:
   - key: {fileID: 8962911305081168380}
     value:
     - {fileID: 2376133031630716814}
-  - key: {fileID: 7968003072016641068}
+  - key: {fileID: 1808868881983977054}
     value:
     - {fileID: 5252503949136689349}
     - {fileID: 109146645116770097}
---- !u!114 &7968003072016641068
+--- !u!114 &1808868881983977054
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -201,9 +205,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 3465347465345289126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67b472d879a6c4541ae6d65db30e85ef, type: 3}
+  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signalMultiplier: 0.05
-  method: 0
-  falloffSpeed: 2.5
+  signalMultiplier: 1
+  useBuffer: 1
+  bandType: 0
+  band: 5
+--- !u!114 &2138313966027355802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 10

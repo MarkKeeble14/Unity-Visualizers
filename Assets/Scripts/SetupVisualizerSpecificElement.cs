@@ -3,31 +3,31 @@ using UnityEngine;
 
 public class SetupVisualizerSpecificElement : SetupVisualizerElement, IRecieveVisualizerSpecificElementsInfo
 {
-    [SerializeField] private string visualizerSpecificElementKey;
+    [SerializeField] private string key;
 
     public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)
     {
-        if (!info.ContainsKey(visualizerSpecificElementKey))
+        if (!info.ContainsKey(key))
         {
             Set();
             return;
         }
 
-        colorType = info[visualizerSpecificElementKey].ColorType;
-        colorIndex = info[visualizerSpecificElementKey].ColorIndex;
-        fontIndex = info[visualizerSpecificElementKey].FontIndex;
-        active = info[visualizerSpecificElementKey].Enabled;
+        colorType = info[key].ColorType;
+        colorIndex = info[key].ColorIndex;
+        fontIndex = info[key].FontIndex;
+        active = info[key].Enabled;
 
         Set();
     }
 
     protected override VisualizerElementsSettings GetElementSettings()
     {
-        return VisualizerManager._Instance.GetVisualizerSpecificElementSettings(visualizerSpecificElementKey);
+        return VisualizerManager._Instance.GetVisualizerSpecificElementSettings(key);
     }
 
     protected override void UpdateSettings(VisualizerElementsSettings newSettings)
     {
-        VisualizerManager._Instance.SetVisualizerSpecificElementsSettings(visualizerSpecificElementKey, newSettings);
+        VisualizerManager._Instance.SetVisualizerSpecificElementsSettings(key, newSettings);
     }
 }

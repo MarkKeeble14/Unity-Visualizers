@@ -11,7 +11,16 @@ public class RadialVisualizer : PremadeVisualizer
     [SerializeField] private float segmentWidth = 10;
     private float lastSegmentWidth;
 
+    [Header("Adjustable Settings")]
+    [SerializeField] private string distanceKey;
+    [SerializeField] private string segmentWidthKey;
+
     private RadialLayoutGroup layoutGroup;
+
+    protected override void PreMakingVisualizer()
+    {
+        layoutGroup = GetComponent<RadialLayoutGroup>();
+    }
 
     protected override void UpdateSpecificSettings()
     {
@@ -30,8 +39,13 @@ public class RadialVisualizer : PremadeVisualizer
         lastSegmentWidth = segmentWidth;
     }
 
-    protected override void PreMakingVisualizer()
+    public override void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
     {
-        layoutGroup = GetComponent<RadialLayoutGroup>();
+        base.RecieveVisualizerFloatValues(settings);
+
+        distance = settings[distanceKey];
+        segmentWidth = settings[segmentWidthKey];
+
+        UpdateSpecificSettings();
     }
 }

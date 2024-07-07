@@ -91,8 +91,10 @@ MonoBehaviour:
   segmentPrefab: {fileID: 7142856522332667449, guid: 2fcd5a4f4a65a2c489cb217a9cf67c96, type: 3}
   attachmentType: 1
   signalMultiplier: 1500
-  attachmentMultiplier: 7.5
   defaultValue: 15
   adjustSpeed: 12.5
   useSlowAdjust: 1
+  signalMultiplierKey: LongLineVisualizerSignalMultiplier
+  defaultValueKey: LongLineVisualizerDefaultValue
   spacing: 0
+  spacingKey: LongLineVisualizerSpacing

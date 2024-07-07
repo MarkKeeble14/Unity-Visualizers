@@ -61,6 +61,7 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, TMP_FontAsset> loadedTMPFontAssets = new();
 
     [Header("Other Settings")]
+    [SerializeField] private List<string> visualizerSpecificElementKeys = new();
     [SerializeField] private bool askForTrack = true;
     [SerializeField] private bool askForCoverArt = true;
     [SerializeField] private bool askForPreset = true;
@@ -150,7 +151,10 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveTrackInfo> trackInfoListeners = new();
     private List<IRecieveTempo> tempoListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
+    private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElements = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
+    private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
+    private Dictionary<string, float> visualizerElementFloatDict = new();
 
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
@@ -217,20 +221,26 @@ public class VisualizerManager : MonoBehaviour
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
         volume = FindObjectOfType<Volume>();
-    }
 
-    private void Start()
-    {
         PopulateColorsList();
         PopulateFontsList();
 
-        // Populate visualizer elements info
+        // populate visualizer elements info
         foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
         {
             visualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
 
-        // Only 1 scenario, we'd just go to track selection
+        // populate visualizer specific elements info
+        foreach (string key in visualizerSpecificElementKeys)
+        {
+            visualizerSpecificElementsInfo.Add(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+        }
+    }
+
+    private void Start()
+    {
+        // only 1 scenario, we'd just go to track selection
         if (scenarios.Count == 0)
         {
             StartCoroutine(RunSetup());
@@ -1007,10 +1017,12 @@ public class VisualizerManager : MonoBehaviour
         visualizerElementsUI.SetActive(true);
 
         BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificsElementsInfo();
 
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
         BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificsElementsInfo();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -1294,7 +1306,12 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public VisualizerElementsSettings GetVisualizerElementSettings(VisualizerElementLabel label)
+    public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string specificElementKey)
+    {
+        return visualizerSpecificElementsInfo[specificElementKey];
+    }
+
+    public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
     {
         return visualizerElementsInfo[label];
     }
@@ -1304,13 +1321,39 @@ public class VisualizerManager : MonoBehaviour
         return visualizerElementsInfo;
     }
 
-    public void SetVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
+    public void SetVisualizerElementsSettings(string key, float v)
+    {
+        if (!visualizerElementFloatDict.ContainsKey(key))
+        {
+            visualizerElementFloatDict.Add(key, v);
+        }
+        else
+        {
+            visualizerElementFloatDict[key] = v;
+        }
+        throw new NotImplementedException();
+    }
+
+    public void SetVisualizerSpecificElementsSettings(string key, VisualizerElementsSettings settings)
+    {
+        if (!visualizerSpecificElementsInfo.ContainsKey(key))
+        {
+            visualizerSpecificElementsInfo.Add(key, settings);
+        }
+        else
+        {
+            visualizerSpecificElementsInfo[key] = settings;
+        }
+        BroadcastVisualizerSpecificsElementsInfo();
+    }
+
+    public void SetBaseVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
     {
         visualizerElementsInfo = settings;
         BroadcastVisualizerElementsInfo();
     }
 
-    public void UpdateVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
+    public void UpdateBaseVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
     {
         visualizerElementsInfo[label] = newSettings;
         BroadcastVisualizerElementsInfo();
@@ -1365,6 +1408,7 @@ public class VisualizerManager : MonoBehaviour
 
             BroadcastTrackInfo();
             BroadcastVisualizerElementsInfo();
+            BroadcastVisualizerSpecificsElementsInfo();
 
             onSuccess(filePath, preset);
         } catch (Exception e)
@@ -1373,7 +1417,6 @@ public class VisualizerManager : MonoBehaviour
             onFailure(filePath);
         }
     }
-
 
     public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
     public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
@@ -1417,7 +1460,6 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastVisualizerElementsInfo()
     {
         // Attempt to find any listeners if the list is empty
-        // I don't foresee visualizer elements being spawned as the game progresses, so caching them once at the beggining should be fine
         if (visualizerElements.Count == 0)
         {
             visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
@@ -1425,6 +1467,15 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
+    }
+
+    [ContextMenu("BroadcastVisualizerElementsInfo")]
+    private void BroadcastVisualizerSpecificsElementsInfo()
+    {
+        visualizerSpecificElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerSpecificElementsInfo>().ToList();
+
+        // Send data out
+        visualizerSpecificElements.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
     }
 
     public void SyncTempoListeners()
@@ -1598,5 +1649,10 @@ public class VisualizerManager : MonoBehaviour
     private void SetTapperInputFieldText()
     {
         tempoTapperInputField.text = Math.Round(estimatedBPM, 2).ToString();
+    }
+
+    public void SetLightColorToVisualizerSpecificElementSettings(string key, Light light)
+    {
+        light.color = GetColor(visualizerSpecificElementsInfo[key].ColorType, visualizerSpecificElementsInfo[key].ColorIndex);
     }
 }

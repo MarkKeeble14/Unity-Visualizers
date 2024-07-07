@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
-public class SetTextColorToMatchTrack : SetElementColorToMatchTrack
+public class SetTextColorToMatchTrack : SetBaseVisualizerElementColorToTrackColor
 {
     private TextMeshProUGUI text;
 

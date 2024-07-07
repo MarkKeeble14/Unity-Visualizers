@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class VisualizerElement : MonoBehaviour, IRecieveTrackInfo, IRecieveVisualizerElementsInfo
+public abstract class BaseVisualizerElement : MonoBehaviour, IRecieveTrackInfo, IRecieveVisualizerElementsInfo
 {
     [SerializeField] protected VisualizerElementLabel label;
     private bool active = true;

@@ -123,7 +123,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
             RequestRenderToTex();
 
-            VisualizerManager._Instance.SetVisualizerElementsSettings(newVisualElementSettings);
+            VisualizerManager._Instance.SetBaseVisualizerElementsSettings(newVisualElementSettings);
 
             yield return new WaitForEndOfFrame();
 
@@ -133,7 +133,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
 
-            VisualizerManager._Instance.SetVisualizerElementsSettings(previousVisualElementSettings);
+            VisualizerManager._Instance.SetBaseVisualizerElementsSettings(previousVisualElementSettings);
         }
 
         Time.timeScale = prevTimeScale;

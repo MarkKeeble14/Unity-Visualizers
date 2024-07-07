@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4088317014146891776}
   - component: {fileID: 4088317014146891779}
   - component: {fileID: 4088317014146891778}
-  - component: {fileID: 4882567648804212261}
+  - component: {fileID: 7978580424755283156}
   m_Layer: 0
   m_Name: GraveyardMoonlight
   m_TagString: Untagged
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
---- !u!114 &4882567648804212261
+--- !u!114 &7978580424755283156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -179,10 +179,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4088317014146891804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18aacf86b9b571842823432e45ce9459, type: 3}
+  m_Script: {fileID: 11500000, guid: d10794a658f47d04b8565262b366c424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: 0
-  colorType: 0
-  index: 0
+  key: Moonlight
   light: {fileID: 4088317014146891782}

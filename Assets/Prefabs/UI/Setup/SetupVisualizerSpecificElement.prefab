@@ -392,7 +392,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 919714982528533909}
+      - m_Target: {fileID: 5232899657845156060}
         m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
         m_MethodName: UpdateColorType
         m_Mode: 3
@@ -980,7 +980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 919714982528533909}
+      - m_Target: {fileID: 5232899657845156060}
         m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
         m_MethodName: UpdateColorType
         m_Mode: 3
@@ -1004,9 +1004,9 @@ GameObject:
   - component: {fileID: 6187278994141335333}
   - component: {fileID: 6260151156363229497}
   - component: {fileID: 4395449184077646868}
-  - component: {fileID: 919714982528533909}
+  - component: {fileID: 5232899657845156060}
   m_Layer: 0
-  m_Name: SetupElement
+  m_Name: SetupVisualizerSpecificElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &919714982528533909
+--- !u!114 &5232899657845156060
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1109,10 +1109,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4721466912945026939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83e5548563cc50d4e89406335ecd4f2a, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a131c107458d4c40a56542cda406572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: 0
   labelText: {fileID: 6371492712468172714}
   enabledButtonDisplay: {fileID: 8398188570865536308}
   colorDropdownMenu: {fileID: 8044615592679240234}
@@ -1121,6 +1120,7 @@ MonoBehaviour:
   setSolidColorTypeButton: {fileID: 6172627108875335145}
   setGradientByTimeColorTypeButton: {fileID: 812084677504489660}
   setGradientByIndexColorTypeButton: {fileID: 4999515220020620605}
+  visualizerSpecificElementKey: 
 --- !u!1 &5962336404931349130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1419,7 +1419,7 @@ GameObject:
   - component: {fileID: 8398188570865536308}
   - component: {fileID: 7468435298195134264}
   m_Layer: 0
-  m_Name: ActiveButtonButton
+  m_Name: EnabledButtonDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1527,8 +1527,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 919714982528533909}
-        m_TargetAssemblyTypeName: SetupElement, Assembly-CSharp
+      - m_Target: {fileID: 5232899657845156060}
+        m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
         m_MethodName: ToggleActive
         m_Mode: 1
         m_Arguments:
@@ -1661,7 +1661,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 919714982528533909}
+      - m_Target: {fileID: 5232899657845156060}
         m_TargetAssemblyTypeName: SetupVisualizerElement, Assembly-CSharp
         m_MethodName: UpdateColorType
         m_Mode: 3

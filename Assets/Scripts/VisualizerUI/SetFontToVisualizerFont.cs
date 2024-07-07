@@ -2,7 +2,7 @@
 using TMPro;
 using System.Collections.Generic;
 
-public class SetFontToVisualizerFont : VisualizerElement
+public class SetFontToVisualizerFont : BaseVisualizerElement
 {
     [SerializeField] private int index;
     [SerializeField] private TextMeshProUGUI text;

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class SetImageColorToMatchTrack : SetElementColorToMatchTrack
+public class SetImageColorToMatchTrack : SetBaseVisualizerElementColorToTrackColor
 {
     private Image image;
 

@@ -5,7 +5,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : SetElementColorToMatchTrack
+public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;

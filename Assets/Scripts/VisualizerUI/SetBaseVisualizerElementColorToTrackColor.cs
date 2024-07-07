@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SetElementColorToMatchTrack : VisualizerElement
+public abstract class SetBaseVisualizerElementColorToTrackColor : BaseVisualizerElement
 {
     [SerializeField] private VisualizerColorType colorType;
     public VisualizerColorType ColorType { get { return colorType; } set { colorType = value; } }

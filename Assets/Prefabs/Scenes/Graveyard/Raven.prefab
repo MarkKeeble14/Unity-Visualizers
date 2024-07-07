@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 1295133467051189678}
   - component: {fileID: 6065993059783569579}
   - component: {fileID: 4630862152619677037}
-  - component: {fileID: 1188515539836985968}
   - component: {fileID: 5481509326296757046}
+  - component: {fileID: 7280916645131800707}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -171,25 +171,6 @@ MonoBehaviour:
     value:
     - {fileID: 1295133467051189678}
     - {fileID: 6065993059783569579}
---- !u!114 &1188515539836985968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 64756399544970092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17769c6930907c74f84c272cfef68255, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  light: {fileID: 1665319223827245638}
-  colors:
-    options:
-    - key: {r: 1, g: 1, b: 0, a: 1}
-      value: 10
-    - key: {r: 1, g: 0, b: 0, a: 1}
-      value: 90
 --- !u!114 &5481509326296757046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +191,20 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!114 &7280916645131800707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64756399544970092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10c9b92f4ad0c0c4d96589a52f6ecdb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  light: {fileID: 1665319223827245638}
+  key: Ravens
 --- !u!1 &4376952548609669394
 GameObject:
   m_ObjectHideFlags: 0

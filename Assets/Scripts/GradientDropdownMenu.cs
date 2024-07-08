@@ -15,11 +15,21 @@ public class GradientDropdownMenu : DropdownMenu, IRecieveTrackInfo
             GradientDropdownElement e = (GradientDropdownElement)CreateElementObject();
             e.SetGradient(g);
         }
+
+        SelectElement(selectedIndex);
     }
 
     protected override void SetElementActive(int index)
     {
-        if (index >= dropdownElements.Count) { return; }
+        if (dropdownElements.Count == 0)
+        {
+            return;
+        }
+        
+        if (index >= dropdownElements.Count)
+        {
+            index = dropdownElements.Count - 1;
+        }
         Gradient g = ((GradientDropdownElement)dropdownElements[index]).GetGradient();
         gradientDisplay.UpdateColors(g);
         OnGradientSelected?.Invoke(g);

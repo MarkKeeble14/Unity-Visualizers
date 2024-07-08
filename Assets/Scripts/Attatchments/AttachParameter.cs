@@ -14,11 +14,10 @@ public abstract class AttachParameter : MonoBehaviour
     [SerializeField] protected bool slowAdust;
     public bool SlowAdjust { get { return slowAdust; } set {  slowAdust = value; } }
 
-    [SerializeField] private float defaultValue = 0;
-    public float DefaultValue { get { return defaultValue; } set {  defaultValue = value; } }
-
     [SerializeField] private float adjustSpeed = 25;
     public float AdjustSpeed { get { return adjustSpeed; } set { adjustSpeed = value; } }
+    [SerializeField] private float defaultValue = 0;
+    public float DefaultValue { get { return defaultValue; } set {  defaultValue = value; } }
 
     [SerializeField] private float multiplier = 1;
     public float Multiplier { get { return multiplier; } set { multiplier = value; } }

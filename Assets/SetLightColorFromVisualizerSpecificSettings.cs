@@ -9,16 +9,6 @@ public class SetLightColorFromVisualizerSpecificSettings : MonoBehaviour, IRecie
 
     public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)
     {
-        SetLightColor();
-    }
-
-    private void Start()
-    {
-        SetLightColor();
-    }
-
-    private void SetLightColor()
-    {
         VisualizerManager._Instance.SetLightColorToVisualizerSpecificElementSettings(key, light);
     }
 }

@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 2524593381381155646}
   - component: {fileID: 2524593381381155645}
   - component: {fileID: 6844114006744178787}
+  - component: {fileID: 6789114372219357856}
+  - component: {fileID: 7332758849650738569}
   m_Layer: 0
   m_Name: GraveyardLight
   m_TagString: Untagged
@@ -131,9 +133,9 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 1
   adjustSpeed: 25
-  multiplier: 7.5
+  defaultValue: 0
+  multiplier: 10
   light: {fileID: 2524593381381155642}
 --- !u!114 &2524593381381155647
 MonoBehaviour:
@@ -150,8 +152,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 25
   adjustSpeed: 25
+  defaultValue: 250
   multiplier: 5
   light: {fileID: 2524593381381155642}
 --- !u!114 &2524593381381155646
@@ -205,3 +207,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: PersonalLight
   light: {fileID: 2524593381381155642}
+--- !u!114 &6789114372219357856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524593381381155619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightAttachment: {fileID: 2524593381381155647}
+  defaultValueKey: PersonalLightRangeDefaultValue
+  multiplierKey: PersonalLightRangeMultiplier
+--- !u!114 &7332758849650738569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524593381381155619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightAttachment: {fileID: 2524593381381155640}
+  defaultValueKey: PersonalLightIntensityDefaultValue
+  multiplierKey: PersonalLightIntensityMultiplier

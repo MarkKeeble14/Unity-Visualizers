@@ -9,7 +9,7 @@ public class SetupVisualizerSpecificElement : SetupVisualizerElement, IRecieveVi
     {
         if (!info.ContainsKey(key))
         {
-            Set();
+            VisualizerManager._Instance.RegisterVisualizerSpecificElement(key);
             return;
         }
 
@@ -28,6 +28,6 @@ public class SetupVisualizerSpecificElement : SetupVisualizerElement, IRecieveVi
 
     protected override void UpdateSettings(VisualizerElementsSettings newSettings)
     {
-        VisualizerManager._Instance.SetVisualizerSpecificElementsSettings(key, newSettings);
+        VisualizerManager._Instance.UpdateVisualizerSpecificElementsSettings(key, newSettings);
     }
 }

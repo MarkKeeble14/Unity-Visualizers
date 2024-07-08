@@ -29,6 +29,12 @@ public class LongLineVisualizer : PremadeVisualizer, IRecieveVisualizerFloatValu
     {
         base.RecieveVisualizerFloatValues(settings);
 
-        layoutGroup.spacing = settings[spacingKey];
+        if (!settings.ContainsKey(spacingKey))
+        {
+            VisualizerManager._Instance.RegisterFloatValue(spacingKey, spacing);
+        } else
+        {
+            spacing = settings[spacingKey];
+        }
     }
 }

@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 public class RadialLayoutGroup : LayoutGroup
 {
-    public float fDistance;
+    private float fDistance;
     [Range(0f, 360f)]
     public float MinAngle, MaxAngle, StartAngle;
 
@@ -33,6 +33,13 @@ public class RadialLayoutGroup : LayoutGroup
     public override void SetLayoutVertical()
     {
     }
+
+    public void UpdateDistance(float distance)
+    {
+        fDistance = distance;
+        CalculateRadial();
+    }
+
     public override void CalculateLayoutInputVertical()
     {
         CalculateRadial();
@@ -82,6 +89,5 @@ public class RadialLayoutGroup : LayoutGroup
                 fAngle += fOffsetAngle;
             }
         }
-
     }
 }

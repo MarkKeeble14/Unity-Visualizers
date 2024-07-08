@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class VisualizerElementFloatSetting : MonoBehaviour, IRecieveVisualizerFloatValues
 {
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private string label;
     [SerializeField] private string key;
+    [SerializeField] private TextMeshProUGUI labelText;
+    [SerializeField] private TMP_InputField inputField;
+
+    private void Start()
+    {
+        labelText.text = label;
+    }
 
     public void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
     {

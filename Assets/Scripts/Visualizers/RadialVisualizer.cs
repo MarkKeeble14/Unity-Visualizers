@@ -25,7 +25,7 @@ public class RadialVisualizer : PremadeVisualizer
     protected override void UpdateSpecificSettings()
     {
         // radial distance
-        layoutGroup.fDistance = distance;
+        layoutGroup.UpdateDistance(distance);
 
         // segment width
         if (lastSegmentWidth != segmentWidth)
@@ -43,8 +43,23 @@ public class RadialVisualizer : PremadeVisualizer
     {
         base.RecieveVisualizerFloatValues(settings);
 
-        distance = settings[distanceKey];
-        segmentWidth = settings[segmentWidthKey];
+        if (!settings.ContainsKey(distanceKey))
+        {
+            VisualizerManager._Instance.RegisterFloatValue(distanceKey, distance);
+        }
+        else
+        {
+            distance = settings[distanceKey];
+        }
+
+        if (!settings.ContainsKey(segmentWidthKey))
+        {
+            VisualizerManager._Instance.RegisterFloatValue(segmentWidthKey, segmentWidth);
+        }
+        else
+        {
+            segmentWidth = settings[segmentWidthKey];
+        }
 
         UpdateSpecificSettings();
     }

@@ -16,11 +16,21 @@ public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
             ColorDropdownElement e = (ColorDropdownElement)CreateElementObject();
             e.SetColor(c);
         }
+
+        SelectElement(selectedIndex);
     }
 
     protected override void SetElementActive(int index)
     {
-        if (index >= dropdownElements.Count) { return; }
+        if (dropdownElements.Count == 0)
+        {
+            return;
+        }
+
+        if (index >= dropdownElements.Count)
+        {
+            index = dropdownElements.Count - 1;
+        }
         Color c = ((ColorDropdownElement)dropdownElements[index]).GetColor();
         colorDisplay.color = c;
         OnColorSelected?.Invoke(c);

@@ -15,12 +15,19 @@ public class FontDropdownMenu : DropdownMenu, IRecieveTrackInfo
             FontDropdownElement e = (FontDropdownElement)CreateElementObject();
             e.SetFont(f);
         }
+
+        SelectElement(selectedIndex);
     }
 
     protected override void SetElementActive(int index)
     {
-        TMP_FontAsset f;
         if (index >= dropdownElements.Count)
+        {
+            index = dropdownElements.Count - 1;
+        }
+
+        TMP_FontAsset f;
+        if (dropdownElements.Count == 0)
         {
             f = VisualizerManager._Instance.GetDefaultFont();
         } else

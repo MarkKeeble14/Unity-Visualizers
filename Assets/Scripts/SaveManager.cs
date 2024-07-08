@@ -24,15 +24,22 @@ public struct VisualizerPreset
 {
     [SerializeField] public List<Color> Colors;
     [SerializeField] public List<Gradient> Gradients;
-    [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> VisualizerElements;
+    [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> BaseVisualizerElements;
+    [SerializeField] public Dictionary<string, VisualizerElementsSettings> VisualizerSpecificElements;
+    [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
     [SerializeField] public List<FontFileData> Fonts;
 
-    public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElements)
+    public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
+        Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
+        Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
+        Dictionary<string, float> floatSettings)
     {
         Colors = colors;
         Gradients = gradients;
         Fonts = fonts;
-        VisualizerElements = visualizerElements;
+        BaseVisualizerElements = baseVisualizerElements;
+        VisualizerSpecificElements = visualizerSpecificElements;
+        VisualizerFloatValues = floatSettings;
     }
 
     public override string ToString()
@@ -41,11 +48,11 @@ public struct VisualizerPreset
         Colors.ForEach(x => { s += ", " + x; });
         s += " - Gradients: " + Gradients.Count;
         s += " - Visualizer Elements";
-        foreach (VisualizerElementLabel item in VisualizerElements.Keys)
+        foreach (VisualizerElementLabel item in BaseVisualizerElements.Keys)
         {
-            s += "," + item + " Enabled?: " + VisualizerElements[item].Enabled + ", Color: " 
-                + VisualizerElements[item].ColorIndex + ", Font: " 
-                + VisualizerElements[item].FontIndex;
+            s += "," + item + " Enabled?: " + BaseVisualizerElements[item].Enabled + ", Color: " 
+                + BaseVisualizerElements[item].ColorIndex + ", Font: " 
+                + BaseVisualizerElements[item].FontIndex;
         }
         s += " - Fonts: " + Fonts.Count;
         return s;

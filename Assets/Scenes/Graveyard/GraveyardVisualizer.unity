@@ -903,14 +903,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1587039181}
     m_Modifications:
-    - target: {fileID: 4088317014146891776, guid: fdff43ce747f423468b6bbba732b37bc, type: 3}
-      propertyPath: multiplier
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4088317014146891776, guid: fdff43ce747f423468b6bbba732b37bc, type: 3}
-      propertyPath: defaultValue
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 4088317014146891804, guid: fdff43ce747f423468b6bbba732b37bc, type: 3}
       propertyPath: m_Name
       value: GraveyardMoonlight
@@ -4159,27 +4151,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_SizeDelta.y
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1010
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 235703289215819654, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5914,10 +5906,6 @@ PrefabInstance:
       value: PersonalLight
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Gradients.Array.data[0].m_NumAlphaKeys
       value: 2
       objectReference: {fileID: 0}
@@ -5948,58 +5936,6 @@ PrefabInstance:
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: trackInfo.Gradients.Array.data[1].m_NumColorKeys
       value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[0].key
-      value: LongLineVisualizerSignalMultiplier
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[1].key
-      value: LongLineVisualizerDefaultValue
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[2].key
-      value: LongLineVisualizerSpacing
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[3].key
-      value: RadialVisualizerSignalMultiplier
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[4].key
-      value: RadialVisualizerDefaultValue
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[5].key
-      value: RadialVisualizerDistance
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[6].key
-      value: RadialVisualizerSegmentWidth
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[0].value
-      value: 4000
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[1].value
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[3].value
-      value: 1500
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[4].value
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[5].value
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: visualizerElementFloatSettingKeys.Array.data[6].value
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947815, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_RootOrder
@@ -6951,27 +6887,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: m_SizeDelta.y
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 910
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2597282437634854137, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
@@ -14628,8 +14564,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 5
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &828889351
@@ -14695,8 +14631,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 0.5
   axis: 1
 --- !u!114 &828889356
@@ -15209,8 +15145,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 5
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!65 &897606769
@@ -15263,8 +15199,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 1.25
   adjustSpeed: 0
+  defaultValue: 1.25
   multiplier: 1
   axis: 2
 --- !u!114 &897606773
@@ -15298,8 +15234,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 0.5
   axis: 1
 --- !u!114 &897606775
@@ -21418,8 +21354,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 1.25
   adjustSpeed: 0
+  defaultValue: 1.25
   multiplier: 1
   axis: 2
 --- !u!114 &1376740954
@@ -21453,8 +21389,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 0.5
   axis: 1
 --- !u!114 &1376740956
@@ -21496,8 +21432,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 5
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &1376740961
@@ -27126,8 +27062,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0.1
   adjustSpeed: 0.5
+  defaultValue: 0.1
   multiplier: -0.025
 --- !u!1001 &1931636545
 PrefabInstance:
@@ -29476,8 +29412,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 0.5
   axis: 1
 --- !u!114 &2144958512
@@ -29527,8 +29463,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0
   adjustSpeed: 5
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &2144958517

@@ -112,8 +112,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 1
   conditionLock: {fileID: 1976641219156554946}
   image: {fileID: 1092092130792679497}
@@ -334,8 +334,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 64
   adjustSpeed: 25
+  defaultValue: 64
   multiplier: 1
   text: {fileID: 4692421920290114003}
 --- !u!114 &6551687303459934169
@@ -565,8 +565,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &1807501827369941038
@@ -1000,8 +1000,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0.75
   adjustSpeed: 0.25
+  defaultValue: 0.75
   multiplier: 0.01
   scaleOn: 0
 --- !u!114 &8804542069053315146
@@ -1019,8 +1019,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0.75
   adjustSpeed: 0.25
+  defaultValue: 0.75
   multiplier: 0.01
   scaleOn: 1
 --- !u!114 &8150656816053562434
@@ -1054,8 +1054,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &4760510415880633646
@@ -1446,8 +1446,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 96
   adjustSpeed: 25
+  defaultValue: 96
   multiplier: 1
   text: {fileID: 6611571563060356526}
 --- !u!114 &162253357623976620
@@ -1505,8 +1505,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0
   adjustSpeed: 25
+  defaultValue: 0
   multiplier: 1
   rotateOn: 2
 --- !u!114 &1353561162452376188
@@ -1943,8 +1943,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 64
   adjustSpeed: 25
+  defaultValue: 64
   multiplier: 1
   text: {fileID: 2880485430267212935}
 --- !u!114 &8913040854735903535
@@ -2404,18 +2404,6 @@ PrefabInstance:
     - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3465347465345289127, guid: 765b8429724126549a896c422855c80d, type: 3}
       propertyPath: m_LocalPosition.x

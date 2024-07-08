@@ -20,20 +20,12 @@ public abstract class DropdownMenu : MonoBehaviour
 
     public Action<int> OnSelectElement;
 
+    protected int selectedIndex;
     private bool isOpen;
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-
-        Vector2 sizeDelta = list.sizeDelta;
-        Vector2 anchoredPosition = list.anchoredPosition;
-
-        sizeDelta.y = rectTransform.sizeDelta.y;
-        anchoredPosition.y = rectTransform.sizeDelta.y;
-
-        list.sizeDelta = sizeDelta;
-        list.anchoredPosition = anchoredPosition;
     }
 
     public void Click()
@@ -50,6 +42,7 @@ public abstract class DropdownMenu : MonoBehaviour
     private void Open()
     {
         isOpen = true;
+
         list.gameObject.SetActive(true);
     }
 
@@ -87,6 +80,7 @@ public abstract class DropdownMenu : MonoBehaviour
     {
         OnSelectElement?.Invoke(index);
         ActivateElement(index);
+        selectedIndex = index;
         Close();
     }
 

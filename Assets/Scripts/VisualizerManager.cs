@@ -61,8 +61,6 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, TMP_FontAsset> loadedTMPFontAssets = new();
 
     [Header("Other Settings")]
-    [SerializeField] private List<string> visualizerSpecificElementKeys = new();
-    [SerializeField] private List<SerializableKeyValuePair<string, float>> visualizerFloatValueKeys = new();
     [SerializeField] private bool askForTrack = true;
     [SerializeField] private bool askForCoverArt = true;
     [SerializeField] private bool askForPreset = true;
@@ -154,7 +152,7 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
     private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElements = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
-    private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
+    private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
     private Dictionary<string, float> visualizerFloatValues = new();
 
@@ -230,15 +228,7 @@ public class VisualizerManager : MonoBehaviour
         // populate dictionaries
         foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
         {
-            visualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        }
-        foreach (string key in visualizerSpecificElementKeys)
-        {
-            visualizerSpecificElementsInfo.Add(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        }
-        foreach (SerializableKeyValuePair<string, float> kvp in visualizerFloatValueKeys)
-        {
-            visualizerFloatValues.Add(kvp.Key, kvp.Value);
+            baseVisualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
     }
 
@@ -1314,64 +1304,61 @@ public class VisualizerManager : MonoBehaviour
 
     public void UpdateFloatSetting(string key, float v)
     {
-
-    }
-
-    public float GetFloatSetting(string key)
-    {
-        return visualizerFloatValues[key];
-    }
-
-    public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string specificElementKey)
-    {
-        return visualizerSpecificElementsInfo[specificElementKey];
-    }
-
-    public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
-    {
-        return visualizerElementsInfo[label];
-    }
-
-    public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetVisualizerElementSettings()
-    {
-        return visualizerElementsInfo;
-    }
-
-    public void SetVisualizerElementsSettings(string key, float v)
-    {
         if (!visualizerFloatValues.ContainsKey(key))
         {
-            visualizerFloatValues.Add(key, v);
+            RegisterFloatValue(key, v);
         }
         else
         {
             visualizerFloatValues[key] = v;
         }
-        throw new NotImplementedException();
+
+        BroadcastVisualizerFloatValues();
     }
 
-    public void SetVisualizerSpecificElementsSettings(string key, VisualizerElementsSettings settings)
+    public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string key)
     {
         if (!visualizerSpecificElementsInfo.ContainsKey(key))
         {
-            visualizerSpecificElementsInfo.Add(key, settings);
+            visualizerSpecificElementsInfo.Add(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+        }
+
+        return visualizerSpecificElementsInfo[key];
+    }
+
+    public void UpdateVisualizerSpecificElementsSettings(string key, VisualizerElementsSettings settings)
+    {
+        if (!visualizerSpecificElementsInfo.ContainsKey(key))
+        {
+            RegisterVisualizerSpecificElement(key, settings);
         }
         else
         {
             visualizerSpecificElementsInfo[key] = settings;
         }
+
         BroadcastVisualizerSpecificsElementsInfo();
     }
 
-    public void SetBaseVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
+    public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
     {
-        visualizerElementsInfo = settings;
+        return baseVisualizerElementsInfo[label];
+    }
+
+    public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetBaseVisualizerElementSettings()
+    {
+        return baseVisualizerElementsInfo;
+    }
+
+    public void UpdateBaseVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
+    {
+        baseVisualizerElementsInfo = settings;
         BroadcastVisualizerElementsInfo();
     }
 
     public void UpdateBaseVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
     {
-        visualizerElementsInfo[label] = newSettings;
+        baseVisualizerElementsInfo[label] = newSettings;
         BroadcastVisualizerElementsInfo();
     }
 
@@ -1379,7 +1366,7 @@ public class VisualizerManager : MonoBehaviour
     public void SavePreset()
     {
         VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
-            loadedFontData.Values.ToList(), visualizerElementsInfo);
+            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, visualizerFloatValues);
 
         StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
             x =>
@@ -1419,8 +1406,10 @@ public class VisualizerManager : MonoBehaviour
                 spawned.Set(i);
             }
 
-            // Set visualizer elements
-            visualizerElementsInfo = preset.VisualizerElements;
+            // Set other visualizer data
+            baseVisualizerElementsInfo = preset.BaseVisualizerElements;
+            visualizerSpecificElementsInfo = preset.VisualizerSpecificElements;
+            visualizerFloatValues = preset.VisualizerFloatValues;
 
             BroadcastTrackInfo();
             BroadcastVisualizerElementsInfo();
@@ -1483,7 +1472,7 @@ public class VisualizerManager : MonoBehaviour
         }
 
         // Send data out
-        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
+        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(baseVisualizerElementsInfo));
     }
 
     [ContextMenu("BroadcastVisualizerElementsInfo")]
@@ -1679,6 +1668,24 @@ public class VisualizerManager : MonoBehaviour
 
     public void SetLightColorToVisualizerSpecificElementSettings(string key, Light light)
     {
+        if (!visualizerSpecificElementsInfo.ContainsKey(key)) return;
         light.color = GetColor(visualizerSpecificElementsInfo[key].ColorType, visualizerSpecificElementsInfo[key].ColorIndex);
+    }
+
+    public void RegisterFloatValue(string key, float v)
+    {
+        visualizerFloatValues.Add(key, v);
+        BroadcastVisualizerFloatValues();
+    }
+
+    public void RegisterVisualizerSpecificElement(string key)
+    {
+        RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+    }
+
+    public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
+    {
+        visualizerSpecificElementsInfo.Add(key, settings);
+        BroadcastVisualizerSpecificsElementsInfo();
     }
 }

@@ -186,8 +186,22 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
     {
-        signalMultiplier = settings[signalMultiplierKey];
-        defaultValue = settings[defaultValueKey];
+        if (!settings.ContainsKey(signalMultiplierKey))
+        {
+            VisualizerManager._Instance.RegisterFloatValue(signalMultiplierKey, signalMultiplier);
+        } else
+        {
+            signalMultiplier = settings[signalMultiplierKey];
+        }
+
+        if (!settings.ContainsKey(defaultValueKey))
+        {
+            VisualizerManager._Instance.RegisterFloatValue(defaultValueKey, defaultValue);
+        }
+        else
+        {
+            defaultValue = settings[defaultValueKey];
+        }
 
         UpdateAttachments();
     }

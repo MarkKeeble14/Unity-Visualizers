@@ -5,7 +5,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor, IRecieveVisualizerFloatValues
+public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor, IRecieveVisualizerFloatValues, IRecieveVisualizerIntValues
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;
@@ -27,6 +27,7 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
     [Header("Adjustable Settings Keys")]
     [SerializeField] private string signalMultiplierKey;
     [SerializeField] private string defaultValueKey;
+    [SerializeField] private string attachmentTypeKey;
 
     private void Start()
     {
@@ -184,25 +185,37 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         UpdateAttachments();
     }
 
-    public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
+    public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
-        if (!settings.ContainsKey(signalMultiplierKey))
+        if (!values.ContainsKey(signalMultiplierKey))
         {
             VisualizerManager._Instance.RegisterFloatValue(signalMultiplierKey, signalMultiplier);
         } else
         {
-            signalMultiplier = settings[signalMultiplierKey];
+            signalMultiplier = values[signalMultiplierKey];
         }
 
-        if (!settings.ContainsKey(defaultValueKey))
+        if (!values.ContainsKey(defaultValueKey))
         {
             VisualizerManager._Instance.RegisterFloatValue(defaultValueKey, defaultValue);
         }
         else
         {
-            defaultValue = settings[defaultValueKey];
+            defaultValue = values[defaultValueKey];
+        }
+    }
+
+    public virtual void RecieveVisualizerIntValues(Dictionary<string, int> values)
+    {
+        if (!values.ContainsKey(attachmentTypeKey))
+        {
+            VisualizerManager._Instance.RegisterIntValue(attachmentTypeKey, (int)attachmentType);
+        }
+        else
+        {
+            attachmentType = (AttachmentType)values[attachmentTypeKey];
         }
 
-        UpdateAttachments();
+        Reconstruct();
     }
 }

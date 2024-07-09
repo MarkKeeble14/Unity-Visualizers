@@ -72,22 +72,23 @@ public abstract class DropdownMenu : MonoBehaviour
 
         dropdownElements.Add(e);
         e.SetIndex(dropdownElements.Count - 1);
-        e.AddOnClick(() => SelectElement(e.GetIndex()));
+        e.AddOnClick(() => SelectElementAtIndex(e.GetIndex()));
+
         return e;
     }
 
-    public void SelectElement(int index)
+    public void SelectElementAtIndex(int index)
     {
         OnSelectElement?.Invoke(index);
-        ActivateElement(index);
-        selectedIndex = index;
+        ActivateElementAtIndex(index);
         Close();
     }
 
-    public void ActivateElement(int index)
+    public void ActivateElementAtIndex(int index)
     {
-        SetElementActive(index);
+        selectedIndex = index;
         indexText.text = index.ToString();
+        SetElementActive(index);
     }
 
     protected abstract void SetElementActive(int index);

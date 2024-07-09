@@ -32,15 +32,21 @@ public class VisualizerSelectionButton : MonoBehaviour
         button.colors = buttonColors;
     }
 
-    public void LoadScene()
+    public void Clicked()
+    {
+        if (sceneInfo.Scenarios.Length == 0)
+        {
+            LoadScene();
+        } else
+        {
+            VisualizerSelectionGridGenerator._Instance.UpdateSelection(sceneInfo.Scenarios, true);
+        }
+    }
+
+    private void LoadScene()
     {
         TransitionManager._Instance.Transition(sceneInfo.TransitionName, TransitionDirection.IN,
             () => TransitionManager._Instance.PlayAudioClip(sceneInfo.OnSelectSound), 
             () => SceneManager.LoadScene(sceneInfo.LoadSceneName));
-    }
-
-    public void SelectSpecificScenario()
-    {
-        VisualizerManager._Instance.SelectScenario(sceneInfo.LoadSceneName);
     }
 }

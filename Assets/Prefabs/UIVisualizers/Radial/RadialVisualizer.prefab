@@ -99,6 +99,7 @@ MonoBehaviour:
   useSlowAdjust: 1
   signalMultiplierKey: RadialVisualizerSignalMultiplier
   defaultValueKey: RadialVisualizerDefaultValue
+  attachmentTypeKey: RadialVisualizerAttachmentType
   distance: 275
   segmentWidth: 10
   distanceKey: RadialVisualizerDistance

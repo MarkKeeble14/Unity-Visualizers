@@ -134,17 +134,17 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     private void SetColor()
     {
-        colorDropdownMenu.ActivateElement(colorIndex);
+        colorDropdownMenu.ActivateElementAtIndex(colorIndex);
     }
 
     private void SetGradient()
     {
-        gradientDropdownMenu.ActivateElement(colorIndex);
+        gradientDropdownMenu.ActivateElementAtIndex(colorIndex);
     }
 
     private void SetFont()
     {
-        fontDropdownMenu.ActivateElement(fontIndex);
+        fontDropdownMenu.ActivateElementAtIndex(fontIndex);
     }
 
     protected void Set()

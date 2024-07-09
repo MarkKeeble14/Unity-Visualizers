@@ -14,4 +14,5 @@ public struct VisualizerSelectionInfo
     public Color ButtonPressedColor;
     public AudioClip OnSelectSound;
     public string TransitionName;
+    public string[] Scenarios;
 }

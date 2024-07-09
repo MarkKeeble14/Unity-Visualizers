@@ -96,5 +96,6 @@ MonoBehaviour:
   useSlowAdjust: 1
   signalMultiplierKey: LongLineVisualizerSignalMultiplier
   defaultValueKey: LongLineVisualizerDefaultValue
+  attachmentTypeKey: LongLineVisualizerAttachmentType
   spacing: 20
   spacingKey: LongLineVisualizerSpacing

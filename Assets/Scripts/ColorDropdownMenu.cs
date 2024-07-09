@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using UnityEngine.UI;
+using TMPro;
 
 public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
 {
@@ -17,21 +18,25 @@ public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
             e.SetColor(c);
         }
 
-        SelectElement(selectedIndex);
+        SelectElementAtIndex(selectedIndex);
     }
 
     protected override void SetElementActive(int index)
     {
-        if (dropdownElements.Count == 0)
-        {
-            return;
-        }
-
         if (index >= dropdownElements.Count)
         {
             index = dropdownElements.Count - 1;
         }
-        Color c = ((ColorDropdownElement)dropdownElements[index]).GetColor();
+
+        Color c;
+        if (dropdownElements.Count == 0)
+        {
+            c = VisualizerManager._Instance.GetDefaultColor();
+        }
+        else
+        {
+            c = ((ColorDropdownElement)dropdownElements[index]).GetColor();
+        }
         colorDisplay.color = c;
         OnColorSelected?.Invoke(c);
     }

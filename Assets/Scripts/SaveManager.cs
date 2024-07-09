@@ -27,35 +27,22 @@ public struct VisualizerPreset
     [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> BaseVisualizerElements;
     [SerializeField] public Dictionary<string, VisualizerElementsSettings> VisualizerSpecificElements;
     [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
+    [SerializeField] public Dictionary<string, int> VisualizerIntValues;
     [SerializeField] public List<FontFileData> Fonts;
 
     public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
         Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
-        Dictionary<string, float> floatSettings)
+        Dictionary<string, float> floatValues,
+        Dictionary<string, int> intValues)
     {
         Colors = colors;
         Gradients = gradients;
         Fonts = fonts;
         BaseVisualizerElements = baseVisualizerElements;
         VisualizerSpecificElements = visualizerSpecificElements;
-        VisualizerFloatValues = floatSettings;
-    }
-
-    public override string ToString()
-    {
-        string s = "Colors: " + Colors.Count;
-        Colors.ForEach(x => { s += ", " + x; });
-        s += " - Gradients: " + Gradients.Count;
-        s += " - Visualizer Elements";
-        foreach (VisualizerElementLabel item in BaseVisualizerElements.Keys)
-        {
-            s += "," + item + " Enabled?: " + BaseVisualizerElements[item].Enabled + ", Color: " 
-                + BaseVisualizerElements[item].ColorIndex + ", Font: " 
-                + BaseVisualizerElements[item].FontIndex;
-        }
-        s += " - Fonts: " + Fonts.Count;
-        return s;
+        VisualizerFloatValues = floatValues;
+        VisualizerIntValues = intValues;
     }
 }
 

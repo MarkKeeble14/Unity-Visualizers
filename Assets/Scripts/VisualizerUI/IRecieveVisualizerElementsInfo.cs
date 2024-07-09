@@ -14,3 +14,8 @@ public interface IRecieveVisualizerFloatValues
 {
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values);
 }
+
+public interface IRecieveVisualizerIntValues
+{
+    public void RecieveVisualizerIntValues(Dictionary<string, int> values);
+}

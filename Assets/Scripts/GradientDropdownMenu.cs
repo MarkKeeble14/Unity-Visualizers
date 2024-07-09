@@ -16,21 +16,25 @@ public class GradientDropdownMenu : DropdownMenu, IRecieveTrackInfo
             e.SetGradient(g);
         }
 
-        SelectElement(selectedIndex);
+        SelectElementAtIndex(selectedIndex);
     }
 
     protected override void SetElementActive(int index)
     {
-        if (dropdownElements.Count == 0)
-        {
-            return;
-        }
-        
         if (index >= dropdownElements.Count)
         {
             index = dropdownElements.Count - 1;
         }
-        Gradient g = ((GradientDropdownElement)dropdownElements[index]).GetGradient();
+
+        Gradient g;
+        if (dropdownElements.Count == 0)
+        {
+            g = VisualizerManager._Instance.GetDefaultGradient();
+        }
+        else
+        {
+            g = ((GradientDropdownElement)dropdownElements[index]).GetGradient();
+        }
         gradientDisplay.UpdateColors(g);
         OnGradientSelected?.Invoke(g);
     }

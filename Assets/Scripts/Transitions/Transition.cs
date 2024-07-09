@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class Transition : MonoBehaviour
 {
+    private bool isTransitioning;
+
     private IEnumerator In(Action onBegin, Action onEnd)
     {
         onBegin?.Invoke();
@@ -48,6 +50,4 @@ public abstract class Transition : MonoBehaviour
                 break;
         }
     }
-
-    private bool isTransitioning;
 }

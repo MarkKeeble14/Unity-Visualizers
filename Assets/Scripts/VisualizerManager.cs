@@ -54,6 +54,8 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Default Track Info")]
     [SerializeField] private TrackInfo trackInfo;
+    [SerializeField] private Color defaultColor;
+    [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
 
     private Dictionary<string, int> loadedFontIndices = new();
@@ -67,6 +69,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool askForColors = true;
     [SerializeField] private bool askForFonts = true;
     [SerializeField] private bool askForVisualizerElements = true;
+    [SerializeField] private bool setDefaultColorsFromTexture = true;
     [SerializeField] private bool startImmedietelyUponLoadingTrack;
     [SerializeField] private float startSongAtSeconds;
     [SerializeField] private bool applyPostProcessing;
@@ -119,11 +122,6 @@ public class VisualizerManager : MonoBehaviour
     [Header("Beat Detection Settings")]
     [SerializeField] private float ampSpikeDetectionSensitivity = 0.9f;
 
-    [Header("Scenarios")]
-    [SerializeField] private List<SerializableKeyValuePair<string, GameObject>> scenarios = new();
-    [SerializeField] private GameObject defaultScenary;
-    [SerializeField] private GameObject scenarioSelection;
-
     [Header("Transition Settings")]
     [SerializeField] private TransitionData initialTransition;
 
@@ -146,15 +144,16 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private GradientListElement gradientListElement;
     [SerializeField] private FontListElement fontListElement;
 
-    private List<IRecieveActiveCamera> activeCameraListeners = new();
     private List<IRecieveTrackInfo> trackInfoListeners = new();
     private List<IRecieveTempo> tempoListeners = new();
-    private List<IRecieveVisualizerElementsInfo> visualizerElements = new();
-    private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElements = new();
+    private List<IRecieveVisualizerElementsInfo> visualizerElementsInfoListeners = new();
+    private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElementsInfoListeners = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
+    private List<IRecieveVisualizerIntValues> visualizerIntValueListeners = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
     private Dictionary<string, float> visualizerFloatValues = new();
+    private Dictionary<string, int> visualizerIntValues = new();
 
     private bool hasSongStarted = false;
     private float lastAudioSourceTime;
@@ -221,6 +220,7 @@ public class VisualizerManager : MonoBehaviour
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
         volume = FindObjectOfType<Volume>();
+        activeCameraAdditionalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
 
         PopulateColorsList();
         PopulateFontsList();
@@ -230,15 +230,8 @@ public class VisualizerManager : MonoBehaviour
         {
             baseVisualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
-    }
 
-    private void Start()
-    {
-        // only 1 scenario, we'd just go to track selection
-        if (scenarios.Count == 0)
-        {
-            StartCoroutine(RunSetup());
-        }
+        StartCoroutine(RunSetup());
     }
 
     // Update is called once per frame
@@ -496,6 +489,12 @@ public class VisualizerManager : MonoBehaviour
             highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
     }
 
+    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
+    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
+    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
+    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
+    public float GetEstimatedBPM() { return estimatedBPM; }
+
     public void BeginPlayback()
     {
         if (startSongAtSeconds > audioSource.clip.length)
@@ -540,14 +539,14 @@ public class VisualizerManager : MonoBehaviour
 
     public Color GetTrackColor(int index)
     {
-        if (index > trackInfo.Colors.Count - 1) return trackInfo.Colors[0];
+        if (index > trackInfo.Colors.Count - 1) return defaultColor;
         return trackInfo.Colors[index];
 
     }
 
     public Gradient GetTrackGradient(int index)
     {
-        if (trackInfo.Gradients.Count - 1 == 0) return trackInfo.Gradients[0];
+        if (trackInfo.Gradients.Count - 1 == 0) return defaultGradient;
         return trackInfo.Gradients[index];
     }
 
@@ -567,6 +566,16 @@ public class VisualizerManager : MonoBehaviour
     {
         if (index > loadedFontData.Count - 1) return defaultFont;
         return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
+    }
+
+    public Color GetDefaultColor()
+    {
+        return defaultColor;
+    }
+
+    public Gradient GetDefaultGradient()
+    {
+        return defaultGradient;
     }
 
     public TMP_FontAsset GetDefaultFont()
@@ -604,23 +613,6 @@ public class VisualizerManager : MonoBehaviour
     public void ChangeVolume(float amount)
     {
         audioSource.volume += amount;
-    }
-
-    public void SelectScenario(string name)
-    {
-        defaultScenary.SetActive(false);
-        scenarioSelection.SetActive(false); ;
-
-        foreach (SerializableKeyValuePair<string, GameObject> kvp in scenarios)
-        {
-            kvp.Value.SetActive(kvp.Key == name);
-        }
-
-        BroadcastActiveCamera();
-
-        activeCameraAdditionalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
-
-        StartCoroutine(RunSetup());
     }
 
     private IEnumerator RunSetup()
@@ -702,16 +694,16 @@ public class VisualizerManager : MonoBehaviour
         {
             case ImportableAudioSource.SOUNDCLOUD:
                 yield return StartCoroutine(DownloadTrackFromSoundCloud(url, false,
-                    (url, clip) =>
+                    (url, name, clip) =>
                     {
-                        SetTrack(url, clip);
+                        SetTrack(url, clip, name);
                     }, null));
                 break;
             case ImportableAudioSource.YOUTUBE:
                 yield return StartCoroutine(DownloadTrackFromYouTube(url,
-                    (url, clip) =>
+                    (url, name, clip) =>
                     {
-                        SetTrack(url, clip);
+                        SetTrack(url, clip, name);
                     }, null));
                 break;
             default:
@@ -741,7 +733,7 @@ public class VisualizerManager : MonoBehaviour
         YouTubeVideo vid = youtube.GetVideo(mediaUrl);
 
         // determine mp4 path
-        string inputFilePath = Path.Combine(directoryPath, vid.Title);
+        string inputFilePath = Path.Combine(directoryPath, "tmp");
         inputFilePath = inputFilePath.Replace("/", @"\");
 
         // determine mp3 path & add extensions
@@ -762,10 +754,10 @@ public class VisualizerManager : MonoBehaviour
             engine.Convert(inputFile, outputFile);
         }
 
-        return new ValueTask<string[]>(new string[] { inputFilePath, outputFilePath });
+        return new ValueTask<string[]>(new string[] { inputFilePath, outputFilePath, vid.Title });
     }
 
-    private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         // create folder if neccessary
         string directoryPath = Path.Combine(Application.dataPath, "../temp");
@@ -785,34 +777,39 @@ public class VisualizerManager : MonoBehaviour
 
         string mp4FilePath = task.Result[0];
         string mp3FilePath = task.Result[1];
+        string trackName = task.Result[2];
 
         // delete input file
         File.Delete(mp4FilePath);
 
         // Delete output files
-        onSuccess += (path, clip) => File.Delete(mp3FilePath);
+        onSuccess += (path, name, clip) => File.Delete(mp3FilePath);
         onFailure += path => File.Delete(mp3FilePath);
 
         // load data from output file
-        StartCoroutine(LoadAudioClipFromFile(mp3FilePath, onSuccess, onFailure));
+        StartCoroutine(LoadAudioClipFromFile(mp3FilePath, 
+            (path, clip) =>
+            {
+                onSuccess?.Invoke(path, trackName, clip);
+            }, onFailure));
     }
 
-    private IEnumerator DownloadTrackFromYouTube(string mediaUrl, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromYouTube(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         DownloadTrackFromYouTubeAsync(mediaUrl, onSuccess, onFailure);
         yield return null;
     }
 
-    private IEnumerator DownloadTrackFromYouTubeWait(string mediaUrl, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromYouTubeWait(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         bool completed = false;
-        onSuccess += (filePath, clip) => completed = true;
+        onSuccess += (filePath, name, clip) => completed = true;
         onFailure += filePath => completed = true;
         DownloadTrackFromYouTubeAsync(mediaUrl, onSuccess, onFailure);
         yield return new WaitUntil(() => completed);
     }
 
-    private async void DownloadTrackFromSoundCloudAsync(string mediaUrl, bool useCover, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private async void DownloadTrackFromSoundCloudAsync(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         SoundCloudClient soundcloud = new SoundCloudClient();
 
@@ -855,25 +852,28 @@ public class VisualizerManager : MonoBehaviour
         if (useCover)
         {
             // load cover art on success as well
-            onSuccess += (path, clip) => StartCoroutine(AttemptToDownloadImageFromURL(track.ArtworkUrl.ToString()));
+            onSuccess += (path, name, clip) => StartCoroutine(AttemptToDownloadImageFromURL(track.ArtworkUrl.ToString()));
         }
 
-        StartCoroutine(LoadAudioClipFromFile(outputFilePath, onSuccess, onFailure));
+        StartCoroutine(LoadAudioClipFromFile(outputFilePath, (path, clip) =>
+        {
+            onSuccess?.Invoke(path, track.Title, clip);
+        }, onFailure));
 
         // delete file
         File.Delete(outputFilePath);
     }
 
-    private IEnumerator DownloadTrackFromSoundCloud(string mediaUrl, bool useCover, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromSoundCloud(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         DownloadTrackFromSoundCloudAsync(mediaUrl, useCover, onSuccess, onFailure);
         yield return null;
     }
 
-    private IEnumerator DownloadTrackFromSoundCloudWait(string mediaUrl, bool useCover, Action<string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromSoundCloudWait(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
     {
         bool completed = false;
-        onSuccess += (filePath, clip) => completed = true;
+        onSuccess += (filePath, name, clip) => completed = true;
         onFailure += filePath => completed = true;
         DownloadTrackFromSoundCloudAsync(mediaUrl, useCover, onSuccess, onFailure);
         yield return new WaitUntil(() => completed);
@@ -896,11 +896,17 @@ public class VisualizerManager : MonoBehaviour
         }, "Select Track", "Load"));
     }
 
-    private void SetTrack(string filePath, AudioClip clip)
+    private void SetTrack(string filePath, AudioClip clip, string trackName = "")
     {
         Debug.Log("Successfully Loaded Audio Clip from = " + filePath);
         audioSource.clip = clip;
-        trackInfo.Title = StringHelper.GetFileName(filePath);
+        if (string.IsNullOrEmpty(trackName))
+        {
+            trackInfo.Title = StringHelper.GetFileName(filePath);
+        } else
+        { 
+            trackInfo.Title = trackName;
+        }
         trackInfo.Duration = StringHelper.GetDurationText(audioSource.clip.length);
 
         BroadcastTrackInfo();
@@ -938,9 +944,7 @@ public class VisualizerManager : MonoBehaviour
                 (url, tex) =>
                 {
                     UIManager._Instance.AddNewMessage("Successfully downloaded image from: " + url);
-                    Sprite downloadedSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f), 100f);
-                    trackInfo.CoverArt = downloadedSprite;
-                    BroadcastTrackInfo();
+                    SetTrackCover(tex);
 
                     UIManager._Instance.RemoveLoading("Downloading Image from: " + url);
                 },
@@ -962,12 +966,45 @@ public class VisualizerManager : MonoBehaviour
                 (filePath, texture) =>
                 {
                     Debug.Log("Successfully Loaded Image from path = " + x);
-                    trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
-
-                    BroadcastTrackInfo();
+                    SetTrackCover(texture);
                 },
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
+    }
+
+    private void SetTrackCover(Texture2D texture)
+    {
+        trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+        if (setDefaultColorsFromTexture)
+        {
+            defaultColor = AverageColorFromTexture(texture);
+            defaultGradient = new Gradient();
+            defaultGradient.SetKeys(new GradientColorKey[] { new GradientColorKey(defaultColor, 0), new GradientColorKey(Color.white, 1) },
+                new GradientAlphaKey[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1) });
+        }
+
+        BroadcastTrackInfo();
+    }
+
+    private Color32 AverageColorFromTexture(Texture2D tex)
+    {
+        Color32[] texColors = tex.GetPixels32();
+
+        int total = texColors.Length;
+
+        float r = 0;
+        float g = 0;
+        float b = 0;
+
+        for (int i = 0; i < total; i++)
+        {
+            r += texColors[i].r;
+            g += texColors[i].g;
+            b += texColors[i].b;
+        }
+
+        return new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 255);
     }
 
     private IEnumerator DownloadImage(string mediaUrl, Action<string, Texture2D> onSuccess, Action<string> onFailure)
@@ -1013,12 +1050,14 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerSpecificsElementsInfo();
         BroadcastVisualizerFloatValues();
+        BroadcastVisualizerIntValues();
 
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerSpecificsElementsInfo();
         BroadcastVisualizerFloatValues();
+        BroadcastVisualizerIntValues();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -1316,6 +1355,20 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerFloatValues();
     }
 
+    public void UpdateIntSetting(string key, int v)
+    {
+        if (!visualizerIntValues.ContainsKey(key))
+        {
+            RegisterIntValue(key, v);
+        }
+        else
+        {
+            visualizerIntValues[key] = v;
+        }
+
+        BroadcastVisualizerIntValues();
+    }
+
     public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string key)
     {
         if (!visualizerSpecificElementsInfo.ContainsKey(key))
@@ -1337,6 +1390,30 @@ public class VisualizerManager : MonoBehaviour
             visualizerSpecificElementsInfo[key] = settings;
         }
 
+        BroadcastVisualizerSpecificsElementsInfo();
+    }
+
+
+    public void RegisterFloatValue(string key, float v)
+    {
+        visualizerFloatValues.Add(key, v);
+        BroadcastVisualizerFloatValues();
+    }
+
+    public void RegisterIntValue(string key, int v)
+    {
+        visualizerIntValues.Add(key, v);
+        BroadcastVisualizerIntValues();
+    }
+
+    public void RegisterVisualizerSpecificElement(string key)
+    {
+        RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+    }
+
+    public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
+    {
+        visualizerSpecificElementsInfo.Add(key, settings);
         BroadcastVisualizerSpecificsElementsInfo();
     }
 
@@ -1366,7 +1443,7 @@ public class VisualizerManager : MonoBehaviour
     public void SavePreset()
     {
         VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
-            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, visualizerFloatValues);
+            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, visualizerFloatValues, visualizerIntValues);
 
         StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
             x =>
@@ -1415,6 +1492,7 @@ public class VisualizerManager : MonoBehaviour
             BroadcastVisualizerElementsInfo();
             BroadcastVisualizerSpecificsElementsInfo();
             BroadcastVisualizerFloatValues();
+            BroadcastVisualizerIntValues();
 
             onSuccess(filePath, preset);
         } catch (Exception e)
@@ -1422,21 +1500,6 @@ public class VisualizerManager : MonoBehaviour
             Debug.LogWarning(e.ToString());
             onFailure(filePath);
         }
-    }
-
-    public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
-    public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
-    public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
-    public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
-    public float GetEstimatedBPM() { return estimatedBPM; }
-
-    [ContextMenu("BroadcastActiveCamera")]
-    private void BroadcastActiveCamera()
-    {
-        activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
-
-        // Send data out
-        activeCameraListeners.ForEach(item => item.RecieveActiveCamera(Camera.main));
     }
 
     [ContextMenu("BroadcastTempo")]
@@ -1466,22 +1529,22 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastVisualizerElementsInfo()
     {
         // Attempt to find any listeners if the list is empty
-        if (visualizerElements.Count == 0)
+        if (visualizerElementsInfoListeners.Count == 0)
         {
-            visualizerElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
+            visualizerElementsInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
         }
 
         // Send data out
-        visualizerElements.ForEach(item => item.RecieveVisualizerElementsInfo(baseVisualizerElementsInfo));
+        visualizerElementsInfoListeners.ForEach(item => item.RecieveVisualizerElementsInfo(baseVisualizerElementsInfo));
     }
 
     [ContextMenu("BroadcastVisualizerElementsInfo")]
     private void BroadcastVisualizerSpecificsElementsInfo()
     {
-        visualizerSpecificElements = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerSpecificElementsInfo>().ToList();
+        visualizerSpecificElementsInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerSpecificElementsInfo>().ToList();
 
         // Send data out
-        visualizerSpecificElements.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
+        visualizerSpecificElementsInfoListeners.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
     }
 
     [ContextMenu("BroadcastVisualizerFloatValues")]
@@ -1491,6 +1554,15 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerFloatValueListeners.ForEach(item => item.RecieveVisualizerFloatValues(visualizerFloatValues));
+    }
+
+    [ContextMenu("BroadcastVisualizerIntValues")]
+    private void BroadcastVisualizerIntValues()
+    {
+        visualizerIntValueListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerIntValues>().ToList();
+
+        // Send data out
+        visualizerIntValueListeners.ForEach(item => item.RecieveVisualizerIntValues(visualizerIntValues));
     }
 
     public void SyncTempoListeners()
@@ -1670,22 +1742,5 @@ public class VisualizerManager : MonoBehaviour
     {
         if (!visualizerSpecificElementsInfo.ContainsKey(key)) return;
         light.color = GetColor(visualizerSpecificElementsInfo[key].ColorType, visualizerSpecificElementsInfo[key].ColorIndex);
-    }
-
-    public void RegisterFloatValue(string key, float v)
-    {
-        visualizerFloatValues.Add(key, v);
-        BroadcastVisualizerFloatValues();
-    }
-
-    public void RegisterVisualizerSpecificElement(string key)
-    {
-        RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-    }
-
-    public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
-    {
-        visualizerSpecificElementsInfo.Add(key, settings);
-        BroadcastVisualizerSpecificsElementsInfo();
     }
 }

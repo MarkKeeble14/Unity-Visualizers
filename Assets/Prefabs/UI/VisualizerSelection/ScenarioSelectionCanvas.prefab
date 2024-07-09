@@ -211,7 +211,7 @@ PrefabInstance:
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: buttonPrefab
       value: 
-      objectReference: {fileID: 2821088276839142054, guid: 6da952b2336a4fb41839d2563a0a543e, type: 3}
+      objectReference: {fileID: 2821088276839142054, guid: 039620b9f9901764485ba1ab7cdaaf75, type: 3}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: availableSelections.Array.size
       value: 3

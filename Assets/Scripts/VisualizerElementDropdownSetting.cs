@@ -2,19 +2,9 @@
 using TMPro;
 using UnityEngine;
 
-public class VisualizerElementDropdownSetting : MonoBehaviour, IRecieveVisualizerIntValues
+public class VisualizerElementDropdownSetting : VisualizerSetting, IRecieveVisualizerIntValues
 {
-    [SerializeField] private string label;
-    [SerializeField] private string key;
-    [SerializeField] private TextMeshProUGUI labelText;
     [SerializeField] private DropdownMenu dropdown;
-
-    private void Start()
-    {
-        labelText.text = label;
-
-        dropdown.OnSelectElement += UpdateSetting;
-    }
 
     public void RecieveVisualizerIntValues(Dictionary<string, int> settings)
     {
@@ -31,12 +21,12 @@ public class VisualizerElementDropdownSetting : MonoBehaviour, IRecieveVisualize
         int v;
         if (int.TryParse(s, out v))
         {
-            UpdateSetting(v);
+            VisualizerManager._Instance.UpdateSetting(key, v);
         }
     }
 
-    private void UpdateSetting(int v)
+    protected override void Initialize()
     {
-        VisualizerManager._Instance.UpdateIntSetting(key, v);
+        dropdown.OnSelectElement += v => VisualizerManager._Instance.UpdateSetting(key, v);
     }
 }

@@ -17,13 +17,11 @@ public class RadialVisualizer : PremadeVisualizer
 
     private RadialLayoutGroup layoutGroup;
 
-    protected override void PreMakingVisualizer()
-    {
-        layoutGroup = GetComponent<RadialLayoutGroup>();
-    }
-
     protected override void UpdateSpecificSettings()
     {
+        if (layoutGroup == null)
+            layoutGroup = GetComponent<RadialLayoutGroup>();
+
         // radial distance
         layoutGroup.UpdateDistance(distance);
 
@@ -62,5 +60,10 @@ public class RadialVisualizer : PremadeVisualizer
         }
 
         UpdateSpecificSettings();
+    }
+
+    protected override void PreMakingVisualizer()
+    {
+        // 
     }
 }

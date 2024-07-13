@@ -8,6 +8,8 @@ public class AmplitudeBroadcaster : SignalBroadcaster
 
     public override float GetBroadcastValue()
     {
-        return useAverage ? VisualizerManager._Instance.GetAverageAmplitudeValue(useBuffer) : VisualizerManager._Instance.GetAmplitudeValue(useBuffer);
+        return useAverage 
+            ? VisualizerManager._Instance.GetAverageAmplitudeValue(useBuffer) 
+            : VisualizerManager._Instance.GetAmplitudeValue(useBuffer);
     }
 }

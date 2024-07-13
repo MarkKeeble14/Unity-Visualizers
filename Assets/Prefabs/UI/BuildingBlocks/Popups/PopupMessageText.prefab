@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3535885759810032239}
   - component: {fileID: 333514616419857514}
   - component: {fileID: 8719568564946339257}
+  - component: {fileID: 4417660768511814677}
   m_Layer: 0
   m_Name: PopupMessageText
   m_TagString: Untagged
@@ -91,6 +92,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 7580202504988312207}
+--- !u!225 &4417660768511814677
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3079248129470049470}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &5470154045286487005
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,8 +172,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'New Text New Text New Text New Text New Text '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
-  m_sharedMaterial: {fileID: -1474848084261474656, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 424ac9950d57d3b49b2e5989e2b7bfbd, type: 2}
+  m_sharedMaterial: {fileID: 7172719433275359590, guid: 424ac9950d57d3b49b2e5989e2b7bfbd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -109,12 +109,12 @@ public class ScreenRecorder : MonoBehaviour
         string outputPath = Path.Combine(recordingFolderPath, fileName + PlayerPrefs.GetInt("TakeNumber") + ".mp4");
         PlayerPrefs.SetInt("TakeNumber", PlayerPrefs.GetInt("TakeNumber") + 1);
 
-        UIManager._Instance.AddLoading("Saving video to path: " + outputPath);
+        int loadingKey = UIManager._Instance.AddLoading("Saving video to file...");
 
         var task = Task.Run(async () => await JoinFramesIntoVideo(outputPath));
         await task;
 
-        UIManager._Instance.RemoveLoading("Saving video to path: " + outputPath);
+        UIManager._Instance.RemoveLoading(loadingKey);
 
         UIManager._Instance.AddNewMessage("Successfully saved video to path: " + outputPath);
     }

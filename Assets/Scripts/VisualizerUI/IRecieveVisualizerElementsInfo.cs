@@ -19,3 +19,8 @@ public interface IRecieveVisualizerIntValues
 {
     public void RecieveVisualizerIntValues(Dictionary<string, int> values);
 }
+
+public interface IRecieveVisualizerBoolValues
+{
+    public void RecieveVisualizerBoolValues(Dictionary<string, bool> values);
+}

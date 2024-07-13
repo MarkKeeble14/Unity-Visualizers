@@ -53,10 +53,10 @@ public class VisualizerManager : MonoBehaviour
     public static VisualizerManager _Instance { get; private set; }
 
     [Header("Default Track Info")]
-    [SerializeField] private TrackInfo trackInfo;
     [SerializeField] private Color defaultColor;
     [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
+    [SerializeField] private TrackInfo trackInfo;
 
     private Dictionary<string, int> loadedFontIndices = new();
     private Dictionary<string, FontFileData> loadedFontData = new();
@@ -75,9 +75,12 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool applyPostProcessing;
     [SerializeField, Range(0, 1)] private float volumeWeight;
 
+    [SerializeField] private List<SerializableKeyValuePair<string, float>> startingFloatSettings = new();
+    [SerializeField] private List<SerializableKeyValuePair<string, int>> startingIntSettings = new();
+    [SerializeField] private List<SerializableKeyValuePair<string, bool>> startingBoolSettings = new();
+
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
-    [SerializeField] private float sampleMultiplier = 1;
     private int numSamples = 512;
 
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
@@ -85,20 +88,20 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
 
     [Header("Smoothing")]
-    [SerializeField] private bool smoothLowToHigh;
+    [SerializeField] private bool enableSmoothing;
     [SerializeField] private float smoothingEquationStrength = .5f;
     [SerializeField] private float smoothingEquationShift = 1;
     [SerializeField] private float smoothingEquationScale = 128;
-    private float smoothingValue;
+    private float cachedSmoothingValue;
 
     [Header("Normalizing")]
     [SerializeField] private bool normalizeSamples;
-    [SerializeField] private float minSampleValue = 0;
-    [SerializeField] private float maxSampleValue = 1;
-    private float smallestValueLeft = Mathf.Infinity;
-    private float largestValueLeft = 0;
-    private float smallestValueRight = Mathf.Infinity;
-    private float largestValueRight = 0;
+    [SerializeField] private float minNormalizedSampleValue = 0;
+    [SerializeField] private float maxNormalizedSampleValue = 1;
+    private float cachedSmallestValueLeft = Mathf.Infinity;
+    private float cachedLargestValueLeft = 0;
+    private float cachedSmallestValueRight = Mathf.Infinity;
+    private float cachedLargestValueRight = 0;
 
     [Header("Tapping")]
     [SerializeField] private int tapBufferCount = 5;
@@ -135,6 +138,8 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private GameObject fontsUI;
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
+    [SerializeField] private Button loadingTrackButton;
+    [SerializeField] private Button loadingImageButton;
     private AudioSource audioSource;
     private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
     private Volume volume;
@@ -150,19 +155,23 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElementsInfoListeners = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
     private List<IRecieveVisualizerIntValues> visualizerIntValueListeners = new();
+    private List<IRecieveVisualizerBoolValues> visualizerBoolValueListeners = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
+
     private Dictionary<string, float> visualizerFloatValues = new();
     private Dictionary<string, int> visualizerIntValues = new();
+    private Dictionary<string, bool> visualizerBoolValues = new();
 
-    private bool hasSongStarted = false;
+    private bool hasSongStarted;
     private float lastAudioSourceTime;
 
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
-    public Action<float> OnAmplitudeSpike;
-    public Action<float> OnBeat;
+    public Action<float> OnSnareHit;
+    public Action<float> OnEnergySpike;
+    public Action<float> OnNewAmplitudePeak;
 
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
@@ -231,6 +240,22 @@ public class VisualizerManager : MonoBehaviour
             baseVisualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
         }
 
+        foreach (SerializableKeyValuePair<string, float> kvp in startingFloatSettings)
+        {
+            visualizerFloatValues.Add(kvp.Key, kvp.Value);
+        }
+        foreach (SerializableKeyValuePair<string, int> kvp in startingIntSettings)
+        {
+            visualizerIntValues.Add(kvp.Key, kvp.Value);
+        }
+        foreach (SerializableKeyValuePair<string, bool> kvp in startingBoolSettings)
+        {
+            visualizerBoolValues.Add(kvp.Key, kvp.Value);
+        }
+    }
+
+    private void Start()
+    {
         StartCoroutine(RunSetup());
     }
 
@@ -247,7 +272,18 @@ public class VisualizerManager : MonoBehaviour
         if (audioSource.isPlaying)
         {
             // Spectrum Data
-            GetSpectrumAudioSource();
+            if (enableSmoothing)
+            {
+                GetSmoothedSpectrumData();
+            } else
+            {
+                OnlyGetSpectrumData();
+            }
+
+            if (normalizeSamples)
+            {
+                NormalizeSamples();
+            }
 
             // Make Frequency Bands
             MakeFrequencyBands();
@@ -314,10 +350,10 @@ public class VisualizerManager : MonoBehaviour
         // if there are more samples in the energy buffer than are allowed, remove the oldest value
         if (energyBuffer.Count > energyBufferSize) { energyBuffer.RemoveAt(0); }
 
-        // check for beat
+        // check for energy spike
         if (currentEnergy > averageLocalEnergy * varianceSensitivity) 
         { 
-            OnBeat?.Invoke(currentEnergy);
+            OnEnergySpike?.Invoke(currentEnergy);
         }
     }
 
@@ -346,53 +382,53 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("Reset Sample Normalization Values")]
     private void ResetSampleNormalizationValues()
     {
-        smallestValueLeft = Mathf.Infinity;
-        largestValueLeft = 0;
-        smallestValueRight = Mathf.Infinity;
-        largestValueRight = 0;
+        cachedSmallestValueLeft = Mathf.Infinity;
+        cachedLargestValueLeft = 0;
+        cachedSmallestValueRight = Mathf.Infinity;
+        cachedLargestValueRight = 0;
     }
 
-    private void GetSpectrumAudioSource()
+    private void NormalizeSamples()
     {
-        audioSource.GetSpectrumData(leftAudioSamples, 0, FFTWindow.Blackman);
-        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);
-
         // reset values for normalizing
         ResetSampleNormalizationValues();
 
         // initial pass
         for (int i = 0; i < numSamples; ++i)
         {
-            // smooth
-            if (smoothLowToHigh)
-            {
-                smoothingValue = GetSmoothingValue(i, numSamples);
-                leftAudioSamples[i] = leftAudioSamples[i] * smoothingValue;
-                rightAudioSamples[i] = rightAudioSamples[i] * smoothingValue;
-            }
-
-            if (normalizeSamples)
-            {
-                if (leftAudioSamples[i] < smallestValueLeft) smallestValueLeft = leftAudioSamples[i];
-                if (leftAudioSamples[i] > largestValueLeft) largestValueLeft = leftAudioSamples[i];
-                if (rightAudioSamples[i] < smallestValueRight) smallestValueRight = rightAudioSamples[i];
-                if (rightAudioSamples[i] > largestValueRight) largestValueRight = rightAudioSamples[i];
-            }
+            if (leftAudioSamples[i] < cachedSmallestValueLeft) cachedSmallestValueLeft = leftAudioSamples[i];
+            if (leftAudioSamples[i] > cachedLargestValueLeft) cachedLargestValueLeft = leftAudioSamples[i];
+            if (rightAudioSamples[i] < cachedSmallestValueRight) cachedSmallestValueRight = rightAudioSamples[i];
+            if (rightAudioSamples[i] > cachedLargestValueRight) cachedLargestValueRight = rightAudioSamples[i];
         }
 
         // secondary pass
         for (int i = 0; i < numSamples; ++i)
         {
-            if (normalizeSamples)
-            {
-                leftAudioSamples[i] = MathHelper.Normalize(leftAudioSamples[i], smallestValueLeft, largestValueLeft, minSampleValue, maxSampleValue);
-                rightAudioSamples[i] = MathHelper.Normalize(rightAudioSamples[i], smallestValueRight, largestValueRight, minSampleValue, maxSampleValue);
-            }
-
-            // apply final multiplier
-            leftAudioSamples[i] *= sampleMultiplier;
-            rightAudioSamples[i] *= sampleMultiplier;
+            leftAudioSamples[i] = MathHelper.Normalize(leftAudioSamples[i], cachedSmallestValueLeft, cachedLargestValueLeft, minNormalizedSampleValue, maxNormalizedSampleValue);
+            rightAudioSamples[i] = MathHelper.Normalize(rightAudioSamples[i], cachedSmallestValueRight, cachedLargestValueRight, minNormalizedSampleValue, maxNormalizedSampleValue);
         }
+    }
+
+    private void GetSmoothedSpectrumData()
+    {
+        audioSource.GetSpectrumData(leftAudioSamples, 0, FFTWindow.Blackman);
+        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);
+
+        // initial pass
+        for (int i = 0; i < numSamples; ++i)
+        {
+            // smooth
+            cachedSmoothingValue = GetSmoothingValue(i, numSamples);
+            leftAudioSamples[i] = leftAudioSamples[i] * cachedSmoothingValue;
+            rightAudioSamples[i] = rightAudioSamples[i] * cachedSmoothingValue;
+        }
+    }
+
+    private void OnlyGetSpectrumData()
+    {
+        audioSource.GetSpectrumData(leftAudioSamples, 0, FFTWindow.Blackman);
+        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);
     }
 
     private float GetSmoothingValue(int i, int total)
@@ -477,10 +513,14 @@ public class VisualizerManager : MonoBehaviour
             amplitude += frequencyBands[i];
             amplitudeBuffer += frequencyBandBuffer[i];
         }
+
         if (amplitude > highestAmplitude) highestAmplitude = amplitude;
 
         float ampSpikeThreshold = highestAmplitude * ampSpikeDetectionSensitivity;
-        if (amplitude > ampSpikeThreshold) OnAmplitudeSpike?.Invoke(amplitude - ampSpikeThreshold);
+        if (amplitude > ampSpikeThreshold)
+        {
+            OnNewAmplitudePeak?.Invoke(amplitude - ampSpikeThreshold);
+        }
     }
 
     private void CreateAudioProfile()
@@ -497,8 +537,18 @@ public class VisualizerManager : MonoBehaviour
 
     public void BeginPlayback()
     {
+        if (audioSource.clip == null)
+        {
+            Debug.LogWarning("Attempted to start the Visualizer with no track loaded");
+            UIManager._Instance.AddNewMessage("Attempt to start Visualizer with no track loaded ignored - Please load a track");
+            return;
+        }
+
         if (startSongAtSeconds > audioSource.clip.length)
-            Debug.LogWarning("Attempted to start the track at a position longer than the track itself");
+        {
+            Debug.LogWarning("Attempted to start the track at a position longer than the track itself - defaulting to 0");
+            startSongAtSeconds = 0;
+        }
 
         // Set the point where the AudioSource begins
         audioSource.time = startSongAtSeconds;
@@ -647,6 +697,16 @@ public class VisualizerManager : MonoBehaviour
         BroadcastTrackInfo();
     }
 
+    public void ChooseAudio()
+    {
+        StartCoroutine(RunTrackSelection());
+    }
+
+    public void ChooseCoverArt()
+    {
+        StartCoroutine(RunCoverArtSelection());
+    }
+
     public void EditColors()
     {
         StartCoroutine(RunColorsSelection());
@@ -666,7 +726,13 @@ public class VisualizerManager : MonoBehaviour
 
     public IEnumerator RunTrackSelection()
     {
-        yield return UIManager._Instance.PopupActionSelection("Load Track from URL or File?", "Cancel", null, new List<ActionSelection>()
+        loadingTrackButton.interactable = false;
+
+        yield return UIManager._Instance.PopupActionSelection("Load Track from URL or File?", "Cancel", 
+        () =>
+        {
+            loadingTrackButton.interactable = true;
+        }, new List<ActionSelection>()
         {
             new ActionSelection("URL", null, PopoutEnterTrackURL()),
             new ActionSelection("File", null, BrowseForTrack())
@@ -675,35 +741,57 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator PopoutEnterTrackURL()
     {
-        yield return UIManager._Instance.PopupInputField("Track URL", "Enter YouTube or Soundcloud URL", "Confirm", "Cancel", false,
+        yield return UIManager._Instance.PopupInputField("URL", "Enter YouTube URL", "Confirm", "Cancel", false,
                     AttemptToDownloadTrackFromURL, OnFailDownloadTrackFromURL());
     }
 
     private IEnumerator OnFailDownloadTrackFromURL()
     {
         UIManager._Instance.AddNewMessage("Failed to download Track from URL");
+
+        loadingTrackButton.interactable = true;
+
         yield return null;
+    }
+
+    private string GetSupportedOrigins()
+    {
+        return "[ YouTube ] ";
     }
 
     private IEnumerator AttemptToDownloadTrackFromURL(string url)
     {
-        UIManager._Instance.AddNewMessage("Attempting to Download Track from: " + url);
+        int loadingKey = UIManager._Instance.AddLoading("Downloading Track from URL");
 
         ImportableAudioSource origin = GetAudioFileOrigin(url);
         switch (origin)
         {
             case ImportableAudioSource.SOUNDCLOUD:
+                UIManager._Instance.AddNewMessage("Unsupported Origin, Supported Origins are: " + GetSupportedOrigins());
+
+                UIManager._Instance.RemoveLoading(loadingKey);
+
+                loadingTrackButton.interactable = true;
+
+                Debug.Log("Unsupported Origin: " + origin);
+                break;
+                /*
                 yield return StartCoroutine(DownloadTrackFromSoundCloud(url, false,
                     (url, name, clip) =>
                     {
                         SetTrack(url, clip, name);
                     }, null));
                 break;
+                */
             case ImportableAudioSource.YOUTUBE:
                 yield return StartCoroutine(DownloadTrackFromYouTube(url,
-                    (url, name, clip) =>
+                    (url, clip, name, duration) =>
                     {
-                        SetTrack(url, clip, name);
+                        SetTrack(url, clip, name, duration);
+
+                        UIManager._Instance.RemoveLoading(loadingKey);
+
+                        loadingTrackButton.interactable = true;
                     }, null));
                 break;
             default:
@@ -745,19 +833,21 @@ public class VisualizerManager : MonoBehaviour
 
         MediaFile inputFile = new MediaFile { Filename = inputFilePath };
         MediaFile outputFile = new MediaFile { Filename = outputFilePath };
-
+        
         // convert mp4 to mp3
         using (var engine = new Engine())
         {
             engine.GetMetadata(inputFile);
 
             engine.Convert(inputFile, outputFile);
+
+            engine.GetMetadata(outputFile);
         }
 
-        return new ValueTask<string[]>(new string[] { inputFilePath, outputFilePath, vid.Title });
+        return new ValueTask<string[]>(new string[] { inputFilePath, outputFilePath, vid.Title, vid.Info.LengthSeconds.ToString() });
     }
 
-    private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         // create folder if neccessary
         string directoryPath = Path.Combine(Application.dataPath, "../temp");
@@ -766,44 +856,45 @@ public class VisualizerManager : MonoBehaviour
             Directory.CreateDirectory(directoryPath);
         }
 
-        // add UI
-        UIManager._Instance.AddLoading("Downloading from: " + mediaUrl);
+        int loadingKey = UIManager._Instance.AddLoading("Attempting to fetch audio from URL...");
 
         var task = Task.Run(async () => await YouTubeToMP3(mediaUrl, directoryPath));
         await task;
 
-        // add UI
-        UIManager._Instance.RemoveLoading("Downloading from: " + mediaUrl);
+        UIManager._Instance.RemoveLoading(loadingKey);
 
         string mp4FilePath = task.Result[0];
         string mp3FilePath = task.Result[1];
         string trackName = task.Result[2];
+        string trackDuration = task.Result[3];
+
+        UIManager._Instance.AddNewMessage("Successfully fetched Audio from YouTube Video: " + trackName);
 
         // delete input file
         File.Delete(mp4FilePath);
 
         // Delete output files
-        onSuccess += (path, name, clip) => File.Delete(mp3FilePath);
+        onSuccess += (path, name, duration, clip) => File.Delete(mp3FilePath);
         onFailure += path => File.Delete(mp3FilePath);
 
         // load data from output file
         StartCoroutine(LoadAudioClipFromFile(mp3FilePath, 
             (path, clip) =>
             {
-                onSuccess?.Invoke(path, trackName, clip);
+                onSuccess?.Invoke(path, clip, trackName, trackDuration);
             }, onFailure));
     }
 
-    private IEnumerator DownloadTrackFromYouTube(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromYouTube(string mediaUrl, Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         DownloadTrackFromYouTubeAsync(mediaUrl, onSuccess, onFailure);
         yield return null;
     }
 
-    private IEnumerator DownloadTrackFromYouTubeWait(string mediaUrl, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromYouTubeWait(string mediaUrl, Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         bool completed = false;
-        onSuccess += (filePath, name, clip) => completed = true;
+        onSuccess += (filePath, name, duration, clip) => completed = true;
         onFailure += filePath => completed = true;
         DownloadTrackFromYouTubeAsync(mediaUrl, onSuccess, onFailure);
         yield return new WaitUntil(() => completed);
@@ -814,15 +905,18 @@ public class VisualizerManager : MonoBehaviour
         SoundCloudClient soundcloud = new SoundCloudClient();
 
         // add UI
-        UIManager._Instance.AddLoading("Fetching from: " + mediaUrl);
+        string tempTitle = mediaUrl.Split("https://soundcloud.com/")[1];
+        int loadingKey = UIManager._Instance.AddLoading("Attempting to fetch: " + tempTitle);
 
         // setup fetch
         var getTask = Task.Run(async () => await soundcloud.Tracks.GetAsync(mediaUrl));
-
         await getTask;
 
         // remove UI
-        UIManager._Instance.RemoveLoading("Fetching from: " + mediaUrl);
+        UIManager._Instance.RemoveLoading(loadingKey);
+
+        // add UI
+        UIManager._Instance.AddNewMessage("Successfully fetched: " + tempTitle);
 
         // get track from recieved data
         Track track = getTask.Result;
@@ -839,15 +933,15 @@ public class VisualizerManager : MonoBehaviour
         outputFilePath = outputFilePath.Replace("/", @"\");
 
         // add UI
-        UIManager._Instance.AddLoading("Downloading from: " + mediaUrl);
+        loadingKey = UIManager._Instance.AddLoading("Attempting to download: " + track.Title);
 
         // download the data
         var downloadTask = Task.Run(async () => await soundcloud.DownloadAsync(track, outputFilePath));
 
         await downloadTask;
 
-        // remove UI
-        UIManager._Instance.RemoveLoading("Downloading from: " + mediaUrl);
+        // add UI
+        UIManager._Instance.RemoveLoading(loadingKey);
 
         if (useCover)
         {
@@ -894,12 +988,17 @@ public class VisualizerManager : MonoBehaviour
                 },
                 x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
         }, "Select Track", "Load"));
+
+        loadingTrackButton.interactable = true;
     }
 
-    private void SetTrack(string filePath, AudioClip clip, string trackName = "")
+    // duration will take the format of mm:ss
+    private void SetTrack(string filePath, AudioClip clip, string trackName = "", string durationSeconds = "")
     {
-        Debug.Log("Successfully Loaded Audio Clip from = " + filePath);
+        UIManager._Instance.AddNewMessage("Track Set");
+
         audioSource.clip = clip;
+
         if (string.IsNullOrEmpty(trackName))
         {
             trackInfo.Title = StringHelper.GetFileName(filePath);
@@ -907,7 +1006,31 @@ public class VisualizerManager : MonoBehaviour
         { 
             trackInfo.Title = trackName;
         }
-        trackInfo.Duration = StringHelper.GetDurationText(audioSource.clip.length);
+
+        if (string.IsNullOrEmpty(durationSeconds))
+        {
+            trackInfo.Duration = StringHelper.GetDurationText(audioSource.clip.length);
+        }
+        else
+        {
+            float v;
+            if (float.TryParse(durationSeconds, out v))
+            {
+                trackInfo.Duration = StringHelper.GetDurationText(v);
+            } else
+            {
+                Debug.Log("Unable to parse duration - ensure durationSeconds represents a numerical value");
+            }
+        }
+
+        Debug.Log("Setting track to " + trackInfo.Title);
+
+        BroadcastTrackInfo();
+    }
+
+    public void UpdateTrackTitle(string s)
+    {
+        trackInfo.Title = s;
 
         BroadcastTrackInfo();
     }
@@ -917,7 +1040,13 @@ public class VisualizerManager : MonoBehaviour
     #region Cover Art Selection
     public IEnumerator RunCoverArtSelection()
     {
-        yield return UIManager._Instance.PopupActionSelection("Load Art from URL or File?", "Cancel", null, new List<ActionSelection>()
+        loadingImageButton.interactable = false;
+
+        yield return UIManager._Instance.PopupActionSelection("Load Art from URL or File?", "Cancel", 
+        () =>
+        {
+            loadingImageButton.interactable = true;
+        }, new List<ActionSelection>()
         {
             new ActionSelection("URL", null, PopoutEnterImageURL()),
             new ActionSelection("File", null, BrowseForImage())
@@ -926,33 +1055,37 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator PopoutEnterImageURL()
     {
-        yield return UIManager._Instance.PopupInputField("Image URL", "Enter Image URL", "Confirm", "Cancel", false,
+        yield return UIManager._Instance.PopupInputField("URL", "Enter Image URL", "Confirm", "Cancel", false,
                     AttemptToDownloadImageFromURL, OnFailDownloadImageFromURL());
-    }
-
-    private IEnumerator OnFailDownloadImageFromURL()
-    {
-        UIManager._Instance.AddNewMessage("Failed to download Image from URL");
-        yield return null;
     }
 
     private IEnumerator AttemptToDownloadImageFromURL(string url)
     {
-        UIManager._Instance.AddLoading("Downloading Image from: " + url);
+        int loadingKey = UIManager._Instance.AddLoading("Downloading Image from URL");
 
         yield return StartCoroutine(DownloadImage(url,
                 (url, tex) =>
                 {
                     UIManager._Instance.AddNewMessage("Successfully downloaded image from: " + url);
-                    SetTrackCover(tex);
-
-                    UIManager._Instance.RemoveLoading("Downloading Image from: " + url);
+                    SetCoverArt(tex);
                 },
                 url =>
                 {
                     UIManager._Instance.AddNewMessage("Failed to download image from: " + url);
-                    UIManager._Instance.RemoveLoading("Downloading Image from: " + url);
                 }));
+
+        UIManager._Instance.RemoveLoading(loadingKey);
+
+        loadingImageButton.interactable = true;
+    }
+
+    private IEnumerator OnFailDownloadImageFromURL()
+    {
+        UIManager._Instance.AddNewMessage("Failed to download Image from URL");
+
+        loadingImageButton.interactable = true;
+
+        yield return null;
     }
 
     private IEnumerator BrowseForImage()
@@ -966,15 +1099,20 @@ public class VisualizerManager : MonoBehaviour
                 (filePath, texture) =>
                 {
                     Debug.Log("Successfully Loaded Image from path = " + x);
-                    SetTrackCover(texture);
+                    SetCoverArt(texture);
                 },
             x => Debug.Log("Failed to Load Image from path = " + x));
         }, "Select Cover Art", "Load"));
+
+        loadingImageButton.interactable = true;
     }
 
-    private void SetTrackCover(Texture2D texture)
+    private void SetCoverArt(Texture2D texture)
     {
         trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+        Debug.Log("Setting track cover");
+        UIManager._Instance.AddNewMessage("Cover Art Set");
 
         if (setDefaultColorsFromTexture)
         {
@@ -1047,17 +1185,20 @@ public class VisualizerManager : MonoBehaviour
         // Enable UI
         visualizerElementsUI.SetActive(true);
 
-        BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificsElementsInfo();
-        BroadcastVisualizerFloatValues();
-        BroadcastVisualizerIntValues();
+        BroadcastSetupValues();
 
         yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
 
-        BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastSetupValues();
+    }
+
+    private void BroadcastSetupValues()
+    {
         BroadcastVisualizerFloatValues();
         BroadcastVisualizerIntValues();
+        BroadcastVisualizerBoolValues();
+        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerElementsInfo();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -1132,20 +1273,25 @@ public class VisualizerManager : MonoBehaviour
     {
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, GetAudioType(filePath)))
         {
+            int loadingKey = UIManager._Instance.AddLoading("Attempting to load audio from file");
+
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
+                UIManager._Instance.AddNewMessage("Failed to download Track");
                 Debug.Log("Failed to download Track from path: " + filePath);
-                UIManager._Instance.AddNewMessage("Failed to download Track from path: " + filePath);
                 onFailure?.Invoke(filePath);
             }
             else
             {
+                UIManager._Instance.AddNewMessage("Successfully downloaded Track");
                 Debug.Log("Successfully downloaded Track from path: " + filePath);
-                UIManager._Instance.AddNewMessage("Successfully downloaded Track from path: " + filePath);
+
                 onSuccess?.Invoke(filePath, DownloadHandlerAudioClip.GetContent(www));
             }
+
+            UIManager._Instance.RemoveLoading(loadingKey);
         }
     }
 
@@ -1165,6 +1311,7 @@ public class VisualizerManager : MonoBehaviour
     private TMP_FontAsset LoadTMPFontFromFile(string filePath)
     {
         Debug.Log("Loading Font from File: " + filePath);
+
         return LoadTMPFontFromFontAsset(new Font(filePath));
     }
 
@@ -1341,7 +1488,7 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public void UpdateFloatSetting(string key, float v)
+    public void UpdateSetting(string key, float v)
     {
         if (!visualizerFloatValues.ContainsKey(key))
         {
@@ -1350,12 +1497,31 @@ public class VisualizerManager : MonoBehaviour
         else
         {
             visualizerFloatValues[key] = v;
+
+            switch (key)
+            {
+                case "SMOOTHING_STRENGTH":
+                    smoothingEquationStrength = v;
+                    break;
+                case "SMOOTHING_SHIFT":
+                    smoothingEquationShift = v;
+                    break;
+                case "SMOOTHING_SCALE":
+                    smoothingEquationScale = v;
+                    break;
+                case "MIN_NORMALIZED_VALUE":
+                    minNormalizedSampleValue = v;
+                    break;
+                case "MAX_NORMALIZED_VALUE":
+                    maxNormalizedSampleValue = v;
+                    break;
+            }
         }
 
         BroadcastVisualizerFloatValues();
     }
 
-    public void UpdateIntSetting(string key, int v)
+    public void UpdateSetting(string key, int v)
     {
         if (!visualizerIntValues.ContainsKey(key))
         {
@@ -1367,6 +1533,60 @@ public class VisualizerManager : MonoBehaviour
         }
 
         BroadcastVisualizerIntValues();
+    }
+
+    public void UpdateSetting(string key, bool v)
+    {
+        if (!visualizerBoolValues.ContainsKey(key))
+        {
+            RegisterBoolValue(key, v);
+        }
+        else
+        {
+            visualizerBoolValues[key] = v;
+
+            switch (key)
+            {
+                case "ENABLE_SMOOTHING":
+                    enableSmoothing = v;
+                    break;
+                case "ENABLE_NORMALIZATION":
+                    normalizeSamples = v;
+                    break;
+            }
+        }
+
+        BroadcastVisualizerBoolValues();
+    }
+
+    public bool HasFloatSetting(string key)
+    {
+        return visualizerFloatValues.ContainsKey(key);
+    }
+
+    public bool HasIntSetting(string key)
+    {
+        return visualizerIntValues.ContainsKey(key);
+    }
+
+    public bool HasBoolSetting(string key)
+    {
+        return visualizerBoolValues.ContainsKey(key);
+    }
+
+    public float GetFloatSetting(string key)
+    {
+        return visualizerFloatValues[key];
+    }
+
+    public int GetIntSetting(string key)
+    {
+        return visualizerIntValues[key];
+    }
+
+    public bool GetBoolSetting(string key)
+    {
+        return visualizerBoolValues[key];
     }
 
     public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string key)
@@ -1403,6 +1623,12 @@ public class VisualizerManager : MonoBehaviour
     public void RegisterIntValue(string key, int v)
     {
         visualizerIntValues.Add(key, v);
+        BroadcastVisualizerIntValues();
+    }
+
+    public void RegisterBoolValue(string key, bool v)
+    {
+        visualizerBoolValues.Add(key, v);
         BroadcastVisualizerIntValues();
     }
 
@@ -1443,7 +1669,8 @@ public class VisualizerManager : MonoBehaviour
     public void SavePreset()
     {
         VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
-            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, visualizerFloatValues, visualizerIntValues);
+            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, 
+            visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
 
         StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
             x =>
@@ -1487,12 +1714,9 @@ public class VisualizerManager : MonoBehaviour
             baseVisualizerElementsInfo = preset.BaseVisualizerElements;
             visualizerSpecificElementsInfo = preset.VisualizerSpecificElements;
             visualizerFloatValues = preset.VisualizerFloatValues;
+            visualizerBoolValues = preset.VisualizerBoolValues;
 
-            BroadcastTrackInfo();
-            BroadcastVisualizerElementsInfo();
-            BroadcastVisualizerSpecificsElementsInfo();
-            BroadcastVisualizerFloatValues();
-            BroadcastVisualizerIntValues();
+            BroadcastSetupValues();
 
             onSuccess(filePath, preset);
         } catch (Exception e)
@@ -1516,8 +1740,6 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastTrackInfo()
     {
         trackInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTrackInfo>().ToList();
-
-        if (audioSource.clip == null) return;
 
         UpdateTrackFonts();
 
@@ -1563,6 +1785,16 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerIntValueListeners.ForEach(item => item.RecieveVisualizerIntValues(visualizerIntValues));
+    }
+
+
+    [ContextMenu("BroadcastVisualizerBoolValues")]
+    private void BroadcastVisualizerBoolValues()
+    {
+        visualizerBoolValueListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerBoolValues>().ToList();
+
+        // Send data out
+        visualizerBoolValueListeners.ForEach(item => item.RecieveVisualizerBoolValues(visualizerBoolValues));
     }
 
     public void SyncTempoListeners()
@@ -1697,7 +1929,7 @@ public class VisualizerManager : MonoBehaviour
         tempoTapperInputField.interactable = false;
         tempoTapperButton.interactable = false;
 
-        OnBeat += IncrementBeatsLastSecond;
+        OnEnergySpike += IncrementBeatsLastSecond;
         estimatingBPM = true;
 
         while (estimatingBPM)
@@ -1728,7 +1960,7 @@ public class VisualizerManager : MonoBehaviour
         tempoTapperInputField.interactable = true;
         tempoTapperButton.interactable = true;
 
-        OnBeat -= IncrementBeatsLastSecond;
+        OnEnergySpike -= IncrementBeatsLastSecond;
 
         BroadcastTempo();
     }

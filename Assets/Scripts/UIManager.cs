@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     [Header("Loading")]
     [SerializeField] private Transform popupLoadingList;
     [SerializeField] private PopupLoading loadingPopupPrefab;
-    private List<PopupLoading> spawnedLoadingDict = new();
+    private Dictionary<int, PopupLoading> spawnedLoadingDict = new();
 
     [Header("References")]
     [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
@@ -43,40 +43,43 @@ public class UIManager : MonoBehaviour
         Action<string> onSuccess, Action onFailure)
     {
         InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
-        yield return inputFieldPopup.Show(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+        yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
     }
 
     public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
     Func<string, IEnumerator> onSuccess,IEnumerator onFailure)
     {
         InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
-        yield return inputFieldPopup.Show(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+        yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
     }
 
     public IEnumerator PopupActionSelection(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
     {
         ActionSelectionPopup actionSelectionPopup = Instantiate(actionSelectionPopupPrefab, uiStack);
-        yield return actionSelectionPopup.Show(directions, cancelButtonText, onCancel, actions);
+        yield return actionSelectionPopup.Consume(directions, cancelButtonText, onCancel, actions);
     }
 
-    public void AddLoading(string message)
+    public int AddLoading(string message)
     {
+        // spawn the prefab
         PopupLoading spawned = Instantiate(loadingPopupPrefab, popupLoadingList);
         spawned.Set(message);
-        spawnedLoadingDict.Add(spawned);
+
+        // find a key
+        int messageKey = 0;
+        while (spawnedLoadingDict.ContainsKey(messageKey)) { messageKey++; }
+
+        spawnedLoadingDict.Add(messageKey, spawned);
+
+        return messageKey;
     }
 
-    public void RemoveLoading(string text)
+    public void RemoveLoading(int key)
     {
-        foreach (PopupLoading pop in spawnedLoadingDict)
-        {
-            if (pop.Text.Equals(text))
-            {
-                spawnedLoadingDict.Remove(pop);
-                Destroy(pop.gameObject);
-                return;
-            }
-        }
+        PopupLoading loading = spawnedLoadingDict[key];
+        spawnedLoadingDict.Remove(key);
+        Destroy(loading.gameObject);
+        return;
     }
 
     public void AddNewMessage(string message, float duration = 3)

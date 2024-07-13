@@ -19,11 +19,6 @@ public class InputFieldPopup : MonoBehaviour
     private bool recievedResponse;
     private bool accepted;
 
-    public void SetAcceptButtonInteractable(string s)
-    {
-        acceptButton.interactable = (!string.IsNullOrEmpty(s));
-    }
-
     public void Accept()
     {
         recievedResponse = true;
@@ -38,13 +33,11 @@ public class InputFieldPopup : MonoBehaviour
 
     private void Update()
     {
-        SetAcceptButtonInteractable(inputField.text);
+        acceptButton.interactable = (!string.IsNullOrEmpty(inputField.text));
     }
 
     private void Init(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard)
     {
-        display.SetActive(true);
-
         inputField.text = defaultText;
         textArea.GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         textArea.GetChild(2).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -63,12 +56,14 @@ public class InputFieldPopup : MonoBehaviour
         recievedResponse = false;
     }
 
-    public IEnumerator Show(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard, 
+    public IEnumerator Consume(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard, 
         Action<string> onSuccess, Action onFailure)
     {
         Init(defaultText, directions, acceptButtonText, cancelButtonText, allowCopyToClipboard);
 
         yield return StartCoroutine(WaitForResponse());
+
+        display.SetActive(false);
 
         if (accepted)
         {
@@ -79,15 +74,19 @@ public class InputFieldPopup : MonoBehaviour
             onFailure?.Invoke();
         }
 
-        display.SetActive(false);
+        Destroy(gameObject);
     }
 
-    public IEnumerator Show(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard,
+    public IEnumerator Consume(string defaultText, string directions, string acceptButtonText, string cancelButtonText, bool allowCopyToClipboard,
     Func<string, IEnumerator> onSuccess, IEnumerator onFailure)
     {
+        display.SetActive(true);
+
         Init(defaultText, directions, acceptButtonText, cancelButtonText, allowCopyToClipboard);
 
         yield return StartCoroutine(WaitForResponse());
+
+        display.SetActive(false);
 
         if (accepted)
         {
@@ -98,7 +97,7 @@ public class InputFieldPopup : MonoBehaviour
             yield return StartCoroutine(onFailure);
         }
 
-        display.SetActive(false);
+        Destroy(gameObject);
     }
 
     public void CopyInputToKeyboard()

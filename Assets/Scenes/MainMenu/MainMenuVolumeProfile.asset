@@ -103,15 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
   m_Name: MainMenuVolumeProfile
   m_EditorClassIdentifier: 
-  components:
-  - {fileID: -5501058081014958179}
-  - {fileID: -2976073830060968878}
-  - {fileID: -4743154068834857734}
-  - {fileID: 6577925556770700048}
-  - {fileID: 7869380134162680909}
-  - {fileID: -6147870471897350885}
-  - {fileID: 202162289296484588}
-  - {fileID: 1060670157194968478}
+  components: []
 --- !u!114 &202162289296484588
 MonoBehaviour:
   m_ObjectHideFlags: 3

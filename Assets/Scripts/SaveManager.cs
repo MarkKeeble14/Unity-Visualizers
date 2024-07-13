@@ -22,19 +22,19 @@ public struct FontFileData
 [System.Serializable]
 public struct VisualizerPreset
 {
+    [SerializeField] public List<FontFileData> Fonts;
     [SerializeField] public List<Color> Colors;
     [SerializeField] public List<Gradient> Gradients;
     [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> BaseVisualizerElements;
     [SerializeField] public Dictionary<string, VisualizerElementsSettings> VisualizerSpecificElements;
     [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
     [SerializeField] public Dictionary<string, int> VisualizerIntValues;
-    [SerializeField] public List<FontFileData> Fonts;
+    [SerializeField] public Dictionary<string, bool> VisualizerBoolValues;
 
     public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
         Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
-        Dictionary<string, float> floatValues,
-        Dictionary<string, int> intValues)
+        Dictionary<string, float> floatValues, Dictionary<string, int> intValues, Dictionary<string, bool> boolValues)
     {
         Colors = colors;
         Gradients = gradients;
@@ -43,6 +43,7 @@ public struct VisualizerPreset
         VisualizerSpecificElements = visualizerSpecificElements;
         VisualizerFloatValues = floatValues;
         VisualizerIntValues = intValues;
+        VisualizerBoolValues = boolValues;
     }
 }
 

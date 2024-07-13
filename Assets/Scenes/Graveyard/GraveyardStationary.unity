@@ -2096,27 +2096,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1010
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 235703289215819654, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2943,36 +2943,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForFonts
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForTrack
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: defaultFont
-      value: 
-      objectReference: {fileID: 11400000, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForColors
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForPreset
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Title
       value: don't look
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: volumeWeight
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForCoverArt
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: defaultScenary
@@ -2999,17 +2971,9 @@ PrefabInstance:
       value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: normalizeSamples
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.AudioClip
       value: 
       objectReference: {fileID: 8300000, guid: 4d1e83428559f34408a5e03c89f5d89a, type: 3}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: sampleMultiplier
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: visualizerCanvas
       value: 
@@ -3043,14 +3007,6 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: smoothingEquationScale
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: smoothingEquationShift
-      value: 0.45
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: trackColors.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -3063,20 +3019,12 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: askForVisualizerElements
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Colors.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: setBufferSizetoFrameRate
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: smoothingEquationStrength
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: trackGradients.Array.size
@@ -3163,10 +3111,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: initialTransition.direction
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Gradients.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -3246,10 +3190,6 @@ PrefabInstance:
       propertyPath: userDefinedSecondaryColor.r
       value: 0.3764706
       objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: initialTransition.transition
-      value: 
-      objectReference: {fileID: 789622416}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Colors.Array.data[0].a
       value: 1
@@ -4832,27 +4772,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 910
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 2597282437634854137, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10754,17 +10694,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4703698494956916920, guid: e8f6f30389d69414895b0ef59de4fb91, type: 3}
   m_PrefabInstance: {fileID: 788752913}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &789622416 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7670950277885415856, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-  m_PrefabInstance: {fileID: 434502306}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd9807e823919c64dade27d03389b67d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &790554597
 PrefabInstance:
   m_ObjectHideFlags: 0

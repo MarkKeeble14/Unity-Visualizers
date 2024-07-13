@@ -2,26 +2,18 @@
 using TMPro;
 using UnityEngine;
 
-public class VisualizerElementFloatSetting : MonoBehaviour, IRecieveVisualizerFloatValues
+public class VisualizerElementFloatSetting : VisualizerSetting, IRecieveVisualizerFloatValues
 {
-    [SerializeField] private string label;
-    [SerializeField] private string key;
-    [SerializeField] private TextMeshProUGUI labelText;
     [SerializeField] private TMP_InputField inputField;
 
-    private void Start()
+    public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
-        labelText.text = label;
-    }
-
-    public void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
-    {
-        if (!settings.ContainsKey(key))
+        if (!values.ContainsKey(key))
         {
             return;
         }
 
-        inputField.text = settings[key].ToString();
+        inputField.text = values[key].ToString();
     }
 
     public void UpdateSetting(string s)
@@ -29,12 +21,12 @@ public class VisualizerElementFloatSetting : MonoBehaviour, IRecieveVisualizerFl
         float v;
         if (float.TryParse(s, out v))
         {
-            UpdateSetting(v);
+            VisualizerManager._Instance.UpdateSetting(key, v);
         }
     }
 
-    private void UpdateSetting(float v)
+    protected override void Initialize()
     {
-        VisualizerManager._Instance.UpdateFloatSetting(key, v);
+        // 
     }
 }

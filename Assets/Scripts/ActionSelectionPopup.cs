@@ -45,10 +45,8 @@ public class ActionSelectionPopup : MonoBehaviour
     private bool recievedResponse;
     private ActionSelection chosenSelection;
 
-    public IEnumerator Show(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
+    public IEnumerator Consume(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
     {
-        display.SetActive(true);
-
         // remove old options
         foreach (Transform child in actionList)
         {
@@ -85,12 +83,14 @@ public class ActionSelectionPopup : MonoBehaviour
         // Activate Callback
         chosenSelection.Action?.Invoke();
 
+        display.SetActive(false);
+
         // Wait for Coroutine if there is one
         if (chosenSelection.HasCoroutine)
         {
             yield return StartCoroutine(chosenSelection.Coroutine);
         }
 
-        display.SetActive(false);
+        Destroy(gameObject);
     }
 }

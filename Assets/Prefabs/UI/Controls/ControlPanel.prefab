@@ -313,8 +313,6 @@ GameObject:
   - component: {fileID: 4462146811721886607}
   - component: {fileID: 7833668855383076179}
   - component: {fileID: 3301261317175914069}
-  - component: {fileID: 4957705802389814796}
-  - component: {fileID: 7532096211758926960}
   m_Layer: 5
   m_Name: ControlPanel
   m_TagString: Untagged
@@ -435,33 +433,3 @@ MonoBehaviour:
   horizontals: {fileID: 5307418642738229242, guid: b7d531fe4fc3069439165af5949636a2, type: 3}
   verticals: {fileID: 2356022402760069691, guid: 0b5f2002466a90d45a856b8eb89d8767, type: 3}
   quad: {fileID: 5897616056508399767, guid: 8bb34de2f4ba75b4c8f1476add9327c7, type: 3}
---- !u!114 &4957705802389814796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8734234059815918761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bd8ed628130e95418527ab33fb90b31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 306
-  action: 
-  controlPanel: {fileID: 3301261317175914069}
---- !u!114 &7532096211758926960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8734234059815918761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3df04330553592647ab6f19bd16809d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 306
-  action: 
-  controlPanel: {fileID: 3301261317175914069}

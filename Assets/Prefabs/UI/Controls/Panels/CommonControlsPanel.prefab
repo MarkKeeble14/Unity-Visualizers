@@ -1,66 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2652782695618593552
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8799854129004473975}
-  - component: {fileID: 2528936414106992490}
-  - component: {fileID: 4533893543474292443}
-  m_Layer: 0
-  m_Name: PresetControls
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8799854129004473975
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2652782695618593552}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.9855222, y: 1.9855222, z: 1.9855222}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 335575144627039560}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2528936414106992490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2652782695618593552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d451aedd43145c8478a4d646e0c8f32e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 287
-  action: Save Preset
---- !u!114 &4533893543474292443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2652782695618593552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25eef4bc2710bc44f809dbba5f304e53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 288
-  action: Load Preset
 --- !u!1 &2673020312188334731
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,67 +259,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 46
   action: Close UI
---- !u!1 &8111479640899805151
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1188648271107998650}
-  - component: {fileID: 8410198493909546006}
-  - component: {fileID: 9183805860865947906}
-  m_Layer: 0
-  m_Name: ColorPickerControls
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1188648271107998650
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8111479640899805151}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 335575144627039560}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8410198493909546006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8111479640899805151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 495538fc1eb295343aab78cac9cf6d84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 304
-  action: Show Color Picker
---- !u!114 &9183805860865947906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8111479640899805151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc63a8e6d85b3b542a7985cc3859b57b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 304
-  action: Hide Color Picker
 --- !u!1001 &5455178053825743439
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -479,11 +357,11 @@ PrefabInstance:
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[5].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 2528936414106992490}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 4533893543474292443}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].KeyControls.Array.data[1]
       value: 
@@ -507,7 +385,7 @@ PrefabInstance:
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[10].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 9183805860865947906}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[11].KeyControls.Array.data[0]
       value: 

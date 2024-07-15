@@ -292,10 +292,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexText: {fileID: 7563769149980881553}
   labelText: {fileID: 6417397744126863622}
+  listCanvas: {fileID: 8466477304301826396}
   list: {fileID: 2128016851077411297}
   templateElement: {fileID: 8170038230000595189, guid: 2d171c92f927d5f4b8a209e48687f9b2, type: 3}
   elementHeight: 50
   gradientDisplay: {fileID: 3252548325052098702}
+--- !u!223 &8466477304301826396 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2872763501013948287, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+  m_PrefabInstance: {fileID: 5954008774279030307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6490933121382535931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -433,6 +439,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7589493297653757829, guid: c58cdd901f942ce4b8554dc5f6144dc9, type: 3}
   m_PrefabInstance: {fileID: 6490933121382535931}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &3320444631509873670
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3694964599302317438}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!114 &6554451058044693902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -453,15 +471,3 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!225 &3320444631509873670
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3694964599302317438}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0

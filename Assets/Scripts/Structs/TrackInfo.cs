@@ -12,7 +12,7 @@ public struct TrackInfo
     public List<Color> Colors;
     public List<Gradient> Gradients;
     public List<TMP_FontAsset> Fonts;
-    [HideInInspector] public string Duration;
+    public string Duration;
 
     public TrackInfo(string trackName, Sprite trackArt, string duration, AudioClip audioClip, 
         List<Color> colors, List<Gradient> gradients, List<TMP_FontAsset> fonts) : this()

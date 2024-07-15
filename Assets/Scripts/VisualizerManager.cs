@@ -17,17 +17,32 @@ using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
 
-public enum ImportableAudioSource
+public struct AudioClipData
 {
-    YOUTUBE,
-    SOUNDCLOUD
+    [SerializeField] public int Channels;
+    [SerializeField] public int Frequency;
+    [SerializeField] public float[] Samples;
+    [SerializeField] public bool Set;
+
+    public AudioClipData(int channels, int frequency, float[] samples)
+    {
+        Channels = channels;
+        Frequency = frequency;
+        Samples = samples;
+        Set = true;
+    }
 }
 
-public enum AudioChannel
+public struct SpriteData
 {
-    STEREO,
-    LEFT,
-    RIGHT
+    [SerializeField] public byte[] RawData;
+    [SerializeField] public bool Set;
+
+    public SpriteData(byte[] rawData)
+    {
+        RawData = rawData;
+        Set = true;
+    }
 }
 
 [System.Serializable]
@@ -57,6 +72,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
     [SerializeField] private TrackInfo trackInfo;
+    public string TrackTitle => trackInfo.Title;
 
     private Dictionary<string, int> loadedFontIndices = new();
     private Dictionary<string, FontFileData> loadedFontData = new();
@@ -71,7 +87,6 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool askForVisualizerElements = true;
     [SerializeField] private bool setDefaultColorsFromTexture = true;
     [SerializeField] private bool startImmedietelyUponLoadingTrack;
-    [SerializeField] private float startSongAtSeconds;
     [SerializeField] private bool applyPostProcessing;
     [SerializeField, Range(0, 1)] private float volumeWeight;
 
@@ -122,6 +137,10 @@ public class VisualizerManager : MonoBehaviour
     private bool tappingBPM;
     private bool didTap;
 
+    [Header("Controls")]
+    [SerializeField] private ControlScheme activeControlScheme = ControlScheme.VISUALIZER;
+    public ControlScheme ActiveControlScheme => activeControlScheme;
+
     [Header("Beat Detection Settings")]
     [SerializeField] private float ampSpikeDetectionSensitivity = 0.9f;
 
@@ -140,6 +159,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Transform fontsList;
     [SerializeField] private Button loadingTrackButton;
     [SerializeField] private Button loadingImageButton;
+    [SerializeField] private EscapeMenuFunctions escapeMenu;
     private AudioSource audioSource;
     private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
     private Volume volume;
@@ -151,6 +171,7 @@ public class VisualizerManager : MonoBehaviour
 
     private List<IRecieveTrackInfo> trackInfoListeners = new();
     private List<IRecieveTempo> tempoListeners = new();
+    private List<IRecieveControlScheme> controlSchemeListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElementsInfoListeners = new();
     private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElementsInfoListeners = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
@@ -164,7 +185,9 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, bool> visualizerBoolValues = new();
 
     private bool hasSongStarted;
+    private bool hasHadPlayback;
     private float lastAudioSourceTime;
+    private float prePlaybackPositionTracker;
 
     // Events
     public Action OnSongEnd;
@@ -198,8 +221,14 @@ public class VisualizerManager : MonoBehaviour
     {
         get
         {
-            if (audioSource.clip == null) return 0;
-            return audioSource.time / audioSource.clip.length;
+            if (hasHadPlayback)
+            {
+                if (audioSource.clip == null) { return 0; }
+                return audioSource.time / audioSource.clip.length;
+            } else
+            {
+                return prePlaybackPositionTracker;
+            }
         }
     }
 
@@ -256,6 +285,8 @@ public class VisualizerManager : MonoBehaviour
 
     private void Start()
     {
+        BroadcastControlScheme();
+
         StartCoroutine(RunSetup());
     }
 
@@ -371,11 +402,8 @@ public class VisualizerManager : MonoBehaviour
 
         // Play initial transition if there is one
         if (initialTransition.transition != null)
-            initialTransition.transition.InitiateTransition(initialTransition.direction);
-
-        if (startImmedietelyUponLoadingTrack)
         {
-            BeginPlayback();
+            initialTransition.transition.InitiateTransition(initialTransition.direction);
         }
     }
 
@@ -540,21 +568,16 @@ public class VisualizerManager : MonoBehaviour
         if (audioSource.clip == null)
         {
             Debug.LogWarning("Attempted to start the Visualizer with no track loaded");
-            UIManager._Instance.AddNewMessage("Attempt to start Visualizer with no track loaded ignored - Please load a track");
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
+                "Attempt to start Visualizer with no track loaded ignored - Please load a track");
             return;
         }
 
-        if (startSongAtSeconds > audioSource.clip.length)
-        {
-            Debug.LogWarning("Attempted to start the track at a position longer than the track itself - defaulting to 0");
-            startSongAtSeconds = 0;
-        }
-
-        // Set the point where the AudioSource begins
-        audioSource.time = startSongAtSeconds;
-
         // Play the Track
         audioSource.Play();
+
+        if (!hasHadPlayback) audioSource.time = prePlaybackPositionTracker * audioSource.clip.length;
+        hasHadPlayback = true;
     }
 
     public Color GetColor(VisualizerColorType type, int index)
@@ -655,6 +678,29 @@ public class VisualizerManager : MonoBehaviour
         PausePlayback();
     }
 
+    public void SetPlaythroughPosition(float v)
+    {
+        if (!hasHadPlayback)
+        {
+            prePlaybackPositionTracker = v;
+            return;
+        }
+
+        if (audioSource.clip == null)
+        {
+            return;
+        }
+
+        v *= audioSource.clip.length;
+        if (v < audioSource.clip.length)
+        {
+            audioSource.time = v;
+        } else
+        {
+            audioSource.time = audioSource.clip.length - 1;
+        }
+    }
+
     public void Seek(float amount)
     {
         audioSource.time += amount;
@@ -747,7 +793,7 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator OnFailDownloadTrackFromURL()
     {
-        UIManager._Instance.AddNewMessage("Failed to download Track from URL");
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track from URL");
 
         loadingTrackButton.interactable = true;
 
@@ -763,11 +809,24 @@ public class VisualizerManager : MonoBehaviour
     {
         int loadingKey = UIManager._Instance.AddLoading("Downloading Track from URL");
 
-        ImportableAudioSource origin = GetAudioFileOrigin(url);
+        ImportableAudioSource origin;
+        try
+        {
+            origin = GetAudioFileOrigin(url);
+        } catch (Exception e)
+        {
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download track from URL");
+
+            UIManager._Instance.RemoveLoading(loadingKey);
+
+            loadingTrackButton.interactable = true;
+
+            yield break;
+        }
         switch (origin)
         {
             case ImportableAudioSource.SOUNDCLOUD:
-                UIManager._Instance.AddNewMessage("Unsupported Origin, Supported Origins are: " + GetSupportedOrigins());
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Unsupported Origin, Supported Origins are: " + GetSupportedOrigins());
 
                 UIManager._Instance.RemoveLoading(loadingKey);
 
@@ -802,8 +861,21 @@ public class VisualizerManager : MonoBehaviour
 
     private ImportableAudioSource GetAudioFileOrigin(string url)
     {
-        url = url.Split("https://")[1];
-        url = url.Split('/')[0].ToLower();
+        string[] f = url.Split("https://");
+        if (f.Length < 2)
+        {
+            // error
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "URL could not be parsed - Please try again with a different URL");
+        }
+        url = f[1];
+
+        string[] f2 = url.Split('/');
+        if (f.Length < 2)
+        {
+            // error
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "URL could not be parsed - Please try again with a different URL");
+        }
+        url = f2[0].ToLower();
 
         if (url.Contains("soundcloud"))
             return ImportableAudioSource.SOUNDCLOUD;
@@ -811,7 +883,7 @@ public class VisualizerManager : MonoBehaviour
             return ImportableAudioSource.YOUTUBE;
         else
         {
-            throw new Exception(); // TODO: Custom Exceptions
+            throw new UncaughtSwitchTypeException(typeof(ImportableAudioSource)); // TODO: Custom Exceptions
         }
     }
 
@@ -856,7 +928,7 @@ public class VisualizerManager : MonoBehaviour
             Directory.CreateDirectory(directoryPath);
         }
 
-        int loadingKey = UIManager._Instance.AddLoading("Attempting to fetch audio from URL...");
+        int loadingKey = UIManager._Instance.AddLoading("Fetching audio from URL...");
 
         var task = Task.Run(async () => await YouTubeToMP3(mediaUrl, directoryPath));
         await task;
@@ -868,7 +940,7 @@ public class VisualizerManager : MonoBehaviour
         string trackName = task.Result[2];
         string trackDuration = task.Result[3];
 
-        UIManager._Instance.AddNewMessage("Successfully fetched Audio from YouTube Video: " + trackName);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched Audio from YouTube Video: " + trackName);
 
         // delete input file
         File.Delete(mp4FilePath);
@@ -916,7 +988,7 @@ public class VisualizerManager : MonoBehaviour
         UIManager._Instance.RemoveLoading(loadingKey);
 
         // add UI
-        UIManager._Instance.AddNewMessage("Successfully fetched: " + tempTitle);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched: " + tempTitle);
 
         // get track from recieved data
         Track track = getTask.Result;
@@ -986,7 +1058,12 @@ public class VisualizerManager : MonoBehaviour
                 {
                     SetTrack(filePath, clip);
                 },
-                x => Debug.Log("Failed to Load Audio Clip from path = " + x)));
+                x =>
+                {
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load track from selected file " +
+                        "- Ensure the file selected is an appropriate file type");
+                    Debug.Log("Failed to Load Audio Clip from path = " + x);
+                }));
         }, "Select Track", "Load"));
 
         loadingTrackButton.interactable = true;
@@ -995,7 +1072,7 @@ public class VisualizerManager : MonoBehaviour
     // duration will take the format of mm:ss
     private void SetTrack(string filePath, AudioClip clip, string trackName = "", string durationSeconds = "")
     {
-        UIManager._Instance.AddNewMessage("Track Set");
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Track Set");
 
         audioSource.clip = clip;
 
@@ -1024,6 +1101,11 @@ public class VisualizerManager : MonoBehaviour
         }
 
         Debug.Log("Setting track to " + trackInfo.Title);
+
+        if (startImmedietelyUponLoadingTrack)
+        {
+            BeginPlayback();
+        }
 
         BroadcastTrackInfo();
     }
@@ -1066,12 +1148,12 @@ public class VisualizerManager : MonoBehaviour
         yield return StartCoroutine(DownloadImage(url,
                 (url, tex) =>
                 {
-                    UIManager._Instance.AddNewMessage("Successfully downloaded image from: " + url);
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded image from: " + url);
                     SetCoverArt(tex);
                 },
                 url =>
                 {
-                    UIManager._Instance.AddNewMessage("Failed to download image from: " + url);
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download image from: " + url);
                 }));
 
         UIManager._Instance.RemoveLoading(loadingKey);
@@ -1081,7 +1163,7 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator OnFailDownloadImageFromURL()
     {
-        UIManager._Instance.AddNewMessage("Failed to download Image from URL");
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Image from URL");
 
         loadingImageButton.interactable = true;
 
@@ -1101,7 +1183,12 @@ public class VisualizerManager : MonoBehaviour
                     Debug.Log("Successfully Loaded Image from path = " + x);
                     SetCoverArt(texture);
                 },
-            x => Debug.Log("Failed to Load Image from path = " + x));
+            x =>
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load image from selected file " +
+                    "- Ensure the file selected is an appropriate file type");
+                Debug.Log("Failed to Load Image from path = " + x);
+            });
         }, "Select Cover Art", "Load"));
 
         loadingImageButton.interactable = true;
@@ -1112,7 +1199,7 @@ public class VisualizerManager : MonoBehaviour
         trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
 
         Debug.Log("Setting track cover");
-        UIManager._Instance.AddNewMessage("Cover Art Set");
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Cover Art Set");
 
         if (setDefaultColorsFromTexture)
         {
@@ -1147,7 +1234,7 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator DownloadImage(string mediaUrl, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
-        UIManager._Instance.AddNewMessage("Attempting to Download Image from: " + mediaUrl);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.INFO, "Attempting to Download Image from: " + mediaUrl);
 
         Texture2D tex;
 
@@ -1279,15 +1366,14 @@ public class VisualizerManager : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
-                UIManager._Instance.AddNewMessage("Failed to download Track");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track");
                 Debug.Log("Failed to download Track from path: " + filePath);
                 onFailure?.Invoke(filePath);
             }
             else
             {
-                UIManager._Instance.AddNewMessage("Successfully downloaded Track");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded Track");
                 Debug.Log("Successfully downloaded Track from path: " + filePath);
-
                 onSuccess?.Invoke(filePath, DownloadHandlerAudioClip.GetContent(www));
             }
 
@@ -1665,65 +1751,138 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerElementsInfo();
     }
 
-    [ContextMenu("Save Preset")]
-    public void SavePreset()
+    private Texture2D MakeTexFromSprite(Sprite sprite)
     {
-        VisualizerPreset preset = new VisualizerPreset(trackInfo.Colors, trackInfo.Gradients,
-            loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo, 
-            visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
+        Texture2D tex = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+        Color[] pixels = sprite.texture.GetPixels((int)sprite.textureRect.x,
+                                                (int)sprite.textureRect.y,
+                                                (int)sprite.textureRect.width,
+                                                (int)sprite.textureRect.height);
+        tex.SetPixels(pixels);
+        tex.Apply();
+        return tex;
+    }
 
-        StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
+    private IEnumerator SavePreset(bool savingAudioAndCoverArt)
+    {
+        yield return StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Name your Preset", "Confirm Preset Name", "Cancel", false,
             x =>
             {
-                string path = SaveManager._Instance.SavePreset(x, preset);
-                UIManager._Instance.AddNewMessage("Preset saved to " + path);
+                AudioClipData audioClip = new();
+                SpriteData coverArt = new();
+                if (savingAudioAndCoverArt)
+                {
+                    if (audioSource.clip != null)
+                    {
+                        // for saving audio
+                        int channels = audioSource.clip.channels;
+                        int samples = audioSource.clip.samples;
+                        float[] samplesData = new float[samples * channels];
+                        audioSource.clip.GetData(samplesData, 0);
+                        audioClip = new AudioClipData(channels, audioSource.clip.frequency, samplesData);
+                    } else
+                    {
+                        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING,
+                            "No cover art has been loaded to include in preset - No cover art will be included in preset");
+                    }
+
+                    if (trackInfo.CoverArt != null)
+                    {
+                        // for saving cover art
+                        coverArt.RawData = MakeTexFromSprite(trackInfo.CoverArt).GetRawTextureData();
+                    } else
+                    {
+                        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
+                            "No audio has been loaded to include in preset - No audio will be included in preset");
+                    }
+                }
+
+                VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, coverArt, audioClip,
+                    trackInfo.Colors, trackInfo.Gradients,
+                    loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo,
+                    visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
+
+                SaveManager._Instance.SavePreset(x, preset);
             },
             null));
     }
 
+    [ContextMenu("Save Preset")]
+    public void SavePreset()
+    {
+        StartCoroutine(UIManager._Instance.PopupActionSelection("Include Audio and Cover Art in Preset?", "Cancel", null, 
+            new List<ActionSelection>() 
+            {
+                new ActionSelection("Include Everything", () => StartCoroutine(SavePreset(true))),
+                new ActionSelection("Include Visualizer Settings", () => StartCoroutine(SavePreset(false)))
+            }));
+    }
+
+    private void SetFromPreset(VisualizerPreset preset)
+    {
+        trackInfo.Title = preset.Title;
+
+        if (preset.Audio.Set)
+        {
+            // Loading audio
+            AudioClipData audioClip = preset.Audio;
+            AudioClip clip = AudioClip.Create("AudioClip", audioClip.Samples.Length, audioClip.Channels, audioClip.Frequency, false);
+            clip.SetData(audioClip.Samples, 0);
+            audioSource.clip = clip;
+
+            trackInfo.AudioClip = clip;
+            trackInfo.Duration = StringHelper.GetDurationText(clip.length);
+        }
+
+        if (preset.CoverArt.Set)
+        {
+            // Loading cover
+            Texture2D texture = new Texture2D(1, 1);
+            texture.LoadRawTextureData(preset.CoverArt.RawData);
+            trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+        }
+
+        // Set colors
+        ClearColorsList();
+        trackInfo.Colors = preset.Colors;
+        trackInfo.Gradients = preset.Gradients;
+        PopulateColorsList();
+
+        // Set fonts
+        loadedFontData.Clear();
+        loadedFontIndices.Clear();
+        loadedTMPFontAssets.Clear();
+        ClearFontsList();
+        for (int i = 0; i < preset.Fonts.Count; i++)
+        {
+            FontFileData fontData = preset.Fonts[i];
+            loadedTMPFontAssets.Add(fontData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fontData.FileContents)));
+            loadedFontIndices.Add(fontData.FontName, i);
+            loadedFontData.Add(fontData.FontName, fontData);
+
+            // Create UI
+            FontListElement spawned = Instantiate(fontListElement, fontsList);
+            spawned.Set(i);
+        }
+
+        // Set other visualizer data
+        baseVisualizerElementsInfo = preset.BaseVisualizerElements;
+        visualizerSpecificElementsInfo = preset.VisualizerSpecificElements;
+        visualizerFloatValues = preset.VisualizerFloatValues;
+        visualizerIntValues = preset.VisualizerIntValues;
+        visualizerBoolValues = preset.VisualizerBoolValues;
+
+        BroadcastSetupValues();
+    }
+
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
     {
-        try
-        {
-            VisualizerPreset preset = SaveManager._Instance.LoadPreset(filePath);
-
-            // Set colors
-            ClearColorsList();
-            trackInfo.Colors = preset.Colors;
-            trackInfo.Gradients = preset.Gradients;
-            PopulateColorsList();
-
-            // Set fonts
-            loadedFontData.Clear();
-            loadedFontIndices.Clear();
-            loadedTMPFontAssets.Clear();
-            ClearFontsList();
-            for (int i = 0; i < preset.Fonts.Count; i++)
+        SaveManager._Instance.LoadPreset(filePath,
+            (filePath, loadedPreset) =>
             {
-                FontFileData fontData = preset.Fonts[i];
-                loadedTMPFontAssets.Add(fontData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fontData.FileContents)));
-                loadedFontIndices.Add(fontData.FontName, i);
-                loadedFontData.Add(fontData.FontName, fontData);
-
-                // Create UI
-                FontListElement spawned = Instantiate(fontListElement, fontsList);
-                spawned.Set(i);
-            }
-
-            // Set other visualizer data
-            baseVisualizerElementsInfo = preset.BaseVisualizerElements;
-            visualizerSpecificElementsInfo = preset.VisualizerSpecificElements;
-            visualizerFloatValues = preset.VisualizerFloatValues;
-            visualizerBoolValues = preset.VisualizerBoolValues;
-
-            BroadcastSetupValues();
-
-            onSuccess(filePath, preset);
-        } catch (Exception e)
-        {
-            Debug.LogWarning(e.ToString());
-            onFailure(filePath);
-        }
+                SetFromPreset(loadedPreset);
+                onSuccess?.Invoke(filePath, loadedPreset);
+            }, filePath => onFailure?.Invoke(filePath));
     }
 
     [ContextMenu("BroadcastTempo")]
@@ -1733,6 +1892,15 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         tempoListeners.ForEach(item => item.RecieveTempo(estimatedBPM));
+    }
+
+    [ContextMenu("BroadcastControlScheme")]
+    private void BroadcastControlScheme()
+    {
+        controlSchemeListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveControlScheme>().ToList();
+
+        // Send data out
+        controlSchemeListeners.ForEach(item => item.RecieveControlScheme(activeControlScheme));
     }
 
 
@@ -1974,5 +2142,14 @@ public class VisualizerManager : MonoBehaviour
     {
         if (!visualizerSpecificElementsInfo.ContainsKey(key)) return;
         light.color = GetColor(visualizerSpecificElementsInfo[key].ColorType, visualizerSpecificElementsInfo[key].ColorIndex);
+    }
+
+    public void SelectControlScheme(ControlScheme newScheme)
+    {
+        activeControlScheme = newScheme;
+
+        escapeMenu.UpdateDisplayedControls(newScheme);
+
+        BroadcastControlScheme();
     }
 }

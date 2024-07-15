@@ -220,6 +220,15 @@ MonoBehaviour:
   uiStack: {fileID: 471900910484961645}
   popupMessagesList: {fileID: 7143388773397040941}
   messagePopupPrefab: {fileID: 8719568564946339257, guid: 9580bdcbd8dc3704d849366480aa6651, type: 3}
+  messageClassColors:
+  - key: 0
+    value: {r: 1, g: 1, b: 1, a: 1}
+  - key: 1
+    value: {r: 0.76862746, g: 0.76862746, b: 0, a: 1}
+  - key: 2
+    value: {r: 0.89411765, g: 0, b: 0, a: 1}
+  - key: 3
+    value: {r: 0.2509804, g: 0.76862746, b: 0, a: 1}
   popupLoadingList: {fileID: 4642350039169540373}
   loadingPopupPrefab: {fileID: 4790709197132060419, guid: cef2197eb53a3644e80639f19923d2e6, type: 3}
   inputFieldDialogPrefab: {fileID: 6542063617483799250, guid: 5876f898c7f518746bff4c72699249f5, type: 3}

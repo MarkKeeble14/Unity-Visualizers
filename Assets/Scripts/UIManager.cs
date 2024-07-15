@@ -13,8 +13,10 @@ public class UIManager : MonoBehaviour
     [Header("Messages")]
     [SerializeField] private Transform popupMessagesList;
     [SerializeField] private PopupMessage messagePopupPrefab;
+    [SerializeField] private List<SerializableKeyValuePair<MessageClass, Color>> messageClassColors = new();
     private TimerDictionary<string> popupMessageDict = new();
     private Dictionary<string, PopupMessage> spawnedMessagesDict = new();
+    private List<KeyValuePair<string, MessageClass>> addedMessages = new();
 
     [Header("Loading")]
     [SerializeField] private Transform popupLoadingList;
@@ -24,6 +26,15 @@ public class UIManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
     [SerializeField] private ActionSelectionPopup actionSelectionPopupPrefab;
+
+    public enum MessageClass
+    {
+        INFO,
+        WARNING,
+        ERROR,
+        SUCCESS
+    }
+
 
     private void Awake()
     {
@@ -42,15 +53,23 @@ public class UIManager : MonoBehaviour
     public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
         Action<string> onSuccess, Action onFailure)
     {
+        KeyControl.Disable = true;
+
         InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
         yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+
+        KeyControl.Disable = false;
     }
 
     public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
     Func<string, IEnumerator> onSuccess,IEnumerator onFailure)
     {
+        KeyControl.Disable = true;
+
         InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
         yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+
+        KeyControl.Disable = false;
     }
 
     public IEnumerator PopupActionSelection(string directions, string cancelButtonText, Action onCancel, List<ActionSelection> actions)
@@ -82,15 +101,35 @@ public class UIManager : MonoBehaviour
         return;
     }
 
-    public void AddNewMessage(string message, float duration = 3)
+    public void AddNewMessage(MessageClass messageClass, string message, float duration = 3)
     {
+        addedMessages.Add(new KeyValuePair<string, MessageClass>(message, messageClass));
         popupMessageDict.Add(message, duration);
+    }
+
+    private Color GetMessageClassColor(MessageClass messageClass)
+    {
+        foreach (SerializableKeyValuePair<MessageClass, Color> kvp in messageClassColors)
+        {
+            if (kvp.Key == messageClass) return kvp.Value;
+        }
+        return messageClassColors[0].Value;
     }
 
     private void ShowMessage(string text)
     {
         PopupMessage spawned = Instantiate(messagePopupPrefab, popupMessagesList);
-        spawned.Set(text);
+
+        for (int i = 0; i < addedMessages.Count; i++)
+        {
+            if (addedMessages[i].Key.Equals(text))
+            {
+                spawned.SetColor(GetMessageClassColor(addedMessages[i].Value));
+                addedMessages.RemoveAt(i);
+            }
+        }
+
+        spawned.SetText(text);
         spawnedMessagesDict.Add(text, spawned);
     }
 

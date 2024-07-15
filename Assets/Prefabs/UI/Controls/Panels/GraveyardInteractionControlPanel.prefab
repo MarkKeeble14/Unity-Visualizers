@@ -148,6 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 97
   action: Left
+  PartOfScheme: 1
   func:
     m_PersistentCalls:
       m_Calls:
@@ -177,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 119
   action: Up
+  PartOfScheme: 1
   func:
     m_PersistentCalls:
       m_Calls:
@@ -289,6 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 115
   action: Down
+  PartOfScheme: 1
   func:
     m_PersistentCalls:
       m_Calls:
@@ -318,6 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 100
   action: Right
+  PartOfScheme: 1
   func:
     m_PersistentCalls:
       m_Calls:
@@ -333,3 +337,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8462195397028640486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7417a19e49095e47b938c807b1fc257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlActiveStateOf: {fileID: 9124099359306495802}
+  activeOnThisScheme: 1

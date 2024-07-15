@@ -5,11 +5,57 @@ using UnityEngine.EventSystems;
 
 public class FreeCameraController : MonoBehaviour
 {
+    [Header("Settings")]
     [SerializeField] private float defaultMoveSpeed;
     [SerializeField] private float spedUpMoveSpeed;
     [SerializeField] private float lookSpeed;
-    [SerializeField] private Transform positioner;
     private float currentMoveSpeed;
+    [SerializeField] private KeyCode speedUpButton = KeyCode.LeftShift;
+
+    [Header("References")]
+    [SerializeField] private Transform positioner;
+    [SerializeField] private Camera freeCam;
+    private GameObject prevCamera;
+
+    public static FreeCameraController _Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (_Instance != null) Destroy(_Instance.gameObject);
+        _Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        Activate();
+    }
+
+    private void OnDisable()
+    {
+        Deactivate();
+    }
+
+    public void Activate()
+    {
+        prevCamera = Camera.main.gameObject;
+        prevCamera.gameObject.SetActive(false);
+
+        freeCam.transform.position = prevCamera.transform.position;
+        freeCam.transform.rotation = prevCamera.transform.rotation;
+
+        freeCam.gameObject.SetActive(true);
+    }
+
+    public void Deactivate()
+    {
+        freeCam.gameObject.SetActive(false);
+
+        prevCamera.transform.position = freeCam.transform.position;
+        prevCamera.transform.rotation = freeCam.transform.rotation;
+
+        prevCamera.gameObject.SetActive(true);
+        prevCamera = null;
+    }
 
     public void MoveForward()
     {
@@ -54,6 +100,6 @@ public class FreeCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentMoveSpeed = (Input.GetKey(KeyCode.LeftShift) ? spedUpMoveSpeed : defaultMoveSpeed);
+        currentMoveSpeed = (Input.GetKey(speedUpButton) ? spedUpMoveSpeed : defaultMoveSpeed);
     }
 }

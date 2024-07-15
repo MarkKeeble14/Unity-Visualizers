@@ -245,11 +245,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &7043397361164098102 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3683891693404945429, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
-  m_PrefabInstance: {fileID: 5954008774279030307}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7563769149980881553 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4203833830737368242, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
@@ -280,19 +275,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexText: {fileID: 7563769149980881553}
   labelText: {fileID: 6417397744126863622}
-  labelTextBackground: {fileID: 8857632234903408443}
-  rectTransform: {fileID: 7043397361164098102}
+  listCanvas: {fileID: 8466477304301826396}
   list: {fileID: 2128016851077411297}
   templateElement: {fileID: 7464898017758956028, guid: 656ee55dbbe3599409b4016a1ed99d6e, type: 3}
   elementHeight: 50
---- !u!114 &8857632234903408443 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2903769500115691800, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+--- !u!223 &8466477304301826396 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2872763501013948287, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
   m_PrefabInstance: {fileID: 5954008774279030307}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -9,6 +9,8 @@ public abstract class DropdownMenu : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI indexText;
     [SerializeField] protected TextMeshProUGUI labelText;
 
+    [SerializeField] private Canvas listCanvas;
+
     private RectTransform rectTransform;
     [SerializeField] private RectTransform list;
 
@@ -26,6 +28,8 @@ public abstract class DropdownMenu : MonoBehaviour
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+
+        listCanvas.sortingOrder = GetComponentInParent<Canvas>().sortingOrder + 1;
     }
 
     public void Click()

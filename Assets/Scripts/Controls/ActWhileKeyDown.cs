@@ -6,6 +6,7 @@ public abstract class ActWhileKeyDown : KeyControl
 
     private void Update()
     {
+        if (Disable) return;
         if (Input.GetKey(key))
         {
             Act();

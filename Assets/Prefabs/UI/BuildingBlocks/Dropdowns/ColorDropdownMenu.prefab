@@ -302,7 +302,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexText: {fileID: 7563769149980881553}
   labelText: {fileID: 6417397744126863622}
+  listCanvas: {fileID: 8466477304301826396}
   list: {fileID: 2128016851077411297}
   templateElement: {fileID: 6443587104719167448, guid: c7df25878af6fcd4bb956ba508dd6b36, type: 3}
   elementHeight: 50
   colorDisplay: {fileID: 1015863873706114187}
+--- !u!223 &8466477304301826396 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2872763501013948287, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+  m_PrefabInstance: {fileID: 5954008774279030307}
+  m_PrefabAsset: {fileID: 0}

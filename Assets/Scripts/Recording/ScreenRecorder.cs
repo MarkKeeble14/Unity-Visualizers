@@ -116,7 +116,7 @@ public class ScreenRecorder : MonoBehaviour
 
         UIManager._Instance.RemoveLoading(loadingKey);
 
-        UIManager._Instance.AddNewMessage("Successfully saved video to path: " + outputPath);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully saved video to path: " + outputPath);
     }
 
     private void ConfigureFFMpeg()

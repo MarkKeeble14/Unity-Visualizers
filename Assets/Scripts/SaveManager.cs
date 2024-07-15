@@ -2,6 +2,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEditor.Presets;
 using UnityEngine;
@@ -30,12 +32,19 @@ public struct VisualizerPreset
     [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
     [SerializeField] public Dictionary<string, int> VisualizerIntValues;
     [SerializeField] public Dictionary<string, bool> VisualizerBoolValues;
+    [SerializeField] public string Title;
+    [SerializeField] public SpriteData CoverArt;
+    [SerializeField] public AudioClipData Audio;
 
-    public VisualizerPreset(List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
+    public VisualizerPreset(string title, SpriteData coverArt, AudioClipData audio,
+        List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
         Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
         Dictionary<string, float> floatValues, Dictionary<string, int> intValues, Dictionary<string, bool> boolValues)
     {
+        Title = title;
+        CoverArt = coverArt;
+        Audio = audio;
         Colors = colors;
         Gradients = gradients;
         Fonts = fonts;
@@ -57,7 +66,7 @@ public class SaveManager : MonoBehaviour
         _Instance = this;
     }
 
-    public string SavePreset(string label, VisualizerPreset preset)
+    public async ValueTask<string> SavePreset(string label, VisualizerPreset preset)
     {
         // Create folder if neccessary
         string presetsPath = Path.Combine(Application.dataPath, "../Presets");
@@ -69,16 +78,40 @@ public class SaveManager : MonoBehaviour
         encodedFilePath = encodedFilePath.Replace("/", @"\");
 
         Debug.Log("Saving Preset (" + label + ") to: " + encodedFilePath);
-        File.WriteAllText(encodedFilePath, JsonConvert.SerializeObject(preset, Formatting.None));
+
+        int loadingKey = UIManager._Instance.AddLoading("Saving Preset...");
+
+        var task = Task.Run(async () => await File.WriteAllTextAsync(encodedFilePath, JsonConvert.SerializeObject(preset, Formatting.None)));
+        await task;
+
+        UIManager._Instance.RemoveLoading(loadingKey);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Preset saved to " + encodedFilePath);
+
         return encodedFilePath;
     }
 
-    public VisualizerPreset LoadPreset(string loadFromPath)
+    public async Task LoadPreset(string loadFromPath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
     {
         Debug.Log("Attempting to load data from: " + loadFromPath);
-        string json = File.ReadAllText(loadFromPath);
+        int loadingKey = UIManager._Instance.AddLoading("Loading Preset...");
 
-        VisualizerPreset loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json);
-        return loadedPreset;
+        try
+        {
+            var readFileTask = Task.Run(async () => await File.ReadAllTextAsync(loadFromPath));
+            await readFileTask;
+
+            string json = readFileTask.Result;
+            VisualizerPreset loadedPreset = new();
+
+            var deserializeTask = await Task.Run(() => loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json));
+
+            onSuccess?.Invoke(loadFromPath, loadedPreset);
+        } catch (Exception e)
+        {
+            Debug.LogError(e);
+            onFailure?.Invoke(loadFromPath);
+        }
+
+        UIManager._Instance.RemoveLoading(loadingKey);
     }
 }

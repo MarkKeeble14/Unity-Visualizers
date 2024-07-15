@@ -1,75 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3993054697554704347
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1255438898409431354}
-  - component: {fileID: 6815377572198817222}
-  - component: {fileID: 7037505552289007175}
-  m_Layer: 5
-  m_Name: TransitionControls
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1255438898409431354
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993054697554704347}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 658414172177974537}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6815377572198817222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993054697554704347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d271099c0d492664ebac66f1daf8d347, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 111
-  action: Out
-  transitionType: BlackFade
-  direction: 1
---- !u!114 &7037505552289007175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993054697554704347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d271099c0d492664ebac66f1daf8d347, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 105
-  action: In
-  transitionType: BlackFade
-  direction: 0
 --- !u!1 &4000367218883088958
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +51,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 270
-  action: Increase
+  action: Increase Volume
+  PartOfScheme: 0
   changeSpeed: 1
   directionMultiplier: 1
 --- !u!114 &1904860879471442556
@@ -137,7 +68,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 269
-  action: Decrease
+  action: Decrease Volume
+  PartOfScheme: 0
   changeSpeed: 1
   directionMultiplier: -1
 --- !u!1 &4654067866863903762
@@ -192,7 +124,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 32
-  action: Pause/Unpause
+  action: Pause/Unpause Playback
+  PartOfScheme: 0
 --- !u!114 &7572215706809444191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,8 +138,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67c1514f8f564841895c906dad77255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 27
-  action: Reset
+  key: 114
+  action: Reset Playback
+  PartOfScheme: 0
 --- !u!114 &4806217889791446347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,7 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 112
-  action: Start
+  action: Start Playback
+  PartOfScheme: 0
 --- !u!1 &8058273608329411165
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 274
-  action: Decrease
+  action: Decrease Seek Speed
+  PartOfScheme: 0
   seekers:
   - {fileID: 2905832620669508509}
   - {fileID: 3326077688427061883}
@@ -293,7 +229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 276
-  action: Backwards
+  action: Seek Backwards
+  PartOfScheme: 0
   seekSpeed: 0.25
   seekDir: -1
 --- !u!114 &3790528097361457512
@@ -309,7 +246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 273
-  action: Increase
+  action: Increase Seek Speed
+  PartOfScheme: 0
   seekers:
   - {fileID: 2905832620669508509}
   - {fileID: 3326077688427061883}
@@ -328,7 +266,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 275
-  action: Forward
+  action: Seek Forward
+  PartOfScheme: 0
   seekSpeed: 0.25
   seekDir: 1
 --- !u!1001 &5061962873848979982
@@ -864,15 +803,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].Type
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[1].Type
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[2].Type
@@ -880,15 +819,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[3].Type
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[4].Type
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[5].Type
+      propertyPath: controlPanelElements.Array.data[4].Type
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: controlPanelElements.Array.data[5].Type
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].Type
@@ -904,7 +843,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].Label
-      value: Transition
+      value: Change Seek Speed
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[16].Type
@@ -912,23 +851,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[1].Label
-      value: Change Seek Speed
-      objectReference: {fileID: 0}
-    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[2].Label
       value: Seek
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[3].Label
+      propertyPath: controlPanelElements.Array.data[2].Label
       value: Playback
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[4].Label
+      propertyPath: controlPanelElements.Array.data[3].Label
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
-      propertyPath: controlPanelElements.Array.data[5].Label
+      propertyPath: controlPanelElements.Array.data[4].Label
       value: Volume Control
+      objectReference: {fileID: 0}
+    - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: controlPanelElements.Array.data[5].Label
+      value: Transition
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].Label
@@ -956,11 +895,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[3].KeyControls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[4].KeyControls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[5].KeyControls.Array.size
@@ -1013,31 +952,31 @@ PrefabInstance:
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 7037505552289007175}
+      objectReference: {fileID: 6970246082253326136}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[0].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 6815377572198817222}
+      objectReference: {fileID: 3790528097361457512}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[1].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 6970246082253326136}
+      objectReference: {fileID: 2905832620669508509}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[1].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 3790528097361457512}
+      objectReference: {fileID: 3326077688427061883}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[2].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 2905832620669508509}
+      objectReference: {fileID: 4806217889791446347}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[2].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 3326077688427061883}
+      objectReference: {fileID: 7572215706809444191}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[3].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 4806217889791446347}
+      objectReference: {fileID: 5224356545872680140}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[3].KeyControls.Array.data[1]
       value: 
@@ -1045,19 +984,19 @@ PrefabInstance:
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[4].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 5224356545872680140}
+      objectReference: {fileID: 1904860879471442556}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[4].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 7572215706809444191}
+      objectReference: {fileID: 3958900915244242291}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[5].KeyControls.Array.data[0]
       value: 
-      objectReference: {fileID: 1904860879471442556}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[5].KeyControls.Array.data[1]
       value: 
-      objectReference: {fileID: 3958900915244242291}
+      objectReference: {fileID: 0}
     - target: {fileID: 3301261317175914069, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: controlPanelElements.Array.data[6].KeyControls.Array.data[0]
       value: 
@@ -2313,3 +2252,22 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5700603136259630855, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
   m_PrefabInstance: {fileID: 5061962873848979982}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4542319976937815719 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8734234059815918761, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+  m_PrefabInstance: {fileID: 5061962873848979982}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2795528447378628282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4542319976937815719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7417a19e49095e47b938c807b1fc257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlActiveStateOf: {fileID: 4542319976937815719}
+  activeOnThisScheme: 0

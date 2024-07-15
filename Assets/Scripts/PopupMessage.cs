@@ -5,7 +5,12 @@ public class PopupMessage : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
 
-    public void Set(string text)
+    public void SetColor(Color c)
+    {
+        text.color = c;
+    }
+
+    public void SetText(string text)
     {
         this.text.text = text;
     }

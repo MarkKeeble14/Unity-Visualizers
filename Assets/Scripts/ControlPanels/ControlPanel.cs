@@ -16,6 +16,13 @@ public struct ControlPanelElementInfo
     public string Label;
     public KeyControl[] KeyControls;
     public ControlPanelElementType Type;
+
+    public ControlPanelElementInfo(string label, KeyControl[] keyControls, ControlPanelElementType type)
+    {
+        Label = label;
+        KeyControls = keyControls;
+        Type = type;
+    }
 }
 
 public class ControlPanel : MonoBehaviour

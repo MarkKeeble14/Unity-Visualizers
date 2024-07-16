@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class GradientListElement : ListSelectionElement, IRecieveTrackInfo
+public class GradientListElement : ListSelectionElement
 {
     [SerializeField] private GradientDisplay display;
     [SerializeField] private Gradient gradient;
@@ -16,11 +16,5 @@ public class GradientListElement : ListSelectionElement, IRecieveTrackInfo
     public override void OpenListSelection()
     {
         GradientEditor._Instance.EditGradient(gradient, gradient => VisualizerManager._Instance.UpdateTrackGradient(Index, gradient));
-    }
-
-    public void RecieveTrackInfo(TrackInfo info)
-    {
-        gradient = info.Gradients[Index];
-        display.UpdateColors(gradient);
     }
 }

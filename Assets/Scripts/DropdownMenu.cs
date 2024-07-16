@@ -1,34 +1,29 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using System;
 
 public abstract class DropdownMenu : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] protected TextMeshProUGUI indexText;
     [SerializeField] protected TextMeshProUGUI labelText;
-
     [SerializeField] private Canvas listCanvas;
-
-    private RectTransform rectTransform;
     [SerializeField] private RectTransform list;
 
+    [Header("Prefabs")]
     [SerializeField] private DropdownElement templateElement;
 
+    [Header("Settings")]
     [SerializeField] private int elementHeight;
-
     protected List<DropdownElement> dropdownElements = new();
 
     public Action<int> OnSelectElement;
-
     protected int selectedIndex;
     private bool isOpen;
 
     private void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-
         listCanvas.sortingOrder = GetComponentInParent<Canvas>().sortingOrder + 1;
     }
 
@@ -76,16 +71,13 @@ public abstract class DropdownMenu : MonoBehaviour
 
         dropdownElements.Add(e);
         e.SetIndex(dropdownElements.Count - 1);
-        e.AddOnClick(() => SelectElementAtIndex(e.GetIndex()));
+        e.AddOnClick(() =>
+        {
+            int index = e.GetIndex();
+            OnSelectElement?.Invoke(index);
+        });
 
         return e;
-    }
-
-    public void SelectElementAtIndex(int index)
-    {
-        OnSelectElement?.Invoke(index);
-        ActivateElementAtIndex(index);
-        Close();
     }
 
     public void ActivateElementAtIndex(int index)
@@ -93,6 +85,7 @@ public abstract class DropdownMenu : MonoBehaviour
         selectedIndex = index;
         indexText.text = index.ToString();
         SetElementActive(index);
+        Close();
     }
 
     protected abstract void SetElementActive(int index);

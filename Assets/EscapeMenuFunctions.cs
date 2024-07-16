@@ -20,7 +20,7 @@ public class EscapeMenuFunctions : MonoBehaviour
     [SerializeField] private GameObject prevSchemeButton;
     [SerializeField] private GameObject nextSchemeButton;
 
-    private void Awake()
+    private void Start()
     {
         MakeControls();
     }
@@ -148,6 +148,16 @@ public class EscapeMenuFunctions : MonoBehaviour
                 activeSchemeText.text = kvp.Value;
                 break;
             }
+        }
+
+        if (activeScheme == VisualizerManager._Instance.ActiveControlScheme)
+        {
+            activeSchemeText.color = Color.green;
+            activeSchemeText.text += " (Active)";
+        } else
+        {
+            activeSchemeText.color = Color.red;
+            activeSchemeText.text += " (Inactive)";
         }
     }
 }

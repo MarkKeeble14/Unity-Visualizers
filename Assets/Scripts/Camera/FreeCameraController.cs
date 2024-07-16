@@ -15,7 +15,7 @@ public class FreeCameraController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform positioner;
     [SerializeField] private Camera freeCam;
-    private GameObject prevCamera;
+    private Camera prevCamera;
 
     public static FreeCameraController _Instance { get; private set; }
 
@@ -37,7 +37,7 @@ public class FreeCameraController : MonoBehaviour
 
     public void Activate()
     {
-        prevCamera = Camera.main.gameObject;
+        prevCamera = Camera.main;
         prevCamera.gameObject.SetActive(false);
 
         freeCam.transform.position = prevCamera.transform.position;

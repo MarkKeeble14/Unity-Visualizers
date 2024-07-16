@@ -16,7 +16,7 @@ public class GradientDropdownMenu : DropdownMenu, IRecieveTrackInfo
             e.SetGradient(g);
         }
 
-        SelectElementAtIndex(selectedIndex);
+        SetElementActive(selectedIndex);
     }
 
     protected override void SetElementActive(int index)

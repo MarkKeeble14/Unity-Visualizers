@@ -17,6 +17,7 @@ using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
 
+[System.Serializable]
 public struct AudioClipData
 {
     [SerializeField] public int Channels;
@@ -33,14 +34,21 @@ public struct AudioClipData
     }
 }
 
+[System.Serializable]
 public struct SpriteData
 {
-    [SerializeField] public byte[] RawData;
+    [SerializeField] public byte[] PNGEncodedData;
+    [SerializeField] public int Width;
+    [SerializeField] public int Height;
+    [SerializeField] public TextureFormat TextureFormat;
     [SerializeField] public bool Set;
 
-    public SpriteData(byte[] rawData)
+    public SpriteData(byte[] rawData, int width, int height, TextureFormat textureFormat)
     {
-        RawData = rawData;
+        PNGEncodedData = rawData;
+        Width = width;
+        Height = height;
+        TextureFormat = textureFormat;
         Set = true;
     }
 }
@@ -185,7 +193,6 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, bool> visualizerBoolValues = new();
 
     private bool hasSongStarted;
-    private bool hasHadPlayback;
     private float lastAudioSourceTime;
     private float prePlaybackPositionTracker;
 
@@ -221,7 +228,7 @@ public class VisualizerManager : MonoBehaviour
     {
         get
         {
-            if (hasHadPlayback)
+            if (hasSongStarted)
             {
                 if (audioSource.clip == null) { return 0; }
                 return audioSource.time / audioSource.clip.length;
@@ -576,8 +583,10 @@ public class VisualizerManager : MonoBehaviour
         // Play the Track
         audioSource.Play();
 
-        if (!hasHadPlayback) audioSource.time = prePlaybackPositionTracker * audioSource.clip.length;
-        hasHadPlayback = true;
+        if (!hasSongStarted)
+        {
+            audioSource.time = prePlaybackPositionTracker * audioSource.clip.length;
+        }
     }
 
     public Color GetColor(VisualizerColorType type, int index)
@@ -680,7 +689,8 @@ public class VisualizerManager : MonoBehaviour
 
     public void SetPlaythroughPosition(float v)
     {
-        if (!hasHadPlayback)
+        Debug.Log("SetPlaythroughPosition: " + v);
+        if (!hasSongStarted)
         {
             prePlaybackPositionTracker = v;
             return;
@@ -1281,11 +1291,12 @@ public class VisualizerManager : MonoBehaviour
 
     private void BroadcastSetupValues()
     {
+        BroadcastTrackInfo();
+        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerElementsInfo();
         BroadcastVisualizerFloatValues();
         BroadcastVisualizerIntValues();
         BroadcastVisualizerBoolValues();
-        BroadcastVisualizerSpecificsElementsInfo();
-        BroadcastVisualizerElementsInfo();
     }
 
     public IEnumerator RunLoadPresetSelection()
@@ -1358,7 +1369,19 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator LoadAudioClipFromFile(string filePath, Action<string, AudioClip> onSuccess, Action<string> onFailure)
     {
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, GetAudioType(filePath)))
+        AudioType audioFileType = AudioType.UNKNOWN;
+        try
+        {
+            audioFileType = GetAudioType(filePath);
+        }
+        catch (InvalidFileTypeException e)
+        {
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Attempted to load an invalid audio file - Supported audio file extensions are " 
+                + GetSupportedAudioFileExtensions());
+            yield break;
+        }
+
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, audioFileType))
         {
             int loadingKey = UIManager._Instance.AddLoading("Attempting to load audio from file");
 
@@ -1366,13 +1389,13 @@ public class VisualizerManager : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
-                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load Track");
                 Debug.Log("Failed to download Track from path: " + filePath);
                 onFailure?.Invoke(filePath);
             }
             else
             {
-                UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded Track");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully loaded Track");
                 Debug.Log("Successfully downloaded Track from path: " + filePath);
                 onSuccess?.Invoke(filePath, DownloadHandlerAudioClip.GetContent(www));
             }
@@ -1381,16 +1404,32 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    private string GetSupportedAudioFileExtensions()
+    {
+        return "[ .wav, .mp3, .ogg ]";
+    }
+
     private void LoadImageFromFile(string filePath, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
         byte[] bytes = File.ReadAllBytes(filePath);
         Texture2D tex = new Texture2D(2, 2);
-        if (tex.LoadImage(bytes))
+
+        try
         {
-            onSuccess?.Invoke(filePath, tex);
-        } else
+            if (tex.LoadImage(bytes))
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully loaded Image");
+                onSuccess?.Invoke(filePath, tex);
+            }
+            else
+            {
+                onFailure?.Invoke(filePath);
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load Image");
+            }
+        }
+        catch (Exception e)
         {
-            onFailure?.Invoke(filePath);
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Attempted to load an invalid image file");
         }
     }
 
@@ -1418,7 +1457,8 @@ public class VisualizerManager : MonoBehaviour
 
     private AudioType GetAudioType(string filePath)
     {
-        switch (StringHelper.GetFileExtension(filePath))
+        string extension = StringHelper.GetFileExtension(filePath);
+        switch (extension)
         {
             case "wav":
                 return AudioType.WAV;
@@ -1427,7 +1467,7 @@ public class VisualizerManager : MonoBehaviour
             case "ogg":
                 return AudioType.OGGVORBIS;
             default:
-                throw new Exception(); // TODO: Custom Exceptions
+                throw new InvalidFileTypeException(extension);
         }
     }
 
@@ -1721,6 +1761,7 @@ public class VisualizerManager : MonoBehaviour
     public void RegisterVisualizerSpecificElement(string key)
     {
         RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
+        BroadcastVisualizerSpecificsElementsInfo();
     }
 
     public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
@@ -1783,26 +1824,27 @@ public class VisualizerManager : MonoBehaviour
                     } else
                     {
                         UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING,
-                            "No cover art has been loaded to include in preset - No cover art will be included in preset");
+                            "No audio has been loaded to include in preset - No audio will be included in preset");
                     }
 
                     if (trackInfo.CoverArt != null)
                     {
                         // for saving cover art
-                        coverArt.RawData = MakeTexFromSprite(trackInfo.CoverArt).GetRawTextureData();
+                        Texture2D tex = MakeTexFromSprite(trackInfo.CoverArt);
+                        coverArt = new SpriteData(tex.EncodeToPNG(), tex.width, tex.height, tex.format);
                     } else
                     {
                         UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
-                            "No audio has been loaded to include in preset - No audio will be included in preset");
+                            "No cover art has been loaded to include in preset - No audio will be included in preset");
                     }
                 }
 
-                VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, coverArt, audioClip,
+                VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, audioClip, coverArt,
                     trackInfo.Colors, trackInfo.Gradients,
                     loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo,
                     visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
 
-                SaveManager._Instance.SavePreset(x, preset);
+                SaveManager._Instance.SavePreset(x, preset, null, null);
             },
             null));
     }
@@ -1813,15 +1855,15 @@ public class VisualizerManager : MonoBehaviour
         StartCoroutine(UIManager._Instance.PopupActionSelection("Include Audio and Cover Art in Preset?", "Cancel", null, 
             new List<ActionSelection>() 
             {
-                new ActionSelection("Include Everything", () => StartCoroutine(SavePreset(true))),
-                new ActionSelection("Include Visualizer Settings", () => StartCoroutine(SavePreset(false)))
+                new ActionSelection("Yes", () => StartCoroutine(SavePreset(true))),
+                new ActionSelection("No", () => StartCoroutine(SavePreset(false)))
             }));
     }
 
     private void SetFromPreset(VisualizerPreset preset)
     {
         trackInfo.Title = preset.Title;
-
+        
         if (preset.Audio.Set)
         {
             // Loading audio
@@ -1837,8 +1879,8 @@ public class VisualizerManager : MonoBehaviour
         if (preset.CoverArt.Set)
         {
             // Loading cover
-            Texture2D texture = new Texture2D(1, 1);
-            texture.LoadRawTextureData(preset.CoverArt.RawData);
+            Texture2D texture = new Texture2D(preset.CoverArt.Width, preset.CoverArt.Height, preset.CoverArt.TextureFormat, false);
+            texture.LoadImage(preset.CoverArt.PNGEncodedData);
             trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
         }
 

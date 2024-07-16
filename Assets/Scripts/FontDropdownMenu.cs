@@ -16,7 +16,7 @@ public class FontDropdownMenu : DropdownMenu, IRecieveTrackInfo
             e.SetFont(f);
         }
 
-        SelectElementAtIndex(selectedIndex);
+        SetElementActive(selectedIndex);
     }
 
     protected override void SetElementActive(int index)

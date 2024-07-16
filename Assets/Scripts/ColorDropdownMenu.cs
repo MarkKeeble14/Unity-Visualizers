@@ -18,7 +18,7 @@ public class ColorDropdownMenu : DropdownMenu, IRecieveTrackInfo
             e.SetColor(c);
         }
 
-        SelectElementAtIndex(selectedIndex);
+        SetElementActive(selectedIndex);
     }
 
     protected override void SetElementActive(int index)

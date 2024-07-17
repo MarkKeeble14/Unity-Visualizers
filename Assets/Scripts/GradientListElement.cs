@@ -15,6 +15,18 @@ public class GradientListElement : ListSelectionElement
 
     public override void OpenListSelection()
     {
-        GradientEditor._Instance.EditGradient(gradient, gradient => VisualizerManager._Instance.UpdateTrackGradient(Index, gradient));
+        GradientEditor._Instance.Open(gradient);
+        GradientEditor._Instance.OnGradientFinalized += OnGradientSelected;
+    }
+
+    private void OnGradientSelected(Gradient g)
+    {
+        // Update image color
+        display.UpdateColors(g);
+
+        VisualizerManager._Instance.UpdateTrackGradient(Index, gradient);
+
+        // Remove callback
+        GradientEditor._Instance.OnGradientFinalized -= OnGradientSelected;
     }
 }

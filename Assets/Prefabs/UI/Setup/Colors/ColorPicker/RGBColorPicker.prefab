@@ -1587,7 +1587,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8081643467614884006}
         m_TargetAssemblyTypeName: RGBColorPicker, Assembly-CSharp
-        m_MethodName: SelectionFinalized
+        m_MethodName: FinalizeColor
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

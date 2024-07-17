@@ -20,9 +20,10 @@ GameObject:
   - component: {fileID: 5299725527614163893}
   - component: {fileID: 6047993712003706893}
   - component: {fileID: 2673405436782344755}
+  - component: {fileID: 2542281718230091041}
   m_Layer: 0
   m_Name: FreeCam
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 276
+  key: 113
   action: Look Left
   PartOfScheme: 2
   func:
@@ -288,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 275
+  key: 101
   action: Look Right
   PartOfScheme: 2
   func:
@@ -318,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 273
+  key: 114
   action: Look Up
   PartOfScheme: 2
   func:
@@ -348,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 274
+  key: 102
   action: Look Down
   PartOfScheme: 2
   func:
@@ -366,6 +367,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2542281718230091041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684128451290555416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d458afcae08ce44d93760bfa8a47eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positioner: {fileID: 114174164918751693}
+  camera: {fileID: 7940460713034542543}
 --- !u!1 &7334868950011197012
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 114174164918751693}
   - component: {fileID: 2595587483458955122}
-  - component: {fileID: 2857867556564915065}
+  - component: {fileID: 2787200550636341683}
   m_Layer: 0
   m_Name: FreeCameraController
   m_TagString: Untagged
@@ -413,12 +428,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMoveSpeed: 2.5
-  spedUpMoveSpeed: 5
-  lookSpeed: 2.5
+  spedUpMoveSpeed: 15
+  freeLookSensitivity: 3
+  zoomSensitivity: 10
+  fastZoomSensitivity: 50
   speedUpButton: 304
-  positioner: {fileID: 114174164918751693}
-  freeCam: {fileID: 7940460713034542543}
---- !u!114 &2857867556564915065
+  instructionsText: {fileID: 0}
+  freeCam: {fileID: 2542281718230091041}
+--- !u!114 &2787200550636341683
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

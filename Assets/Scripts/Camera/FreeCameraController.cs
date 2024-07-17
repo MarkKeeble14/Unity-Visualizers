@@ -1,21 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class FreeCameraController : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float defaultMoveSpeed;
     [SerializeField] private float spedUpMoveSpeed;
-    [SerializeField] private float lookSpeed;
-    private float currentMoveSpeed;
+    [SerializeField] private float freeLookSensitivity = 3f;
+    [SerializeField] private float zoomSensitivity = 10f;
+    [SerializeField] private float fastZoomSensitivity = 50f;
     [SerializeField] private KeyCode speedUpButton = KeyCode.LeftShift;
 
     [Header("References")]
-    [SerializeField] private Transform positioner;
-    [SerializeField] private Camera freeCam;
-    private Camera prevCamera;
+    [SerializeField] private GameObject instructionsText;
+    [SerializeField] private PositionedCamera freeCam;
+    private PositionedCamera prevCamera;
+
+    private float currentMoveSpeed;
+    public bool Active { get; private set; }
+    public bool Pause { get; set; }
 
     public static FreeCameraController _Instance { get; private set; }
 
@@ -32,74 +35,136 @@ public class FreeCameraController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (QuitUtil.isQuitting) return;
         Deactivate();
     }
 
     public void Activate()
     {
-        prevCamera = Camera.main;
-        prevCamera.gameObject.SetActive(false);
+        Active = true;
+        Pause = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
-        freeCam.transform.position = prevCamera.transform.position;
-        freeCam.transform.rotation = prevCamera.transform.rotation;
+        instructionsText.SetActive(true);
 
-        freeCam.gameObject.SetActive(true);
+        prevCamera = Camera.main.GetComponent<PositionedCamera>();
+
+        freeCam.Positioner.position = prevCamera.Positioner.position;
+        freeCam.Camera.transform.position = prevCamera.Camera.transform.position;
+        freeCam.Positioner.rotation = prevCamera.Positioner.rotation;
+        freeCam.Camera.transform.rotation = prevCamera.Camera.transform.rotation;
+
+        prevCamera.Camera.gameObject.SetActive(false);
+        freeCam.Camera.gameObject.SetActive(true);
     }
 
     public void Deactivate()
     {
-        freeCam.gameObject.SetActive(false);
+        Active = false;
+        Pause = false;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
-        prevCamera.transform.position = freeCam.transform.position;
-        prevCamera.transform.rotation = freeCam.transform.rotation;
+        instructionsText.SetActive(false);
 
-        prevCamera.gameObject.SetActive(true);
+        prevCamera.Positioner.position = freeCam.Positioner.position;
+        prevCamera.Camera.transform.position = freeCam.Camera.transform.position;
+        prevCamera.Positioner.rotation = freeCam.Positioner.rotation;
+        prevCamera.Camera.transform.rotation = freeCam.Camera.transform.rotation;
+
+        freeCam.Camera.gameObject.SetActive(false);
+        prevCamera.Camera.gameObject.SetActive(true);
         prevCamera = null;
     }
 
     public void MoveForward()
     {
-        positioner.position += positioner.forward * Time.deltaTime * currentMoveSpeed;
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (freeCam.Positioner.forward * currentMoveSpeed * Time.deltaTime);
     }
 
     public void MoveRight()
     {
-        positioner.position += positioner.right * Time.deltaTime * currentMoveSpeed;
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (freeCam.Positioner.right * currentMoveSpeed * Time.deltaTime);
     }
 
     public void MoveBack()
     {
-        positioner.position += -positioner.forward * Time.deltaTime * currentMoveSpeed;
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (-freeCam.Positioner.forward * currentMoveSpeed * Time.deltaTime);
     }
 
     public void MoveLeft()
     {
-        positioner.position += -positioner.right * Time.deltaTime * currentMoveSpeed;
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (-freeCam.Positioner.right * currentMoveSpeed * Time.deltaTime);
     }
 
     public void RotateUp()
     {
-        positioner.Rotate(new Vector3(-lookSpeed, 0, 0));
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (Vector3.up * currentMoveSpeed * Time.deltaTime);
     }
 
     public void RotateRight()
     {
-        positioner.Rotate(new Vector3(0, lookSpeed, 0));
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (-freeCam.Positioner.up * currentMoveSpeed * Time.deltaTime);
     }
 
     public void RotateDown()
     {
-        positioner.Rotate(new Vector3(lookSpeed, 0, 0));
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (-Vector3.up * currentMoveSpeed * Time.deltaTime);
     }
 
     public void RotateLeft()
     {
-        positioner.Rotate(new Vector3(0, -lookSpeed, 0));
+        if (!Active) return;
+        if (Pause) return;
+
+        freeCam.Positioner.position = freeCam.Positioner.position + (freeCam.Positioner.up * currentMoveSpeed * Time.deltaTime);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        currentMoveSpeed = (Input.GetKey(speedUpButton) ? spedUpMoveSpeed : defaultMoveSpeed);
+        if (!Active) return;
+
+        if (EscapeMenuFunctions._Instance.IsOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            VisualizerManager._Instance.SelectControlScheme(ControlScheme.VISUALIZER);
+        }
+
+        if (Pause) return;
+
+        bool fastMode = Input.GetKey(speedUpButton);
+        currentMoveSpeed = (fastMode ? spedUpMoveSpeed : defaultMoveSpeed);
+
+        float axis = Input.GetAxis("Mouse ScrollWheel");
+        if (axis != 0)
+        {
+            var zoomSensitivity = fastMode ? this.fastZoomSensitivity : this.zoomSensitivity;
+            transform.position = transform.position + transform.forward * axis * zoomSensitivity;
+        }
+
+        float newRotationX = freeCam.Positioner.localEulerAngles.y + Input.GetAxis("Mouse X") * freeLookSensitivity;
+        float newRotationY = freeCam.Positioner.localEulerAngles.x - Input.GetAxis("Mouse Y") * freeLookSensitivity;
+        freeCam.Positioner.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
     }
 }

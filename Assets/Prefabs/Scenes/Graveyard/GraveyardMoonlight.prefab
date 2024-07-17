@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4088317014146891778}
   - component: {fileID: 7978580424755283156}
   - component: {fileID: 7734411718265880145}
+  - component: {fileID: 5413806145393600221}
   m_Layer: 0
   m_Name: GraveyardMoonlight
   m_TagString: Untagged
@@ -200,3 +201,18 @@ MonoBehaviour:
   lightAttachment: {fileID: 4088317014146891776}
   defaultValueKey: MoonlightIntensityDefaultValue
   multiplierKey: MoonlightIntensityMultiplier
+--- !u!114 &5413806145393600221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088317014146891804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4218aea6c5384c14b82691f0ee4abe26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followSpeed: 25
+  mathMethod: 0
+  offset: {x: -50, y: 30, z: 20}

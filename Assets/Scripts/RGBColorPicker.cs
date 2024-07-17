@@ -116,7 +116,7 @@ public class RGBColorPicker : MonoBehaviour
         picker.SetActive(false);
     }
 
-    public void SelectionFinalized()
+    public void FinalizeColor()
     {
         OnColorFinalized?.Invoke(GetCurrentColorRepresentation());
         Close();

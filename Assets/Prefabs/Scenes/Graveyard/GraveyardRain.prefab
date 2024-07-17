@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 528547257777524283}
   - component: {fileID: 528547257777524228}
   - component: {fileID: 528547257777524229}
+  - component: {fileID: 2591833105812018720}
   m_Layer: 0
   m_Name: GraveyardRain
   m_TagString: Untagged
@@ -29,8 +30,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528547257777524231}
-  m_LocalRotation: {x: -0.19996405, y: 0.3736123, z: 0.08282782, w: 0.90198}
-  m_LocalPosition: {x: -5, y: 10, z: 5}
+  m_LocalRotation: {x: -0.040299077, y: -0.3823192, z: -0.016692424, w: 0.9230003}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4848,8 +4849,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 0
-  defaultValue: 0
   adjustSpeed: 0.1
+  defaultValue: 0
   multiplier: 1
   conditionLock: {fileID: 528547257777524228}
   minMaxValue: {x: 0, y: 750}
@@ -4886,3 +4887,18 @@ MonoBehaviour:
   signalMultiplier: 1
   useBuffer: 0
   useAverage: 0
+--- !u!114 &2591833105812018720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528547257777524231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4218aea6c5384c14b82691f0ee4abe26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followSpeed: 15
+  mathMethod: 0
+  offset: {x: -2.5, y: 25, z: -2.5}

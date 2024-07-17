@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -20,6 +20,18 @@ public class EscapeMenuFunctions : MonoBehaviour
     [SerializeField] private GameObject prevSchemeButton;
     [SerializeField] private GameObject nextSchemeButton;
 
+    public static EscapeMenuFunctions _Instance { get; private set; }
+    public bool IsOpen => cv.alpha == 1;
+
+    private void Awake()
+    {
+        if (_Instance != null) Destroy(_Instance.gameObject);
+        _Instance = this;
+    }
+
+    public Action OnOpen;
+    public Action OnClose;
+
     private void Start()
     {
         MakeControls();
@@ -30,16 +42,38 @@ public class EscapeMenuFunctions : MonoBehaviour
         prevSchemeButton.SetActive(currentlyDisplayedControlSchemeIndex > 0);
         nextSchemeButton.SetActive(currentlyDisplayedControlSchemeIndex < foundControlSchemes.Count - 1);
     }
+    public void Open()
+    {
+        cv.alpha = 1;
+        cv.blocksRaycasts = true;
+
+        OnOpen?.Invoke();
+    }
+
+    public void Close()
+    {
+        cv.alpha = 0;
+        cv.blocksRaycasts = false;
+
+        OnClose?.Invoke();
+    }
+
+    public void Toggle()
+    {
+        if (cv.alpha == 0)
+        {
+            Open();
+        }
+        else
+        {
+            Close();
+        }
+    }
+
 
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void Resume()
-    {
-        cv.blocksRaycasts = false;
-        cv.alpha = 0;
     }
 
     public void ExitApplication()
@@ -54,7 +88,7 @@ public class EscapeMenuFunctions : MonoBehaviour
 
     public void OpenVisualizerSetup()
     {
-        Resume();
+        Close();
         StartCoroutine(VisualizerManager._Instance.RunVisualizerElementsSelection());
     }
 
@@ -67,7 +101,7 @@ public class EscapeMenuFunctions : MonoBehaviour
             if (kvp.Key == activeScheme) continue;
             possibleActions.Add(new ActionSelection(kvp.Value, () => VisualizerManager._Instance.SelectControlScheme(kvp.Key)));
         }
-        Resume();
+        Close();
         StartCoroutine(UIManager._Instance.PopupActionSelection("Select Control Scheme", "Cancel", null, possibleActions));
     }
 

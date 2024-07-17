@@ -27,6 +27,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
     [SerializeField] private ActionSelectionPopup actionSelectionPopupPrefab;
 
+    public bool IsPopupOpen => uiStack.childCount > 0;
+
     public enum MessageClass
     {
         INFO,

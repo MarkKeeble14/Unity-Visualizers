@@ -1,12 +1,26 @@
+using Assets.SimpleZip;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
-using TMPro;
-using UnityEditor.Presets;
 using UnityEngine;
+
+[System.Serializable]
+public struct GradientData
+{
+    [SerializeField] public GradientColorKey[] ColorKeys;
+    [SerializeField] public GradientAlphaKey[] AlphaKeys;
+    [SerializeField] public GradientMode Mode;
+
+    public GradientData(GradientColorKey[] colorKeys, GradientAlphaKey[] alphaKeys, GradientMode mode)
+    {
+        ColorKeys = colorKeys;
+        AlphaKeys = alphaKeys;
+        Mode = mode;
+    }
+}
 
 [System.Serializable]
 public struct FontFileData
@@ -26,7 +40,7 @@ public struct VisualizerPreset
 {
     [SerializeField] public List<FontFileData> Fonts;
     [SerializeField] public List<Color> Colors;
-    [SerializeField] public List<Gradient> Gradients;
+    [SerializeField] public List<GradientData> Gradients;
     [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> BaseVisualizerElements;
     [SerializeField] public Dictionary<string, VisualizerElementsSettings> VisualizerSpecificElements;
     [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
@@ -46,7 +60,13 @@ public struct VisualizerPreset
         Audio = audio;
         CoverArt = coverArt;
         Colors = colors;
-        Gradients = gradients;
+
+        Gradients = new List<GradientData>();
+        foreach (Gradient g in gradients)
+        {
+            Gradients.Add(new GradientData(g.colorKeys, g.alphaKeys, g.mode));
+        }
+
         Fonts = fonts;
         BaseVisualizerElements = baseVisualizerElements;
         VisualizerSpecificElements = visualizerSpecificElements;
@@ -83,9 +103,9 @@ public class SaveManager : MonoBehaviour
         {
             string presetsPath = Path.Combine(Application.dataPath, "../Presets");
 
-            if (!Directory.Exists(presetsPath))
+            if (!System.IO.Directory.Exists(presetsPath))
             {
-                Directory.CreateDirectory(presetsPath);
+                System.IO.Directory.CreateDirectory(presetsPath);
                 Debug.Log("Created directory at: " + presetsPath);
             }
 
@@ -113,12 +133,19 @@ public class SaveManager : MonoBehaviour
 
         UIManager._Instance.RemoveLoading(loadingKey2);
 
+        loadingKey2 = UIManager._Instance.AddLoading("Compressing Preset...");
+
+        byte[] jsonAsBytes = Encoding.ASCII.GetBytes(json);
+        byte[] array = new byte[0];
+        var compressionTask = Task.Run(() => { array = Zip.Compress(jsonAsBytes); });
+        await compressionTask;
+
+        UIManager._Instance.RemoveLoading(loadingKey2);
+
         loadingKey2 = UIManager._Instance.AddLoading("Writing to File...");
 
-        var writeTask = Task.Run(async () => await File.WriteAllTextAsync(encodedFilePath, json));
+        var writeTask = Task.Run(async () => await System.IO.File.WriteAllBytesAsync(encodedFilePath, array));
         await writeTask;
-
-        File.WriteAllText(encodedFilePath, json);
 
         UIManager._Instance.RemoveLoading(loadingKey2);
 
@@ -139,12 +166,20 @@ public class SaveManager : MonoBehaviour
         {
             int loadingKey2 = UIManager._Instance.AddLoading("Reading File...");
 
-            var readFileTask = Task.Run(async () => await File.ReadAllTextAsync(loadFromPath));
+            var readFileTask = Task.Run(async () => await System.IO.File.ReadAllBytesAsync(loadFromPath));
             await readFileTask;
 
-            string json = readFileTask.Result;
+            UIManager._Instance.RemoveLoading(loadingKey2);
+
+            loadingKey2 = UIManager._Instance.AddLoading("Decompressing...");
+
+            byte[] readBytes = readFileTask.Result;
+            byte[] jsonAsBytes = new byte[0];
+            var decompressTask = await Task.Run(() => jsonAsBytes = Zip.Decompress(readBytes));
 
             UIManager._Instance.RemoveLoading(loadingKey2);
+
+            string json = Encoding.ASCII.GetString(jsonAsBytes);
 
             loadingKey2 = UIManager._Instance.AddLoading("Deserializing...");
 

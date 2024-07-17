@@ -12,7 +12,6 @@ public class GradientEditor : MonoBehaviour
     [SerializeField] private GameObject gradientEditor;
     [SerializeField] private GradientDisplay gradientDisplay;
     private Gradient currentGradient;
-    private Action<Gradient> onFinalizeGradient;
 
     [SerializeField] private Image selectedKeyColorDisplay;
     [SerializeField] private TMP_InputField positionInputField;
@@ -21,6 +20,7 @@ public class GradientEditor : MonoBehaviour
     [SerializeField] private Button keyColorButton;
     [SerializeField] private TMP_InputField keyPositionInput;
 
+    public Action<Gradient> OnGradientFinalized;
     private int currentlyEditingKeyIndex = -1;
 
 
@@ -30,10 +30,9 @@ public class GradientEditor : MonoBehaviour
         _Instance = this;
     }
 
-    public void EditGradient(Gradient gradientState, Action<Gradient> onFinalizeGradient)
+    public void Open(Gradient gradientState)
     {
         currentGradient = gradientState;
-        this.onFinalizeGradient = onFinalizeGradient;
 
         UpdateGradientDisplay();
 
@@ -73,7 +72,7 @@ public class GradientEditor : MonoBehaviour
 
     private void SetPositionText(float time)
     {
-        positionInputField.text = string.Format("{0}%", Math.Round((time * 100), 2));
+        positionInputField.text = string.Format("{0}%", Mathf.CeilToInt(time * 100));
     }
 
     private void SetCurrentlyEditingKeyIndex(int index)
@@ -143,7 +142,12 @@ public class GradientEditor : MonoBehaviour
 
     public void FinalizeGradient()
     {
-        onFinalizeGradient(currentGradient);
+        OnGradientFinalized(currentGradient);
+        Close();
+    }
+
+    private void Close()
+    {
         gradientDisplay.DestroyKeys();
         gradientEditor.gameObject.SetActive(false);
     }

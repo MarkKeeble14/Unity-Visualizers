@@ -1433,7 +1433,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7864551407134720233}
         m_TargetAssemblyTypeName: EscapeMenuFunctions, Assembly-CSharp
-        m_MethodName: Resume
+        m_MethodName: Close
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

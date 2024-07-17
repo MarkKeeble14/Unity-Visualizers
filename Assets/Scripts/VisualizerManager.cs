@@ -157,7 +157,8 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
-    [SerializeField] private GameObject visualizerElementsUI;
+    [SerializeField] private GameObject setupPanelUI;
+    [SerializeField] private Transform setupPanel;
     [SerializeField] private GameObject tempoMenuUI;
     [SerializeField] private TMP_InputField tempoTapperInputField;
     [SerializeField] private Button tempoTapperButton;
@@ -265,7 +266,7 @@ public class VisualizerManager : MonoBehaviour
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
         volume = FindObjectOfType<Volume>();
-        activeCameraAdditionalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+        activeCameraAdditionalCameraData = FindObjectOfType<UniversalAdditionalCameraData>();
 
         PopulateColorsList();
         PopulateFontsList();
@@ -628,7 +629,7 @@ public class VisualizerManager : MonoBehaviour
 
     public Gradient GetTrackGradient(int index)
     {
-        if (trackInfo.Gradients.Count - 1 == 0) return defaultGradient;
+        if (index > trackInfo.Gradients.Count - 1) return defaultGradient;
         return trackInfo.Gradients[index];
     }
 
@@ -1280,11 +1281,12 @@ public class VisualizerManager : MonoBehaviour
     public IEnumerator RunVisualizerElementsSelection()
     {
         // Enable UI
-        visualizerElementsUI.SetActive(true);
+        setupPanelUI.SetActive(true);
+        setupPanel.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
         BroadcastSetupValues();
 
-        yield return new WaitUntil(() => !visualizerElementsUI.activeSelf);
+        yield return new WaitUntil(() => !setupPanelUI.activeSelf);
 
         BroadcastSetupValues();
     }
@@ -1861,9 +1863,7 @@ public class VisualizerManager : MonoBehaviour
     }
 
     private void SetFromPreset(VisualizerPreset preset)
-    {
-        trackInfo.Title = preset.Title;
-        
+    {        
         if (preset.Audio.Set)
         {
             // Loading audio
@@ -1874,6 +1874,7 @@ public class VisualizerManager : MonoBehaviour
 
             trackInfo.AudioClip = clip;
             trackInfo.Duration = StringHelper.GetDurationText(clip.length);
+            trackInfo.Title = preset.Title;
         }
 
         if (preset.CoverArt.Set)
@@ -1887,7 +1888,13 @@ public class VisualizerManager : MonoBehaviour
         // Set colors
         ClearColorsList();
         trackInfo.Colors = preset.Colors;
-        trackInfo.Gradients = preset.Gradients;
+        foreach (GradientData gData in preset.Gradients)
+        {
+            Gradient g = new Gradient();
+            g.SetKeys(gData.ColorKeys, gData.AlphaKeys);
+            g.mode = gData.Mode;
+            trackInfo.Gradients.Add(g);
+        }
         PopulateColorsList();
 
         // Set fonts

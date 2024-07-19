@@ -16,6 +16,7 @@ using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
+using AForge.Math;
 
 [System.Serializable]
 public struct AudioClipData
@@ -356,46 +357,6 @@ public class VisualizerManager : MonoBehaviour
         lastAudioSourceTime = audioSource.time;
     }
 
-    private void CheckBeat()
-    {
-        energyBufferSize = measureBPMOverInterval * 60;
-        currentEnergy = 0;
-        for (int i = 0; i < 512; ++i)
-        {
-            switch (channel)
-            {
-                case AudioChannel.STEREO:
-                    currentEnergy += leftAudioSamples[i] + rightAudioSamples[i];
-                    break;
-                case AudioChannel.LEFT:
-                    currentEnergy += leftAudioSamples[i];
-                    break;
-                case AudioChannel.RIGHT:
-                    currentEnergy += rightAudioSamples[i];
-                    break;
-            }
-        }
-
-        // calculate local energy
-        localEnergy = 0;
-        foreach (float v in energyBuffer) { localEnergy += v; }
-
-        // calculate average local energy
-        averageLocalEnergy = localEnergy / energyBufferSize;
-
-        // add current energy to energy buffer
-        energyBuffer.Add(currentEnergy);
-
-        // if there are more samples in the energy buffer than are allowed, remove the oldest value
-        if (energyBuffer.Count > energyBufferSize) { energyBuffer.RemoveAt(0); }
-
-        // check for energy spike
-        if (currentEnergy > averageLocalEnergy * varianceSensitivity) 
-        { 
-            OnEnergySpike?.Invoke(currentEnergy);
-        }
-    }
-
     private void SetupComplete()
     {
         // Set canvas group alpha
@@ -563,6 +524,46 @@ public class VisualizerManager : MonoBehaviour
     {
         for (int i = 0; i < highestValuePerFrequencyBand.Length; i++)
             highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
+    }
+
+    private void CheckBeat()
+    {
+        energyBufferSize = measureBPMOverInterval * 60;
+        currentEnergy = 0;
+        for (int i = 0; i < 512; ++i)
+        {
+            switch (channel)
+            {
+                case AudioChannel.STEREO:
+                    currentEnergy += leftAudioSamples[i] + rightAudioSamples[i];
+                    break;
+                case AudioChannel.LEFT:
+                    currentEnergy += leftAudioSamples[i];
+                    break;
+                case AudioChannel.RIGHT:
+                    currentEnergy += rightAudioSamples[i];
+                    break;
+            }
+        }
+
+        // calculate local energy
+        localEnergy = 0;
+        foreach (float v in energyBuffer) { localEnergy += v; }
+
+        // calculate average local energy
+        averageLocalEnergy = localEnergy / energyBufferSize;
+
+        // add current energy to energy buffer
+        energyBuffer.Add(currentEnergy);
+
+        // if there are more samples in the energy buffer than are allowed, remove the oldest value
+        if (energyBuffer.Count > energyBufferSize) { energyBuffer.RemoveAt(0); }
+
+        // check for energy spike
+        if (currentEnergy > averageLocalEnergy * varianceSensitivity)
+        {
+            OnEnergySpike?.Invoke(currentEnergy);
+        }
     }
 
     public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
@@ -1282,7 +1283,7 @@ public class VisualizerManager : MonoBehaviour
     {
         // Enable UI
         setupPanelUI.SetActive(true);
-        setupPanel.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        setupPanel.position = new UnityEngine.Vector3(Screen.width / 2, Screen.height / 2, 0);
 
         BroadcastSetupValues();
 
@@ -1491,7 +1492,7 @@ public class VisualizerManager : MonoBehaviour
 
     private void AddGradientElement()
     {
-        Gradient g = new Gradient();
+        Gradient g = defaultGradient;
         trackInfo.Gradients.Add(g);
         GradientListElement spawned = Instantiate(gradientListElement, colorsList);
         spawned.Set(trackInfo.Gradients.Count - 1, g);

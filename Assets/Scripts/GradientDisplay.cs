@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ public class GradientDisplay : MonoBehaviour
 
     private Gradient displayedGradient;
 
+    Dictionary<int, GradientColorKey> keyedIndexes = new();
+
     public void DestroyKeys()
     {
         foreach (Transform child in keyList)
@@ -22,13 +25,13 @@ public class GradientDisplay : MonoBehaviour
         }
 
         keyList.gameObject.SetActive(false);
+        keyedIndexes.Clear();
     }
 
     public void CreateKeys()
     {
         keyList.gameObject.SetActive(true);
 
-        Dictionary<int, GradientColorKey> keyedIndexes = new();
         foreach (GradientColorKey key in displayedGradient.colorKeys)
         {
             keyedIndexes.Add(GetIndexFromTime(key.time), key);
@@ -38,10 +41,11 @@ public class GradientDisplay : MonoBehaviour
         for (int i = 0; i < segments; ++i)
         {
             GradientKeyDisplay keyDisplay = Instantiate(keyPrefab, keyList);
-            if (keyedIndexes.ContainsKey(i))
+            bool keyed = keyedIndexes.ContainsKey(i);
+            keyDisplay.SetVisible(keyed);
+            if (keyed)
             {
-                keyDisplay.Set(assignedKeys, keyedIndexes[i].color, GetTimeFromIndex(i));
-                keyDisplay.SetVisible(true);
+                keyDisplay.Set(i, assignedKeys, keyedIndexes[i].color, keyedIndexes[i].time);
                 assignedKeys++;
             }
         }
@@ -49,7 +53,7 @@ public class GradientDisplay : MonoBehaviour
 
     private int GetIndexFromTime(float time)
     {
-        return Mathf.FloorToInt(time * (segments - 1));
+        return Mathf.CeilToInt(time * (segments - 1));
     }
 
     private float GetTimeFromIndex(int index)
@@ -92,5 +96,29 @@ public class GradientDisplay : MonoBehaviour
     {
         DestroyKeys();
         CreateKeys();
+    }
+
+    public void ReadKeysFromChildIndices()
+    {
+        List<GradientColorKey> newKeys = new List<GradientColorKey>();
+
+        for (int i = 0; i < segments; i++)
+        {
+            GradientKeyDisplay gKeyD = keyList.GetChild(i).GetComponent<GradientKeyDisplay>();
+            if (gKeyD.Active)
+            {
+                newKeys.Add(new GradientColorKey(gKeyD.Color, GetTimeFromIndex(i)));
+            }
+        }
+
+        displayedGradient.SetKeys(newKeys.ToArray(), displayedGradient.alphaKeys);
+
+        RemakeKeys();
+        UpdateColors(displayedGradient);
+    }
+
+    public bool HasKeyInTimeBucket(float f)
+    {
+        return keyedIndexes.ContainsKey(GetIndexFromTime(f));
     }
 }

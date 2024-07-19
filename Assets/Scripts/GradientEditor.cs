@@ -11,14 +11,15 @@ public class GradientEditor : MonoBehaviour
 
     [SerializeField] private GameObject gradientEditor;
     [SerializeField] private GradientDisplay gradientDisplay;
-    private Gradient currentGradient;
 
     [SerializeField] private Image selectedKeyColorDisplay;
     [SerializeField] private TMP_InputField positionInputField;
 
     [SerializeField] private Button deleteKeyButton;
     [SerializeField] private Button keyColorButton;
-    [SerializeField] private TMP_InputField keyPositionInput;
+
+    private float currentlySetKeyPosition;
+    private Gradient currentGradient;
 
     public Action<Gradient> OnGradientFinalized;
     private int currentlyEditingKeyIndex = -1;
@@ -69,19 +70,19 @@ public class GradientEditor : MonoBehaviour
         selectedKeyColorDisplay.color = c;
         SetPositionText(time);
     }
-
-    private void SetPositionText(float time)
-    {
-        positionInputField.text = string.Format("{0}%", Mathf.CeilToInt(time * 100));
-    }
-
     private void SetCurrentlyEditingKeyIndex(int index)
     {
         currentlyEditingKeyIndex = index;
         bool isSentinal = index == -1;
         keyColorButton.interactable = !isSentinal;
-        keyPositionInput.interactable = !isSentinal;
+        positionInputField.interactable = !isSentinal;
         deleteKeyButton.interactable = !isSentinal;
+    }
+
+    private void SetPositionText(float time)
+    {
+        currentlySetKeyPosition = time;
+        positionInputField.text = string.Format("{0}%", Mathf.CeilToInt(time * 100));
     }
 
     public void ChangeKeyColor()
@@ -109,9 +110,22 @@ public class GradientEditor : MonoBehaviour
         float f;
         if (float.TryParse(s, out f))
         {
-            if (f < 0 || f > 1)
+            if (f < 0 || f > 100)
             {
-                Debug.LogWarning("Attempted to set an invalid time for gradient key");
+                Debug.LogWarning("Ignored attempt to set an invalid time for gradient key");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Ignored attempt to set an invalid key position " +
+                    "- Accepted range of values for key position is 0-100");
+                SetPositionText(currentlySetKeyPosition);
+                return;
+            }
+            f /= 100;
+
+            if (gradientDisplay.HasKeyInTimeBucket(f))
+            {
+                Debug.LogWarning("Ignored attempt to set time for gradient key due to collision");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Ignored attempt to set an invalid key position " +
+                    "- A key already exists at that position");
+                SetPositionText(currentlySetKeyPosition);
                 return;
             }
 
@@ -150,5 +164,10 @@ public class GradientEditor : MonoBehaviour
     {
         gradientDisplay.DestroyKeys();
         gradientEditor.gameObject.SetActive(false);
+    }
+
+    public void ReadKeysFromChildIndices()
+    {
+        gradientDisplay.ReadKeysFromChildIndices();
     }
 }

@@ -408,6 +408,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6417397744126863622, guid: ce316eebf5040c242a22b005ed34319f, type: 3}
+      propertyPath: m_text
+      value: ButtonLabel
+      objectReference: {fileID: 0}
     - target: {fileID: 7043397361164098102, guid: ce316eebf5040c242a22b005ed34319f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

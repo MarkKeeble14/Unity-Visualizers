@@ -7,8 +7,13 @@ public class ColorBasedCheckbox : Checkbox
     [SerializeField] private Color activeColor;
     [SerializeField] private Color inactiveColor;
 
-    protected override void UpdateUI()
+    protected override void IsActive()
     {
-        image.color = (Active ? activeColor : inactiveColor);
+        image.color = activeColor;
+    }
+
+    protected override void IsInactive()
+    {
+        image.color = inactiveColor;
     }
 }

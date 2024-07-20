@@ -2,7 +2,19 @@
 
 public abstract class Checkbox : MonoBehaviour
 {
-    public bool Active { get; private set; }
+    private bool active;
+    public bool Active
+    {
+        get 
+        {
+            return active;
+        } 
+        set
+        {
+            active = value;
+            UpdateUI();
+        }
+    }
 
     private void Awake()
     {
@@ -11,9 +23,15 @@ public abstract class Checkbox : MonoBehaviour
 
     public void OnClick()
     {
-        Active = !Active;
+        active = !active;
         UpdateUI();
     }
 
-    protected abstract void UpdateUI();
+    protected abstract void IsActive();
+    protected abstract void IsInactive();
+
+    private void UpdateUI()
+    {
+        if (active) IsActive(); else IsInactive();
+    }
 }

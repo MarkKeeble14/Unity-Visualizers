@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +10,15 @@ public class Spinner : MonoBehaviour
     [SerializeField] private Image mask;
     [SerializeField] private float spinSpeed;
     [SerializeField] private MathHelper.AlterationMethod method;
-
     [SerializeField] private float delayBetweenSpinnerAndMask = .1f;
     [SerializeField] private float delayAfterMask = .5f;
 
     private void Start()
     {
-        StartCoroutine(SpinLoop());
+        StartCoroutine(Cycle());
     }
 
-    private IEnumerator SpinLoop()
+    private IEnumerator Cycle()
     {
         while (spinner.fillAmount < 1)
         {
@@ -41,6 +41,6 @@ public class Spinner : MonoBehaviour
         spinner.fillAmount = 0;
         mask.fillAmount = 1;
 
-        StartCoroutine(SpinLoop());
+        StartCoroutine(Cycle());
     }
 }

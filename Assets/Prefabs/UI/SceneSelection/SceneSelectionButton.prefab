@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 2620927022211014041}
   - component: {fileID: 6018047209192685739}
   m_Layer: 5
-  m_Name: VisualizerSelection
+  m_Name: SceneSelectionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

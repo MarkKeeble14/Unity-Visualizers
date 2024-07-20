@@ -4,10 +4,7 @@ using UnityEngine.UI;
 
 public class VisualizerBoolSetting : VisualizerSetting, IRecieveVisualizerBoolValues
 {
-    [SerializeField] private Image i;
-    [SerializeField] private Color activeColor = Color.green;
-    [SerializeField] private Color inactiveColor = Color.red;
-    private bool active;
+    [SerializeField] private Checkbox checkbox;
 
     protected override void Initialize()
     {
@@ -21,12 +18,11 @@ public class VisualizerBoolSetting : VisualizerSetting, IRecieveVisualizerBoolVa
             return;
         }
 
-        active = values[key];
-        i.color = (active ? activeColor : inactiveColor);
+        checkbox.Active = values[key];
     }
 
     public void Toggle()
     {
-        VisualizerManager._Instance.UpdateSetting(key, !active);
+        VisualizerManager._Instance.UpdateSetting(key, !checkbox.Active);
     }
 }

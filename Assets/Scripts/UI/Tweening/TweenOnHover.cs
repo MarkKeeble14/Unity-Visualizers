@@ -4,23 +4,27 @@ public abstract class TweenOnHover : MonoBehaviour
 {
     [SerializeField] protected float tweenSpeed;
     [SerializeField] protected MathHelper.AlterationMethod tweenMethod;
+    public bool OverrideControl;
 
     private void Update()
     {
-        if (UIHelper.IsPointerOverSpecificUIElement(gameObject))
+        if (!OverrideControl)
         {
-            Hovered();
-        }
-        else
-        {
-            NotHovered();
+            if (UIHelper.IsPointerOverSpecificUIElement(gameObject))
+            {
+                Hovered();
+            }
+            else
+            {
+                NotHovered();
+            }
         }
         Tween();
     }
 
     protected abstract void Tween();
 
-    protected abstract void Hovered();
+    public abstract void Hovered();
 
-    protected abstract void NotHovered();
+    public abstract void NotHovered();
 }

@@ -8,6 +8,8 @@ public abstract class Transition : MonoBehaviour
 
     private IEnumerator In(Action onBegin, Action onEnd)
     {
+        Debug.Log("Beginning Transition In");
+
         onBegin?.Invoke();
 
         isTransitioning = true;
@@ -22,6 +24,8 @@ public abstract class Transition : MonoBehaviour
 
     private IEnumerator Out(Action onBegin, Action onEnd)
     {
+        Debug.Log("Beginning Transition In");
+
         onBegin?.Invoke();
 
         isTransitioning = true;
@@ -32,6 +36,7 @@ public abstract class Transition : MonoBehaviour
 
         isTransitioning = false;
     }
+
     protected abstract IEnumerator TransitionOut();
 
     public void InitiateTransition(TransitionDirection direction, Action onBegin = null, Action onEnd = null)

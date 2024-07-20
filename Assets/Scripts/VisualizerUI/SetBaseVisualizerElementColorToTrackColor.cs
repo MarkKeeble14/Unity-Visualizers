@@ -30,11 +30,15 @@ public abstract class SetBaseVisualizerElementColorToTrackColor : BaseVisualizer
 
     public override void RecieveTrackInfo(TrackInfo info)
     {
+        if (ignoreBroadcasts) return;
+
         SetElementColor();
     }
 
     public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
+        if (ignoreBroadcasts) return;
+
         // Base version of function handles enabled/disabled
         base.RecieveVisualizerElementsInfo(info);
 

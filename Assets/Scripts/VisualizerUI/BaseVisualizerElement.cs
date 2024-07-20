@@ -6,9 +6,12 @@ public abstract class BaseVisualizerElement : MonoBehaviour, IRecieveTrackInfo, 
     [SerializeField] protected VisualizerElementLabel label;
     private bool active = true;
     public bool Active { get { return active; } set { active = value; } }
+    [SerializeField] protected bool ignoreBroadcasts;
 
     public virtual void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
+        if (ignoreBroadcasts) return;
+
         if (info.ContainsKey(label))
         {
             active = info[label].Enabled;

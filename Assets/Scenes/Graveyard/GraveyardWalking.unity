@@ -2144,6 +2144,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: activeCameraAdditionalCameraData
+      value: 
+      objectReference: {fileID: 1376740962}
+    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: visualizerElementDict.Array.size
       value: 7
       objectReference: {fileID: 0}

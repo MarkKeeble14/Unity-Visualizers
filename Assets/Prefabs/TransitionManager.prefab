@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -94,6 +94,57 @@ MonoBehaviour:
   moveBy: 1
   image: {fileID: 8987714140481067222}
   equalityTolerence: 0.001
+--- !u!1 &2551739730896678017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4783542369325097888}
+  - component: {fileID: 3534016615244082363}
+  m_Layer: 0
+  m_Name: GlitchTransition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4783542369325097888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2551739730896678017}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1231925379802261762}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3534016615244082363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2551739730896678017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7db84d385faf547a2602a50d62fd40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inStartingDigitalIntensity: 1
+  inStartingAnalogColorDrift: 1
+  inStartingAnalogHorizontalShake: 1
+  intensityChangeRate: 0.25
+  colorDriftChangeRate: 0.25
+  horizontalShakeChangeRate: 0.25
+  volume: {fileID: 0}
 --- !u!1 &2957729803958920524
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +277,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8223944360445000538}
+  - {fileID: 4783542369325097888}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -244,6 +296,8 @@ MonoBehaviour:
   transitions:
   - key: BlackFade
     value: {fileID: 1593269006892794890}
+  - key: Glitch
+    value: {fileID: 3534016615244082363}
   audioSource: {fileID: 288019837801800842}
   initialTransition:
     transition: {fileID: 0}

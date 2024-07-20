@@ -1,8 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
+using URPGlitch.Runtime.AnalogGlitch;
+using URPGlitch.Runtime.DigitalGlitch;
 
 public class VisualizerSelectionGridGenerator : MonoBehaviour
 {
@@ -10,12 +14,36 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
     [SerializeField] private List<SerializableKeyValuePair<string, VisualizerSelectionInfo>> allSelections = new();
     private List<VisualizerSelectionInfo> currentlyAvailableSelections = new();
     [SerializeField] private string[] defaultSelections;
-
     public static VisualizerSelectionGridGenerator _Instance { get; private set; }
 
     [SerializeField] private Button backButton;
 
     public Stack<string[]> selectionsStack = new();
+
+    [SerializeField] private float scenarioImagePadding;
+    [SerializeField] private float textHolderVerticalPadding;
+    [SerializeField] private float buttonFontSize;
+
+    [SerializeField] private float blinkGlitchIntensity = 1;
+    [SerializeField] private float blinkGlitchDuration = 0.1f;
+    [SerializeField] private Volume volume;
+
+    private bool hasSelectedScene;
+    private VisualizerSelectionInfo selectedScene;
+    public VisualizerSelectionInfo SelectedScene
+    {
+        get
+        {
+            if (hasSelectedScene)
+            {
+                return selectedScene;
+            }
+            else
+            {
+                throw new Exception(); // TODO: Custom Exceptions
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -30,11 +58,22 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
         GenerateGrid();
     }
 
+    [ContextMenu("SetAesthetics")]
+    public void SetAesthetics()
+    {
+        foreach (Transform t in transform)
+        {
+            VisualizerSelectionButton b = t.GetComponent<VisualizerSelectionButton>();
+            b.SetAesthetics(scenarioImagePadding, textHolderVerticalPadding, buttonFontSize);
+        }
+    }
+
     private void GenerateGrid()
     {
         // Clear
         foreach (Transform child in transform)
         {
+            ComputerCursor._Instance.RemoveInteractables(child.GetComponents<ComputerScreenControl>());
             Destroy(child.gameObject);
         }
 
@@ -43,6 +82,8 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
         {
             VisualizerSelectionButton spawned = Instantiate(buttonPrefab, transform);
             spawned.SetSceneInfo(info);
+            spawned.SetAesthetics(scenarioImagePadding, textHolderVerticalPadding, buttonFontSize);
+            ComputerCursor._Instance.AddInteractables(spawned.GetComponents<ComputerScreenControl>());
         }
     }
 
@@ -60,6 +101,21 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
         GenerateGrid();
 
         backButton.interactable = selectionsStack.Count > 1;
+        backButton.gameObject.SetActive(backButton.interactable);
+
+        StartCoroutine(BlinkGlitch());
+    }
+
+    private IEnumerator BlinkGlitch()
+    {
+        DigitalGlitchVolume digitalGlitchVolume;
+        volume.profile.TryGet<DigitalGlitchVolume>(out digitalGlitchVolume);
+
+        digitalGlitchVolume.intensity.Override(blinkGlitchIntensity);
+
+        yield return new WaitForSeconds(blinkGlitchDuration);
+
+        digitalGlitchVolume.intensity.Override(0);
     }
 
     public void Back()
@@ -78,5 +134,11 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
             }
         }
         throw new System.Exception(); // TODO: Custom Exceptions
+    }
+
+    internal void SetSelectedScene(VisualizerSelectionInfo sceneInfo)
+    {
+        selectedScene = sceneInfo;
+        hasSelectedScene = true;
     }
 }

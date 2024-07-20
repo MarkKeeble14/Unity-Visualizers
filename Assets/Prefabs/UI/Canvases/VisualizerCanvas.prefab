@@ -681,7 +681,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1807501826889787739}
   - component: {fileID: 1807501826889787738}
-  - component: {fileID: 2917622620941475876}
   m_Layer: 10
   m_Name: BackgroundCanvas
   m_TagString: Untagged
@@ -731,20 +730,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &2917622620941475876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807501826889787740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 105c1d99115d0434d8e33bdf37488e6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 1807501826889787738}
-  planeDistance: 1
 --- !u!1 &1807501827369941026
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,7 +982,6 @@ GameObject:
   - component: {fileID: 9115935068722783946}
   - component: {fileID: 1026045167988513821}
   - component: {fileID: 1003618756113547185}
-  - component: {fileID: 3900545591399848722}
   m_Layer: 10
   m_Name: VisualizerElementsCanvas
   m_TagString: Untagged
@@ -1091,20 +1075,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3900545591399848722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2827563415669523029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 105c1d99115d0434d8e33bdf37488e6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 9115935068722783946}
-  planeDistance: 1
 --- !u!1 &3927570689808294083
 GameObject:
   m_ObjectHideFlags: 0

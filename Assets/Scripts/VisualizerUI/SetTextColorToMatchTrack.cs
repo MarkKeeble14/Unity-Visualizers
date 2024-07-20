@@ -13,6 +13,7 @@ public class SetTextColorToMatchTrack : SetBaseVisualizerElementColorToTrackColo
 
     protected override void SetElementToColor(Color c)
     {
+        if (text == null) text = GetComponent<TextMeshProUGUI>();
         text.color = c;
     }
 }

@@ -39,6 +39,8 @@ public class RadialVisualizer : PremadeVisualizer
 
     public override void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
     {
+        if (ignoreBroadcasts) return;
+
         base.RecieveVisualizerFloatValues(settings);
 
         if (!settings.ContainsKey(distanceKey))

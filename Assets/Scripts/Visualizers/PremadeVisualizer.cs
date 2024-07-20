@@ -32,6 +32,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         PreMakingVisualizer();
 
         MakeDefaultVisualizer();
+
+        UpdateAttachments();
     }
 
     protected new void Update()
@@ -162,6 +164,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
+        if (ignoreBroadcasts) return;
+
         if (!values.ContainsKey(signalMultiplierKey))
         {
             VisualizerManager._Instance.RegisterFloatValue(signalMultiplierKey, signalMultiplier);
@@ -184,6 +188,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     public virtual void RecieveVisualizerIntValues(Dictionary<string, int> values)
     {
+        if (ignoreBroadcasts) return;
+
         if (!values.ContainsKey(attachmentTypeKey))
         {
             VisualizerManager._Instance.RegisterIntValue(attachmentTypeKey, (int)attachmentType);
@@ -198,6 +204,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     public override void RecieveTrackInfo(TrackInfo info)
     {
+        if (ignoreBroadcasts) return;
+
         base.RecieveTrackInfo(info);
 
         UpdateAttachments();
@@ -205,6 +213,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
 
     public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
+        if (ignoreBroadcasts) return;
+
         base.RecieveVisualizerElementsInfo(info);
 
         UpdateAttachments();

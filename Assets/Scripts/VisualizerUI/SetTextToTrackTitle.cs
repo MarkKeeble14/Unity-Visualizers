@@ -14,6 +14,7 @@ public class SetTextToTrackTitle : MonoBehaviour, IRecieveTrackInfo
 
     void IRecieveTrackInfo.RecieveTrackInfo(TrackInfo info)
     {
+        if (text == null) text = GetComponent<TextMeshProUGUI>();
         text.text = info.Title;
     }
 }

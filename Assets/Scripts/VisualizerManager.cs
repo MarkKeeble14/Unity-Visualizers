@@ -170,9 +170,9 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Button loadingTrackButton;
     [SerializeField] private Button loadingImageButton;
     [SerializeField] private EscapeMenuFunctions escapeMenu;
+    [SerializeField] private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
+    [SerializeField] private Volume volume;
     private AudioSource audioSource;
-    private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
-    private Volume volume;
 
     [Header("Prefabs")]
     [SerializeField] private ColorListElement colorListElement;
@@ -266,8 +266,6 @@ public class VisualizerManager : MonoBehaviour
 
         // Get audio source component
         audioSource = GetComponent<AudioSource>();
-        volume = FindObjectOfType<Volume>();
-        activeCameraAdditionalCameraData = FindObjectOfType<UniversalAdditionalCameraData>();
 
         PopulateColorsList();
         PopulateFontsList();
@@ -359,10 +357,6 @@ public class VisualizerManager : MonoBehaviour
 
     private void SetupComplete()
     {
-        // Set canvas group alpha
-        visualizerCanvasGroup.alpha = 1;
-        visualizerCanvasGroup.blocksRaycasts = true;
-
         // Create audio profile
         CreateAudioProfile();
 
@@ -1288,6 +1282,14 @@ public class VisualizerManager : MonoBehaviour
         BroadcastSetupValues();
 
         yield return new WaitUntil(() => !setupPanelUI.activeSelf);
+
+        // Make visualizer canvas visible if there is one
+        if (visualizerCanvasGroup != null)
+        {
+            // Set canvas group alpha
+            visualizerCanvasGroup.alpha = 1;
+            visualizerCanvasGroup.blocksRaycasts = true;
+        }
 
         BroadcastSetupValues();
     }

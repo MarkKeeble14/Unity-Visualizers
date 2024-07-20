@@ -30,7 +30,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
     private float defaultHeight;
     private bool expanded;
 
-    protected bool active;
+    protected bool active = true;
     protected int colorIndex;
     protected int fontIndex;
     protected VisualizerColorType colorType;

@@ -1631,7 +1631,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947812, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_Name
-      value: VisualizerManager
+      value: VisualizerSceneElements
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: track
@@ -1953,6 +1953,10 @@ PrefabInstance:
       propertyPath: blurSettings.CopyToFrameBuffer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
+      propertyPath: activeCameraAdditionalCameraData
+      value: 
+      objectReference: {fileID: 897606777}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: visualizerElementDict.Array.size
       value: 7

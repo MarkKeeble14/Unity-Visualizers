@@ -13,6 +13,7 @@ public class SetImageColorToMatchTrack : SetBaseVisualizerElementColorToTrackCol
 
     protected override void SetElementToColor(Color c)
     {
+        if (image == null) image = GetComponent<Image>();
         image.color = c;
     }
 }

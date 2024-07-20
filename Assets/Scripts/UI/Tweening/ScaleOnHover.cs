@@ -7,12 +7,12 @@ public class ScaleOnHover : TweenOnHover
     [SerializeField] private float unhoveredScale;
     private float currentGoal;
 
-    protected override void Hovered()
+    public override void Hovered()
     {
         currentGoal = hoveredScale;
     }
 
-    protected override void NotHovered()
+    public override void NotHovered()
     {
         currentGoal = unhoveredScale;
     }

@@ -27,6 +27,8 @@ public class LongLineVisualizer : PremadeVisualizer, IRecieveVisualizerFloatValu
 
     public override void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
     {
+        if (ignoreBroadcasts) return;
+
         base.RecieveVisualizerFloatValues(settings);
 
         if (!settings.ContainsKey(spacingKey))

@@ -19,6 +19,7 @@ public class EscapeMenuFunctions : MonoBehaviour
     [SerializeField] private TextMeshProUGUI activeSchemeText;
     [SerializeField] private GameObject prevSchemeButton;
     [SerializeField] private GameObject nextSchemeButton;
+    [SerializeField] private string outTransition;
 
     public static EscapeMenuFunctions _Instance { get; private set; }
     public bool IsOpen => cv.alpha == 1;
@@ -83,13 +84,10 @@ public class EscapeMenuFunctions : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(0);
-    }
-
-    public void OpenVisualizerSetup()
-    {
-        Close();
-        StartCoroutine(VisualizerManager._Instance.RunVisualizerElementsSelection());
+        TransitionManager._Instance.Transition(outTransition, TransitionDirection.IN, null, () =>
+        {
+            SceneManager.LoadScene(0);
+        });
     }
 
     public void SwitchControlScheme()

@@ -15,7 +15,7 @@ public class ScreenGlitchTransition : Transition
     [SerializeField] private float horizontalShakeChangeRate;
     [SerializeField] private Volume volume;
 
-    protected override IEnumerator TransitionIn()
+    protected override IEnumerator TransitionIn(float speed = 1)
     {
         DigitalGlitchVolume digitalGlitchVolume;
         volume.profile.TryGet<DigitalGlitchVolume>(out digitalGlitchVolume);
@@ -33,19 +33,19 @@ public class ScreenGlitchTransition : Transition
             needContinue = false;
             if (digitalGlitchVolume.intensity.value < 1)
             {
-                digitalGlitchVolume.intensity.Override(digitalGlitchVolume.intensity.value + (intensityChangeRate * Time.deltaTime));
+                digitalGlitchVolume.intensity.Override(digitalGlitchVolume.intensity.value + (intensityChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 
             if (analogGlitchVolume.horizontalShake.value < 1)
             {
-                analogGlitchVolume.horizontalShake.Override(analogGlitchVolume.horizontalShake.value + (horizontalShakeChangeRate * Time.deltaTime));
+                analogGlitchVolume.horizontalShake.Override(analogGlitchVolume.horizontalShake.value + (horizontalShakeChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 
             if (analogGlitchVolume.colorDrift.value < 1)
             {
-                analogGlitchVolume.colorDrift.Override(analogGlitchVolume.colorDrift.value + (colorDriftChangeRate * Time.deltaTime));
+                analogGlitchVolume.colorDrift.Override(analogGlitchVolume.colorDrift.value + (colorDriftChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 
@@ -57,7 +57,7 @@ public class ScreenGlitchTransition : Transition
         analogGlitchVolume.colorDrift.Override(1);
     }
 
-    protected override IEnumerator TransitionOut()
+    protected override IEnumerator TransitionOut(float speed = 1)
     {
         DigitalGlitchVolume digitalGlitchVolume;
         volume.profile.TryGet<DigitalGlitchVolume>(out digitalGlitchVolume);
@@ -75,19 +75,19 @@ public class ScreenGlitchTransition : Transition
             needContinue = false;
             if (digitalGlitchVolume.intensity.value > 0)
             {
-                digitalGlitchVolume.intensity.Override(digitalGlitchVolume.intensity.value - (intensityChangeRate * Time.deltaTime));
+                digitalGlitchVolume.intensity.Override(digitalGlitchVolume.intensity.value - (intensityChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 
             if (analogGlitchVolume.horizontalShake.value > 0)
             {
-                analogGlitchVolume.horizontalShake.Override(analogGlitchVolume.horizontalShake.value - (horizontalShakeChangeRate * Time.deltaTime));
+                analogGlitchVolume.horizontalShake.Override(analogGlitchVolume.horizontalShake.value - (horizontalShakeChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 
             if (analogGlitchVolume.colorDrift.value > 0)
             {
-                analogGlitchVolume.colorDrift.Override(analogGlitchVolume.colorDrift.value - (colorDriftChangeRate * Time.deltaTime));
+                analogGlitchVolume.colorDrift.Override(analogGlitchVolume.colorDrift.value - (colorDriftChangeRate * Time.deltaTime * speed));
                 needContinue = true;
             }
 

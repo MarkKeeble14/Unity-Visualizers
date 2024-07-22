@@ -158,20 +158,21 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
-    [SerializeField] private GameObject setupPanelUI;
-    [SerializeField] private Transform setupPanel;
     [SerializeField] private GameObject tempoMenuUI;
     [SerializeField] private TMP_InputField tempoTapperInputField;
     [SerializeField] private Button tempoTapperButton;
+    [SerializeField] private GameObject baseVisualizerElementsUI;
+    [SerializeField] private GameObject visualizerSpecificElementsUI;
     [SerializeField] private GameObject colorsUI;
     [SerializeField] private GameObject fontsUI;
+
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
     [SerializeField] private Button loadingTrackButton;
     [SerializeField] private Button loadingImageButton;
     [SerializeField] private EscapeMenuFunctions escapeMenu;
-    [SerializeField] private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
     [SerializeField] private Volume volume;
+    [SerializeField] private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
     private AudioSource audioSource;
 
     [Header("Prefabs")]
@@ -293,8 +294,6 @@ public class VisualizerManager : MonoBehaviour
     private void Start()
     {
         BroadcastControlScheme();
-
-        StartCoroutine(RunSetup());
     }
 
     // Update is called once per frame
@@ -715,29 +714,6 @@ public class VisualizerManager : MonoBehaviour
     public void ChangeVolume(float amount)
     {
         audioSource.volume += amount;
-    }
-
-    private IEnumerator RunSetup()
-    {
-        if (askForTrack)
-            yield return StartCoroutine(RunTrackSelection());
-
-        if (askForCoverArt)
-            yield return StartCoroutine(RunCoverArtSelection());
-
-        if (askForPreset)
-            yield return StartCoroutine(RunLoadPresetSelection());
-
-        if (askForColors)
-            yield return StartCoroutine(RunColorsSelection());
-
-        if (askForFonts)
-            yield return StartCoroutine(RunFontsSelection());
-
-        if (askForVisualizerElements)
-            yield return StartCoroutine(RunVisualizerElementsSelection());
-
-        SetupComplete();
     }
 
     public IEnumerator RunFontsSelection()
@@ -1273,25 +1249,28 @@ public class VisualizerManager : MonoBehaviour
         BroadcastTrackInfo();
     }
 
-    public IEnumerator RunVisualizerElementsSelection()
+    public IEnumerator RunEditBaseVisualizerElements()
     {
-        // Enable UI
-        setupPanelUI.SetActive(true);
-        setupPanel.position = new UnityEngine.Vector3(Screen.width / 2, Screen.height / 2, 0);
-
         BroadcastSetupValues();
 
-        yield return new WaitUntil(() => !setupPanelUI.activeSelf);
+        baseVisualizerElementsUI.SetActive(true);
 
-        // Make visualizer canvas visible if there is one
-        if (visualizerCanvasGroup != null)
-        {
-            // Set canvas group alpha
-            visualizerCanvasGroup.alpha = 1;
-            visualizerCanvasGroup.blocksRaycasts = true;
-        }
+        yield return new WaitUntil(() => !baseVisualizerElementsUI.activeSelf);
 
         BroadcastSetupValues();
+        BroadcastTrackInfo();
+    }
+
+    public IEnumerator RunEditVisualizerSpecificElements()
+    {
+        BroadcastSetupValues();
+
+        visualizerSpecificElementsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !visualizerSpecificElementsUI.activeSelf);
+
+        BroadcastSetupValues();
+        BroadcastTrackInfo();
     }
 
     private void BroadcastSetupValues()
@@ -1360,6 +1339,59 @@ public class VisualizerManager : MonoBehaviour
         {
             OnFailureToSelectFiles();
         }
+    }
+
+    private Sprite MakeSpriteFromTex(Texture2D tex)
+    {
+        return Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+    }
+
+    public IEnumerator BrowseForImageFile(Action<Sprite> onSuccess, Action always)
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
+
+        yield return StartCoroutine(BrowseForSingleFile(x =>
+        {
+            Debug.Log("Attempting to Load Image from File: " + x);
+            LoadImageFromFile(x,
+                (filePath, texture) =>
+                {
+                    Debug.Log("Successfully Loaded Image from path = " + x);
+                    onSuccess?.Invoke(MakeSpriteFromTex(texture));
+                },
+            x =>
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load image from selected file " +
+                    "- Ensure the file selected is an appropriate file type");
+                Debug.Log("Failed to Load Image from path = " + x);
+            });
+        }, "Select Image", "Load"));
+
+        always?.Invoke();
+    }
+
+    public IEnumerator BrowseForTrackFile(Action<AudioClip> onSuccess, Action always)
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
+
+        yield return StartCoroutine(BrowseForSingleFile(x =>
+        {
+            Debug.Log("Attempting to Load Audio from File: " + x);
+
+            StartCoroutine(LoadAudioClipFromFile(x,
+                (filePath, clip) =>
+                {
+                    onSuccess?.Invoke(clip);
+                },
+                x =>
+                {
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load track from selected file " +
+                        "- Ensure the file selected is an appropriate file type");
+                    Debug.Log("Failed to Load Audio Clip from path = " + x);
+                }));
+        }, "Select Track", "Load"));
+
+        always?.Invoke();
     }
 
     private void OnFileSucessfullySelected(string filePath, Action<string> toDoWithFile)
@@ -1965,6 +1997,8 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         trackInfoListeners.ForEach(item => item.RecieveTrackInfo(trackInfo));
+
+        SetVisualizerCVActive();
     }
 
     [ContextMenu("BroadcastVisualizerElementsInfo")]
@@ -1978,6 +2012,8 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerElementsInfoListeners.ForEach(item => item.RecieveVisualizerElementsInfo(baseVisualizerElementsInfo));
+
+        SetVisualizerCVActive();
     }
 
     [ContextMenu("BroadcastVisualizerElementsInfo")]
@@ -1987,6 +2023,8 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerSpecificElementsInfoListeners.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
+
+        SetVisualizerCVActive();
     }
 
     [ContextMenu("BroadcastVisualizerFloatValues")]
@@ -2015,6 +2053,15 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerBoolValueListeners.ForEach(item => item.RecieveVisualizerBoolValues(visualizerBoolValues));
+    }
+
+    private void SetVisualizerCVActive()
+    {
+        if (visualizerCanvasGroup != null)
+        {
+            visualizerCanvasGroup.alpha = 1;
+            visualizerCanvasGroup.blocksRaycasts = true;
+        }
     }
 
     public void SyncTempoListeners()
@@ -2203,5 +2250,11 @@ public class VisualizerManager : MonoBehaviour
         escapeMenu.UpdateDisplayedControls(newScheme);
 
         BroadcastControlScheme();
+    }
+
+    public void EditTrackTitle()
+    {
+        StartCoroutine(UIManager._Instance.PopupInputField(VisualizerManager._Instance.TrackTitle, "Enter a new Title", "Accept", "Cancel", false,
+            x => VisualizerManager._Instance.UpdateTrackTitle(x), null));
     }
 }

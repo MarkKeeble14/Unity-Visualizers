@@ -18,7 +18,8 @@ GameObject:
   - component: {fileID: 2376133031630716814}
   - component: {fileID: 5575566752482503838}
   - component: {fileID: 1429689069871404356}
-  - component: {fileID: 5877245344256430480}
+  - component: {fileID: 7007902270417586150}
+  - component: {fileID: 8816171796050072758}
   m_Layer: 5
   m_Name: RadialVisualizer
   m_TagString: Untagged
@@ -89,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 4
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
   segmentPrefab: {fileID: 7142856522332667449, guid: c91b2e4cfeab7484680c1cf58fdb396c, type: 3}
@@ -189,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directions:
-  - key: {fileID: 5877245344256430480}
+  - key: {fileID: 8816171796050072758}
     value:
     - {fileID: 5252503949136689349}
     - {fileID: 109146645116770097}
@@ -206,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   greaterThan: 5
---- !u!114 &5877245344256430480
+--- !u!114 &7007902270417586150
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -215,11 +217,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 3465347465345289126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9613e412ff7d7894a8091961a4302f79, type: 3}
+  m_Script: {fileID: 11500000, guid: 1dc8fda4e3b4a53469d8dc0a255ccc15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   signalMultiplier: 1
-  method: 0
-  falloffSpeed: 0
-  baseSpikeValue: 0
-  energySpikeValueMultiplier: 1
+  useBuffer: 1
+  useAverage: 0
+--- !u!114 &8816171796050072758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3465347465345289126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d151952c2cfb184886e793e141f1ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  normalizingValueOf: {fileID: 7007902270417586150}
+  minimumInput: 0
+  maximumInput: 75
+  minimumOutput: 0
+  maximumOutput: 0.1

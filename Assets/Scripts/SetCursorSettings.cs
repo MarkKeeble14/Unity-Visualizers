@@ -3,7 +3,8 @@
 public class SetCursorSettings : MonoBehaviour
 {
     [SerializeField] private bool visible;
-    private void Update()
+
+    private void Start()
     {
         Cursor.visible = visible;
     }

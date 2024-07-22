@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ComputerScreenControl : MonoBehaviour
@@ -8,6 +9,25 @@ public abstract class ComputerScreenControl : MonoBehaviour
 
     [SerializeField] private RectTransform rect;
     public RectTransform Rect => rect;
+
+    protected Action whileHovered;
+    protected Action whileNotHovered;
+    protected Action clicked;
+    protected Action released;
+    protected Action held;
+
+    public bool IsHeld { get; private set; }
+    public bool Disabled { get; set; }
+
+    private void Awake()
+    {
+        clicked += () => IsHeld = true;
+        released += () => IsHeld = false;
+        LoadEvents();
+    }
+
+    protected abstract void LoadEvents();
+
     public void Hovered()
     {
         if (!currentlyHovered.Contains(this))
@@ -15,7 +35,7 @@ public abstract class ComputerScreenControl : MonoBehaviour
             currentlyHovered.Add(this);
         }
 
-        WhileHovered();
+        whileHovered?.Invoke();
     }
 
     public void NotHovered()
@@ -25,10 +45,21 @@ public abstract class ComputerScreenControl : MonoBehaviour
             currentlyHovered.Remove(this);
         }
 
-        WhileNotHovered();
+        whileNotHovered?.Invoke();
     }
 
-    public abstract void WhileHovered();
-    public abstract void WhileNotHovered();
-    public abstract void Clicked();
+    public void Clicked()
+    {
+        clicked?.Invoke();
+    }
+
+    public void Released()
+    {
+        released?.Invoke();
+    }
+
+    public void Held()
+    {
+        held?.Invoke();
+    }
 }

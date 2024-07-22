@@ -20,16 +20,14 @@ public class ComputerBlinkTransition : Transition
     [SerializeField] private float minBlinkSpeed = 0.25f;
 
     [Header("References")]
-    [SerializeField] private Image backgroundImage;
-    [SerializeField] private TextMeshProUGUI desktopText;
+    [SerializeField] private Image coverImage;
+    [SerializeField] private TextMeshProUGUI coverText;
     [SerializeField] private GameObject[] disableOnBlink;
     [SerializeField] private GameObject[] enableOnBlink;
-    [SerializeField] private AudioSource source;
-    [SerializeField] private CycleAudioClips cycle;
     [SerializeField] private UniversalAdditionalCameraData otherCamera;
     [SerializeField] private Volume volume;
 
-    protected override IEnumerator TransitionIn()
+    protected override IEnumerator TransitionIn(float speed = 1)
     {
         float blinkSpeed = 1;
 
@@ -40,13 +38,10 @@ public class ComputerBlinkTransition : Transition
         volume.profile.TryGet<AnalogGlitchVolume>(out analogGlitchVolume);
 
         VisualizerSelectionInfo selected = VisualizerSelectionGridGenerator._Instance.SelectedScene;
-        backgroundImage.sprite = selected.ScenarioBackgroundSprite;
-        desktopText.text = selected.ScenarioName;
-        desktopText.font = selected.TextFont;
-        desktopText.color = selected.TextColor;
-
-        cycle.enabled = false;
-        source.Stop();
+        coverImage.sprite = selected.ScenarioBackgroundSprite;
+        coverText.text = selected.ScenarioName;
+        coverText.font = selected.TextFont;
+        coverText.color = selected.TextColor;
 
         int numBlinks = RandomHelper.RandomIntInclusive(minMaxNumBlinks);
         for (int i = 0; i < numBlinks; i++)
@@ -87,8 +82,8 @@ public class ComputerBlinkTransition : Transition
         yield return new WaitForSeconds(RandomHelper.RandomFloat(minMaxRestTime));
     }
 
-    protected override IEnumerator TransitionOut()
+    protected override IEnumerator TransitionOut(float speed = 1)
     {
-        yield return StartCoroutine(TransitionIn());
+        yield return StartCoroutine(TransitionIn(speed));
     }
 }

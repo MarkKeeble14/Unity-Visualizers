@@ -9,6 +9,8 @@ public class CycleAudioClips : MonoBehaviour
     private int currentId = 0;
     private bool hasStarted;
 
+    public bool Pause { get; set; }
+
     [ContextMenu("Skip")]
     private void Skip()
     {
@@ -39,6 +41,8 @@ public class CycleAudioClips : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Pause) return;
+
         if (!hasStarted && source.isPlaying)
         {
             hasStarted = true;

@@ -1,30 +1,14 @@
 ﻿using UnityEngine;
 
-public abstract class TweenOnHover : MonoBehaviour
+public abstract class TweenOnHover : OnHoverHandler
 {
     [SerializeField] protected float tweenSpeed;
     [SerializeField] protected MathHelper.AlterationMethod tweenMethod;
-    public bool OverrideControl;
 
-    private void Update()
+    private void Awake()
     {
-        if (!OverrideControl)
-        {
-            if (UIHelper.IsPointerOverSpecificUIElement(gameObject))
-            {
-                Hovered();
-            }
-            else
-            {
-                NotHovered();
-            }
-        }
-        Tween();
+        onUpdate += Tween;
     }
 
     protected abstract void Tween();
-
-    public abstract void Hovered();
-
-    public abstract void NotHovered();
 }

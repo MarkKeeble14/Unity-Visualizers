@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4179059829931539854}
   - component: {fileID: 8503089796099501018}
-  - component: {fileID: 3608554808965397521}
   m_Layer: 5
   m_Name: TextHolder
   m_TagString: Untagged
@@ -37,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -100}
+  m_SizeDelta: {x: -20, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8503089796099501018
 CanvasRenderer:
@@ -47,36 +46,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1927883135071118946}
   m_CullTransparentMesh: 1
---- !u!114 &3608554808965397521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1927883135071118946}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.7529412}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6122226797771787619
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,8 +59,10 @@ GameObject:
   - component: {fileID: 5900266809177368703}
   - component: {fileID: 2821088276839142054}
   - component: {fileID: -6449712358780173751}
-  - component: {fileID: 2620927022211014041}
+  - component: {fileID: 1422765230029623645}
+  - component: {fileID: 1352912629915328071}
   - component: {fileID: 6018047209192685739}
+  - component: {fileID: 2620927022211014041}
   m_Layer: 5
   m_Name: SceneSelectionButton
   m_TagString: Untagged
@@ -142,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -188,12 +159,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fadf9c9845f89d4ea07a349418d19dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tweenSpeed: 4
-  tweenMethod: 0
   OverrideControl: 0
+  tweenSpeed: 100
+  tweenMethod: 0
   hoveredScale: 1.25
   unhoveredScale: 1
---- !u!114 &2620927022211014041
+--- !u!114 &1422765230029623645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,11 +173,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 6122226797771787619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
+  m_Script: {fileID: 11500000, guid: 987db9f8b0001ce4296dec9134d847d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rect: {fileID: 6943738779253196256}
-  tweenOnHover: {fileID: -6449712358780173751}
+  OverrideControl: 0
+  funcCallsLimit: 1
+  func:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1352912629915328071}
+        m_TargetAssemblyTypeName: CallPlayOneShot, Assembly-CSharp
+        m_MethodName: PlayOneShot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1352912629915328071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122226797771787619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd0cb6662fd6213429b236ef82fdc5e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: Buzz
+  randomizeVolume: 1
+  randomizePitch: 1
 --- !u!114 &6018047209192685739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,6 +222,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rect: {fileID: 6943738779253196256}
   button: {fileID: 2874868969493569461}
+--- !u!114 &2620927022211014041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122226797771787619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rect: {fileID: 6943738779253196256}
+  hoverHandlers:
+  - {fileID: -6449712358780173751}
+  - {fileID: 1422765230029623645}
 --- !u!1 &6239362582330527781
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +250,7 @@ GameObject:
   - component: {fileID: 6416265953105471775}
   - component: {fileID: 300752132131965779}
   - component: {fileID: 2874868969493569461}
+  - component: {fileID: 941830511839614481}
   m_Layer: 5
   m_Name: ScenarioImage
   m_TagString: Untagged
@@ -354,6 +372,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 941830511839614481}
+        m_TargetAssemblyTypeName: CallPlayOneShot, Assembly-CSharp
+        m_MethodName: PlayOneShot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &941830511839614481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6239362582330527781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd0cb6662fd6213429b236ef82fdc5e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: Click
+  randomizeVolume: 1
+  randomizePitch: 1
 --- !u!1 &8900851401106455215
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,8 +492,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

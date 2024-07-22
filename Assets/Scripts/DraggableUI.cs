@@ -12,20 +12,35 @@ public class DraggableUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     [SerializeField] private bool forceLockOnScreen = true;
 
+    public void BeginDrag(Vector2 pos)
+    {
+        dragOffset = pos - new Vector2(transformOfUIToMove.position.x, transformOfUIToMove.position.y);
+    }
+
+    public void Drag(Vector2 pos)
+    {
+        transformOfUIToMove.position = pos - dragOffset;
+    }
+
+    public void EndDrag()
+    {
+        if (forceLockOnScreen)
+            KeepFullyOnScreen(transformOfUIToMove, canvasRect);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        dragOffset = eventData.position - new Vector2(transformOfUIToMove.position.x, transformOfUIToMove.position.y);
+        BeginDrag(eventData.position);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        transformOfUIToMove.position = eventData.position - dragOffset;
+        Drag(eventData.position);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (forceLockOnScreen)
-            KeepFullyOnScreen(transformOfUIToMove, canvasRect);
+        EndDrag();
     }
 
     private void KeepFullyOnScreen(RectTransform rect, RectTransform canvas)

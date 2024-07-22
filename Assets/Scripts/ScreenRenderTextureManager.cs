@@ -127,7 +127,13 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
 
-            SaveScreenshot(fileName);
+            try
+            {
+                SaveScreenshot(fileName);
+            } catch (Exception e)
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "An error occurred while attempting to save screenshot");
+            }
 
             RescindRenderToTexRequest();
 
@@ -173,5 +179,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
         // Write to file
         File.WriteAllBytes(filePath, Tex.EncodeToPNG());
+
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Screenshot saved to: " + filePath);
     }
 }

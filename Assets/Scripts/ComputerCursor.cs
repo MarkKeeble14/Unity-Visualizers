@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ComputerCursor : MonoBehaviour
 {
     [SerializeField] private RectTransform cursor;
+    public RectTransform CursorRect => cursor;
     [SerializeField] private RectTransform canvasRect;
     private float xDist;
     private float yDist;
@@ -17,6 +18,10 @@ public class ComputerCursor : MonoBehaviour
     [SerializeField] private Sprite hoveredSprite;
     [SerializeField] private Sprite notHoveredSprite;
     [SerializeField] private Sprite heldDownSprite;
+
+    [SerializeField] private CallPlayOneShotContainer clickDown;
+    [SerializeField] private CallPlayOneShotContainer clickRelease;
+    Vector3[] elementCorners = new Vector3[4];
 
     public void AddInteractable(ComputerScreenControl i)
     {
@@ -62,16 +67,42 @@ public class ComputerCursor : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            clickDown.PlayOneShot();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            clickRelease.PlayOneShot();
+        }
+
         // check for hovers
         for (int i = 0; i < interactableElements.Count; i++)
         {
             ComputerScreenControl element = interactableElements[i];
-            xDist = Mathf.Abs(element.Rect.position.x - cursor.position.x);
-            yDist = Mathf.Abs(element.Rect.position.y - cursor.position.y);
 
-            // Debug.DrawLine(element.Rect.position, cursor.position, Color.blue);
+            if (element.IsHeld)
+            {
+                element.Held();
+            }
 
-            if (xDist < element.Rect.sizeDelta.x / 2 && yDist < element.Rect.sizeDelta.y / 2)
+            if (Input.GetMouseButtonUp(0))
+            {
+                element.Released();
+            }
+
+            // Debug.DrawLine(element.Rect.position, cursor.position, Color.red);
+
+            if (element.Disabled)
+            {
+                element.NotHovered();
+                continue;
+            }
+
+            element.Rect.GetWorldCorners(elementCorners);
+            if (cursor.position.x > elementCorners[0].x && cursor.position.x < elementCorners[2].x
+                && cursor.position.y > elementCorners[3].y && cursor.position.y < elementCorners[1].y)
             {
                 element.Hovered();
                 if (Input.GetMouseButtonDown(0))

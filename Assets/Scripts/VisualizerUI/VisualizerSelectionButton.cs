@@ -41,7 +41,7 @@ public class VisualizerSelectionButton : MonoBehaviour
             LoadScene();
         } else
         {
-            VisualizerSelectionGridGenerator._Instance.UpdateSelection(sceneInfo.Scenarios, true);
+            VisualizerSelectionGridGenerator._Instance.UpdateSelection(sceneInfo.Scenarios, true, true);
         }
     }
 

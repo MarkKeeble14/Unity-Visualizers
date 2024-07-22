@@ -17,6 +17,7 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
     public static VisualizerSelectionGridGenerator _Instance { get; private set; }
 
     [SerializeField] private Button backButton;
+    [SerializeField] private OverrideHoverControlsComputerScreenControl backButtonScaleTween;
 
     public Stack<string[]> selectionsStack = new();
 
@@ -54,7 +55,7 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateSelection(defaultSelections, true);
+        UpdateSelection(defaultSelections, true, false);
         GenerateGrid();
     }
 
@@ -87,7 +88,7 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
         }
     }
 
-    public void UpdateSelection(string[] newScenarios, bool addToStack)
+    public void UpdateSelection(string[] newScenarios, bool addToStack, bool blink)
     {
         if (addToStack)
             selectionsStack.Push(newScenarios);
@@ -101,13 +102,16 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
         GenerateGrid();
 
         backButton.interactable = selectionsStack.Count > 1;
-        backButton.gameObject.SetActive(backButton.interactable);
+        backButtonScaleTween.Disabled = !backButton.interactable;
 
-        StartCoroutine(BlinkGlitch());
+        if (blink)
+            StartCoroutine(BlinkGlitch());
     }
 
     private IEnumerator BlinkGlitch()
     {
+        SFXManager._Instance.PlayOneShot("Glitch", true, true);
+
         DigitalGlitchVolume digitalGlitchVolume;
         volume.profile.TryGet<DigitalGlitchVolume>(out digitalGlitchVolume);
 
@@ -121,7 +125,7 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
     public void Back()
     {
         selectionsStack.Pop();
-        UpdateSelection(selectionsStack.Peek(), false);
+        UpdateSelection(selectionsStack.Peek(), false, true);
     }
 
     private VisualizerSelectionInfo GetSelectionInfo(string key)

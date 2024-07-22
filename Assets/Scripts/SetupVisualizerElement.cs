@@ -12,7 +12,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     [Header("Display Info")]
     [SerializeField] private TextMeshProUGUI labelText;
-    [SerializeField] private Image enabledButtonDisplay;
+    [SerializeField] private Checkbox enabledCheckbox;
 
     [Header("Dropdowns")]
     [SerializeField] private ColorDropdownMenu colorDropdownMenu;
@@ -26,6 +26,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     [Header("Other Settings")]
     [SerializeField] private float extraSettingHeight = 30;
+    [SerializeField] private float expandedHeightAdjustment = 20;
     private float expandedHeight;
     private float defaultHeight;
     private bool expanded;
@@ -63,7 +64,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
         defaultHeight = myRect.sizeDelta.y;
 
         float extraSettingsHeight = extraSettingsHolder.childCount * extraSettingHeight;
-        expandedHeight = myRect.sizeDelta.y + extraSettingsHeight;
+        expandedHeight = myRect.sizeDelta.y + extraSettingsHeight + expandedHeightAdjustment;
 
         // set height of settings
         RectTransform extraSettingsRect = extraSettingsHolder.GetComponent<RectTransform>();
@@ -107,9 +108,9 @@ public abstract class SetupVisualizerElement : MonoBehaviour
         UpdateEnabled(active);
     }
 
-    private void SetEnabledButtonColor()
+    private void SetCheckbox()
     {
-        enabledButtonDisplay.color = (active ? Color.green : Color.red);
+        enabledCheckbox.Active = active;
     }
 
     private void SetColorType()
@@ -149,7 +150,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     protected void Set()
     {
-        SetEnabledButtonColor();
+        SetCheckbox();
         SetColorType();
         SetFont();
     }

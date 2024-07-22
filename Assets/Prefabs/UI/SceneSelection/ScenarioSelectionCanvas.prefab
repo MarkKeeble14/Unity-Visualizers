@@ -194,7 +194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952290058709342981, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: m_Name
-      value: VisualizerList
+      value: SceneSelection
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821624, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: m_ChildAlignment

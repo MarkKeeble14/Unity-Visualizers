@@ -12,10 +12,10 @@ public class BlackFadeTransition : GoalBasedTransition
         return Mathf.Abs(image.color.a - goal) < equalityTolerence;
     }
 
-    protected override void MovePropertyTowardsGoal()
+    protected override void MovePropertyTowardsGoal(float speed = 1)
     {
         c = image.color;
-        c.a = MathHelper.GetNextValue(c.a, goal, (goal == 1 ? transitionInSpeed : transitionOutSpeed), moveBy, true);
+        c.a = MathHelper.GetNextValue(c.a, goal, (goal == 1 ? transitionInSpeed : transitionOutSpeed) * speed, moveBy, true);
         image.color = c;
     }
 

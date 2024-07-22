@@ -40,7 +40,7 @@ public class InputFieldPopup : MonoBehaviour
     {
         inputField.text = defaultText;
         textArea.GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        textArea.GetChild(2).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        textArea.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         inputField.Select();
 
         directionsText.text = directions;

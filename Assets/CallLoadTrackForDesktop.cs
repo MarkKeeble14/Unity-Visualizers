@@ -10,13 +10,6 @@ public class CallLoadTrackForDesktop : MonoBehaviour
     public void LoadFile()
     {
         Cursor.visible = true;
-        StartCoroutine(VisualizerManager._Instance.BrowseForTrackFile(clip =>
-        {
-            cycle.Pause = true;
-            source.Stop();
-            source.clip = clip;
-            source.Play();
-            cycle.Pause = false;
-        }, () => Cursor.visible = false));
+        StartCoroutine(VisualizerManager._Instance.RunTrackSelection(clip => Cursor.visible = false));
     }
 }

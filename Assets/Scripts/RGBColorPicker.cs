@@ -44,7 +44,7 @@ public class RGBColorPicker : MonoBehaviour
 
     public bool IsPickerHidden => rgbPickerCanvasGroup.alpha == 0;
     private Color hoveredPixelColor;
-
+    private Color openColor;
 
     private void Awake()
     {
@@ -104,16 +104,22 @@ public class RGBColorPicker : MonoBehaviour
 
     public void Open(Color startingColor)
     {
+        openColor = startingColor;
         SetR(startingColor.r);
         SetG(startingColor.g);
         SetB(startingColor.b);
-
         Open();
     }
 
     public void Close()
     {
         picker.SetActive(false);
+    }
+
+    public void Cancel()
+    {
+        OnColorFinalized?.Invoke(openColor);
+        Close();
     }
 
     public void FinalizeColor()

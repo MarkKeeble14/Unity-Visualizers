@@ -18,6 +18,7 @@ public class ComputerBlinkTransition : Transition
     [SerializeField] private float colorDrift = 1;
     [SerializeField] private float horizontalShake = 1;
     [SerializeField] private float minBlinkSpeed = 0.25f;
+    [SerializeField] private float staticVolume = 0.75f;
 
     [Header("References")]
     [SerializeField] private Image coverImage;
@@ -26,6 +27,8 @@ public class ComputerBlinkTransition : Transition
     [SerializeField] private GameObject[] enableOnBlink;
     [SerializeField] private UniversalAdditionalCameraData otherCamera;
     [SerializeField] private Volume volume;
+    [SerializeField] private AudioSource staticSource;
+
 
     protected override IEnumerator TransitionIn(float speed = 1)
     {
@@ -72,6 +75,8 @@ public class ComputerBlinkTransition : Transition
         {
             go.SetActive(true);
         }
+
+        staticSource.volume = staticVolume;
 
         // set analog glitch effects
         analogGlitchVolume.colorDrift.Override(colorDrift);

@@ -10,10 +10,14 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
     public void LoadFile()
     {
         Cursor.visible = true;
-        StartCoroutine(VisualizerManager._Instance.BrowseForImageFile(image =>
+        StartCoroutine(VisualizerManager._Instance.RunCoverArtSelection(sprite =>
         {
-            i.color = Color.white;
-            i.sprite = image;
-        }, () => Cursor.visible = false));
+            if (i.sprite != null)
+            {
+                i.color = Color.white;
+                i.sprite = sprite;
+            }
+            Cursor.visible = false;
+        }));
     }
 }

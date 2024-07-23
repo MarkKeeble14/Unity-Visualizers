@@ -114,6 +114,8 @@ public class EscapeMenuFunctions : MonoBehaviour
         KeyControl[] keyControls = FindObjectsOfType<KeyControl>(true);
         foreach (KeyControl control in keyControls)
         {
+            if (control.Hidden) continue;
+
             Transform list;
             if (!controlSchemeScrollViews.ContainsKey(control.PartOfScheme))
             {

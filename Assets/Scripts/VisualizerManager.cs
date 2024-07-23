@@ -17,6 +17,7 @@ using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
 using AForge.Math;
+using UnityEditor.Presets;
 
 [System.Serializable]
 public struct AudioClipData
@@ -173,7 +174,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private EscapeMenuFunctions escapeMenu;
     [SerializeField] private Volume volume;
     [SerializeField] private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
-    private AudioSource audioSource;
+    [SerializeField] private AudioSource audioSource;
 
     [Header("Prefabs")]
     [SerializeField] private ColorListElement colorListElement;
@@ -262,12 +263,20 @@ public class VisualizerManager : MonoBehaviour
 
     private void Awake()
     {
-        if (_Instance != null) Destroy(gameObject);
-        else _Instance = this;
+        if (_Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _Instance = this;
+        }
 
-        // Get audio source component
-        audioSource = GetComponent<AudioSource>();
+        Initialize();
+    }
 
+    private void Initialize()
+    {
         PopulateColorsList();
         PopulateFontsList();
 
@@ -684,7 +693,6 @@ public class VisualizerManager : MonoBehaviour
 
     public void SetPlaythroughPosition(float v)
     {
-        Debug.Log("SetPlaythroughPosition: " + v);
         if (!hasSongStarted)
         {
             prePlaybackPositionTracker = v;
@@ -765,6 +773,13 @@ public class VisualizerManager : MonoBehaviour
             new ActionSelection("URL", null, PopoutEnterTrackURL()),
             new ActionSelection("File", null, BrowseForTrack())
         });
+    }
+
+    public IEnumerator RunTrackSelection(Action<AudioClip> onEnd)
+    {
+        yield return StartCoroutine(RunTrackSelection());
+
+        onEnd?.Invoke(audioSource.clip);
     }
 
     private IEnumerator PopoutEnterTrackURL()
@@ -1117,6 +1132,13 @@ public class VisualizerManager : MonoBehaviour
         });
     }
 
+    public IEnumerator RunCoverArtSelection(Action<Sprite> onEnd)
+    {
+        yield return RunCoverArtSelection();
+
+        onEnd?.Invoke(trackInfo.CoverArt);
+    }
+
     private IEnumerator PopoutEnterImageURL()
     {
         yield return UIManager._Instance.PopupInputField("URL", "Enter Image URL", "Confirm", "Cancel", false,
@@ -1186,6 +1208,7 @@ public class VisualizerManager : MonoBehaviour
         if (setDefaultColorsFromTexture)
         {
             defaultColor = AverageColorFromTexture(texture);
+            AddColorElement(defaultColor);
             defaultGradient = new Gradient();
             defaultGradient.SetKeys(new GradientColorKey[] { new GradientColorKey(defaultColor, 0), new GradientColorKey(Color.white, 1) },
                 new GradientAlphaKey[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1) });
@@ -1519,14 +1542,20 @@ public class VisualizerManager : MonoBehaviour
 
     private void AddColorElement()
     {
-        trackInfo.Colors.Add(Color.white);
+        AddColorElement(Color.white);
+    }
+
+    private void AddColorElement(Color c)
+    {
+        trackInfo.Colors.Add(c);
         ColorListElement spawned = Instantiate(colorListElement, colorsList);
-        spawned.Set(trackInfo.Colors.Count - 1, Color.white);
+        spawned.Set(trackInfo.Colors.Count - 1, c);
     }
 
     private void AddGradientElement()
     {
-        Gradient g = defaultGradient;
+        Gradient g = new Gradient();
+        g.SetKeys(defaultGradient.colorKeys, defaultGradient.alphaKeys);
         trackInfo.Gradients.Add(g);
         GradientListElement spawned = Instantiate(gradientListElement, colorsList);
         spawned.Set(trackInfo.Gradients.Count - 1, g);

@@ -187,6 +187,14 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 5111990017948149980, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5111990017948149980, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -574.76556
+      objectReference: {fileID: 0}
     - target: {fileID: 5680556973103322406, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
       propertyPath: m_Color.b
       value: 0
@@ -205,10 +213,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5726335937441437904, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
       propertyPath: m_ChildControlHeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6833015559040265786, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7722104190406724193, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
@@ -243,6 +247,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7932531785093509523, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7932531785093509523, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
 --- !u!114 &1015863873706114187 stripped
@@ -256,9 +268,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &2128016851077411297 stripped
+--- !u!224 &1464106080191745791 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5704054540483319746, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5111990017948149980, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+  m_PrefabInstance: {fileID: 5954008774279030307}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4862292533225579169 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1286540905419113602, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
+  m_PrefabInstance: {fileID: 5954008774279030307}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &4866191246796318028 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 1236462703533163375, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
   m_PrefabInstance: {fileID: 5954008774279030307}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &6417397744126863622 stripped
@@ -302,13 +324,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexText: {fileID: 7563769149980881553}
   labelText: {fileID: 6417397744126863622}
-  listCanvas: {fileID: 8466477304301826396}
-  list: {fileID: 2128016851077411297}
+  listCanvas: {fileID: 4866191246796318028}
+  list: {fileID: 1464106080191745791}
+  dropdown: {fileID: 4862292533225579169}
   templateElement: {fileID: 6443587104719167448, guid: c7df25878af6fcd4bb956ba508dd6b36, type: 3}
   elementHeight: 50
   colorDisplay: {fileID: 1015863873706114187}
---- !u!223 &8466477304301826396 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 2872763501013948287, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
-  m_PrefabInstance: {fileID: 5954008774279030307}
-  m_PrefabAsset: {fileID: 0}

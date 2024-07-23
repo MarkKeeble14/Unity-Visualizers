@@ -10,6 +10,7 @@ public abstract class DropdownMenu : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI labelText;
     [SerializeField] private Canvas listCanvas;
     [SerializeField] private RectTransform list;
+    [SerializeField] private RectTransform dropdown;
 
     [Header("Prefabs")]
     [SerializeField] private DropdownElement templateElement;
@@ -40,15 +41,22 @@ public abstract class DropdownMenu : MonoBehaviour
 
     private void Open()
     {
+        if (dropdownElements.Count == 0)
+        {
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Request to open dropdown refused - No available choices");
+            return;
+        }
+
         isOpen = true;
 
-        list.gameObject.SetActive(true);
+        dropdown.gameObject.SetActive(true);
     }
 
     private void Close()
     {
         isOpen = false;
-        list.gameObject.SetActive(false);
+
+        dropdown.gameObject.SetActive(false);
     }
 
     protected void Clear()

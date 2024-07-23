@@ -23,7 +23,7 @@ public class GradientEditor : MonoBehaviour
 
     public Action<Gradient> OnGradientFinalized;
     private int currentlyEditingKeyIndex = -1;
-
+    private Gradient startingGradient;
 
     private void Awake()
     {
@@ -34,6 +34,9 @@ public class GradientEditor : MonoBehaviour
     public void Open(Gradient gradientState)
     {
         currentGradient = gradientState;
+
+        startingGradient = new Gradient();
+        startingGradient.SetKeys(currentGradient.colorKeys, currentGradient.alphaKeys);
 
         UpdateGradientDisplay();
 
@@ -47,7 +50,15 @@ public class GradientEditor : MonoBehaviour
         // Unity Gradients are limited to 8 keys
         if (currentGradient.colorKeys.Length >= 8)
         {
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Failed to add key - Unable to add more than 8 keys to a Gradient");
             Debug.LogWarning("Unable to add any more keys to Gradient");
+            return;
+        }
+
+        if (gradientDisplay.HasKeyInTimeBucket(percentPos))
+        {
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Failed to add key - A key already exists at the desired position");
+            Debug.LogWarning("Failed to add key to gradient - A key already exists at the desired position");
             return;
         }
 
@@ -157,6 +168,12 @@ public class GradientEditor : MonoBehaviour
     public void FinalizeGradient()
     {
         OnGradientFinalized(currentGradient);
+        Close();
+    }
+
+    public void Cancel()
+    {
+        OnGradientFinalized(startingGradient);
         Close();
     }
 

@@ -3126,10 +3126,6 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Fonts.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: userDefinedDominantColor.b
       value: 0.1254902
       objectReference: {fileID: 0}
@@ -3270,10 +3266,6 @@ PrefabInstance:
       value: 0.1254902
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Colors.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: userDefinedSecondaryColor.b
       value: 0.3764706
       objectReference: {fileID: 0}
@@ -3346,37 +3338,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1587039180}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Fonts.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 3bd390ebad20e5942ad148174dde3e81, type: 2}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: blurSettings.CopyToFrameBuffer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: activeCameraAdditionalCameraData
       value: 
       objectReference: {fileID: 2144958518}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Colors.Array.data[0].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Colors.Array.data[0].b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Colors.Array.data[0].g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Colors.Array.data[0].r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: visualizerElementDict.Array.size
       value: 7
@@ -3690,46 +3658,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].atime1
-      value: 65535
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].ctime1
-      value: 65535
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key0.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key0.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key0.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key0.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key1.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key1.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key1.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].key1.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: trackInfo.Gradients.Array.data[1].atime1
       value: 65535
       objectReference: {fileID: 0}
@@ -3904,14 +3832,6 @@ PrefabInstance:
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: preset.Gradients.Array.data[1].m_NumColorKeys
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].m_NumAlphaKeys
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
-      propertyPath: trackInfo.Gradients.Array.data[0].m_NumColorKeys
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1209412595206947813, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: trackInfo.Gradients.Array.data[1].m_NumAlphaKeys

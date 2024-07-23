@@ -10,8 +10,8 @@ public class LinkAudioSourceVolumeToDigitalGlitchIntensity : MonoBehaviour
     [SerializeField] private Volume volume;
     private DigitalGlitchVolume dGlitchVolume;
 
-    [SerializeField] private float minValueVolume;
-    [SerializeField] private float maxValueVolume;
+    [SerializeField] private float minValueVolume = 0;
+    [SerializeField] private float maxValueVolume = 1;
 
     private void Awake()
     {

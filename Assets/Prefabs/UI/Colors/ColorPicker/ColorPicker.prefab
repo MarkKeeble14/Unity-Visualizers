@@ -1000,6 +1000,8 @@ GameObject:
   m_Component:
   - component: {fileID: 575163910059752570}
   - component: {fileID: 2360905147554389094}
+  - component: {fileID: 4475492654167000616}
+  - component: {fileID: 7143742635379909404}
   m_Layer: 5
   m_Name: ColorPickerPanel
   m_TagString: Untagged
@@ -1041,6 +1043,44 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!222 &4475492654167000616
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6561241510440203847}
+  m_CullTransparentMesh: 1
+--- !u!114 &7143742635379909404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6561241510440203847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7621305335720702348
 GameObject:
   m_ObjectHideFlags: 0
@@ -1918,6 +1958,34 @@ PrefabInstance:
     - target: {fileID: 7025903254495949761, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 8081643467614884006}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Cancel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: RGBColorPicker, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718756854899386597, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c64222715e69a04eb5bc7535e17d595, type: 3}

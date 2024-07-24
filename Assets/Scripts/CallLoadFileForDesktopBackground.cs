@@ -12,7 +12,7 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
         Cursor.visible = true;
         StartCoroutine(VisualizerManager._Instance.RunCoverArtSelection(sprite =>
         {
-            if (i.sprite != null)
+            if (sprite != null)
             {
                 i.color = Color.white;
                 i.sprite = sprite;

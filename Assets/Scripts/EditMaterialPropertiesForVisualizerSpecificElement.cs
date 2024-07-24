@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour, IRecieveVisualizerSpecificElementsInfo, IRecieveVisualizerFloatValues
 {
@@ -8,20 +9,13 @@ public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour,
     [SerializeField] private string emissionIntensityKey;
     [SerializeField] private float defaultEmissionIntensity;
     private float emissionIntensity;
-    private Color startBaseColor;
-    private Color startEmissionColor;
 
-    private void Awake()
+    private void Start()
     {
-        startBaseColor = mat.GetColor("_BaseColor");
-        startEmissionColor = mat.GetColor("_EmissionColor");
+        Color startColor = VisualizerManager._Instance.GetColor(VisualizerColorType.COLOR, 0);
+        mat.SetColor("_BaseColor", startColor);
+        mat.SetColor("_EmissionColor", startColor);
         emissionIntensity = defaultEmissionIntensity;
-    }
-
-    private void OnDestroy()
-    {
-        mat.SetColor("_BaseColor", startBaseColor);
-        mat.SetColor("_EmissionColor", startEmissionColor);
     }
 
     public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)

@@ -193,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5111990017948149980, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -574.76556
+      value: -0.0006866455
       objectReference: {fileID: 0}
     - target: {fileID: 5680556973103322406, guid: bc126d57d9d304f4d820f541af7a17e3, type: 3}
       propertyPath: m_Color.b
@@ -329,4 +329,5 @@ MonoBehaviour:
   dropdown: {fileID: 4862292533225579169}
   templateElement: {fileID: 6443587104719167448, guid: c7df25878af6fcd4bb956ba508dd6b36, type: 3}
   elementHeight: 50
+  elementType: Color
   colorDisplay: {fileID: 1015863873706114187}

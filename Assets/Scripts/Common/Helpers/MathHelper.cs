@@ -19,7 +19,7 @@ public class MathHelper
             case AlterationMethod.MOVE_TOWARDS:
                 return Mathf.MoveTowards(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
             default:
-                throw new System.Exception(); // TODO: Custom Exception
+                throw new UncaughtSwitchTypeException(typeof(AlterationMethod), method.ToString());
         }
     }
 
@@ -32,7 +32,7 @@ public class MathHelper
             case AlterationMethod.MOVE_TOWARDS:
                 return Vector3.MoveTowards(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
             default:
-                throw new System.Exception(); // TODO: Custom Exception
+                throw new UncaughtSwitchTypeException(typeof(AlterationMethod), method.ToString());
         }
     }
 

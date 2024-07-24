@@ -7,7 +7,6 @@ using System;
 using SimpleFileBrowser;
 using System.IO;
 using UnityEngine.Networking;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using VideoLibrary;
@@ -78,9 +77,10 @@ public class VisualizerManager : MonoBehaviour
     public static VisualizerManager _Instance { get; private set; }
 
     [Header("Default Track Info")]
-    [SerializeField] private Color defaultColor;
     [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
+    [SerializeField] private bool loadDefaultPreset = true;
+    [SerializeField] private string defaultPresetName;
     [SerializeField] private TrackInfo trackInfo;
     public string TrackTitle => trackInfo.Title;
 
@@ -89,13 +89,7 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, TMP_FontAsset> loadedTMPFontAssets = new();
 
     [Header("Other Settings")]
-    [SerializeField] private bool askForTrack = true;
-    [SerializeField] private bool askForCoverArt = true;
-    [SerializeField] private bool askForPreset = true;
-    [SerializeField] private bool askForColors = true;
-    [SerializeField] private bool askForFonts = true;
-    [SerializeField] private bool askForVisualizerElements = true;
-    [SerializeField] private bool setDefaultColorsFromTexture = true;
+    [SerializeField] private bool addColorWhenLoadingTexture = true;
     [SerializeField] private bool startImmedietelyUponLoadingTrack;
     [SerializeField] private bool applyPostProcessing;
     [SerializeField, Range(0, 1)] private float volumeWeight;
@@ -103,6 +97,11 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private List<SerializableKeyValuePair<string, float>> startingFloatSettings = new();
     [SerializeField] private List<SerializableKeyValuePair<string, int>> startingIntSettings = new();
     [SerializeField] private List<SerializableKeyValuePair<string, bool>> startingBoolSettings = new();
+
+    [Header("File Settings")]
+    [SerializeField] private List<string> fontFileExtensions = new List<string>() { "ttf", "otf" };
+    [SerializeField] private List<string> audioFileExtensions = new List<string>() { "mp3", "wav", "ogg" };
+    [SerializeField] private List<string> imageFileExtensions = new List<string>() { "jpg", "jpeg", "png" };
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
@@ -149,6 +148,9 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Controls")]
     [SerializeField] private ControlScheme activeControlScheme = ControlScheme.VISUALIZER;
+    [SerializeField] private List<SerializableKeyValuePair<ControlScheme, string>> availableControlSchemes = new();
+
+    [SerializeField] private EscapeMenuFunctions escapeMenuFunctions;
     public ControlScheme ActiveControlScheme => activeControlScheme;
 
     [Header("Beat Detection Settings")]
@@ -172,9 +174,9 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Button loadingTrackButton;
     [SerializeField] private Button loadingImageButton;
     [SerializeField] private EscapeMenuFunctions escapeMenu;
-    [SerializeField] private Volume volume;
-    [SerializeField] private UniversalAdditionalCameraData activeCameraAdditionalCameraData;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private Volume volume;
+    private PostProcessingCamera ppCamera;
 
     [Header("Prefabs")]
     [SerializeField] private ColorListElement colorListElement;
@@ -273,9 +275,33 @@ public class VisualizerManager : MonoBehaviour
         }
 
         Initialize();
+
+        // Set variables from scene
+        ppCamera = FindObjectOfType<PostProcessingCamera>(true);
+
+        // Set other components
+        escapeMenuFunctions.SetAvailableControlSchemes(availableControlSchemes);
     }
 
     private void Initialize()
+    {
+        if (loadDefaultPreset)
+        {
+            SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "DefaultPresets", defaultPresetName + ".dat"),
+                (path, preset) =>
+                {
+                    SetFromPreset(preset);
+                }, path =>
+                {
+                    BasicInitialization();
+                });
+        } else
+        {
+            BasicInitialization();
+        }
+    }
+
+    private void BasicInitialization()
     {
         PopulateColorsList();
         PopulateFontsList();
@@ -303,14 +329,15 @@ public class VisualizerManager : MonoBehaviour
     private void Start()
     {
         BroadcastControlScheme();
+
+        if (initialTransition.transition != null) { initialTransition.transition.InitiateTransition(initialTransition.direction); }
     }
 
     // Update is called once per frame
     private void Update()
     {
         // Enable/disable post processing
-        if (activeCameraAdditionalCameraData != null)
-            activeCameraAdditionalCameraData.renderPostProcessing = applyPostProcessing;
+        ppCamera.CameraData.renderPostProcessing = applyPostProcessing;
 
         // Change weight
         volume.weight = volumeWeight;
@@ -604,7 +631,7 @@ public class VisualizerManager : MonoBehaviour
             case VisualizerColorType.TIME_BASED_GRADIENT:
                 return GetTrackGradient(index).Evaluate(PlaythroughPercent);
             default:
-                throw new Exception(); // TODO: Custom Exceptions
+                throw new UncaughtSwitchTypeException(typeof(VisualizerColorType), type.ToString());
         }
     }
 
@@ -619,20 +646,22 @@ public class VisualizerManager : MonoBehaviour
             case VisualizerColorType.TIME_BASED_GRADIENT:
                 return GetTrackGradient(index).Evaluate(PlaythroughPercent);
             default:
-                throw new Exception(); // TODO: Custom Exceptions
+                throw new UncaughtSwitchTypeException(typeof(VisualizerColorType), type.ToString());
         }
     }
 
     public Color GetTrackColor(int index)
     {
-        if (index > trackInfo.Colors.Count - 1) return defaultColor;
+        if (trackInfo.Colors.Count == 0) return Color.white;
+        if (index > trackInfo.Colors.Count - 1) return trackInfo.Colors[0];
         return trackInfo.Colors[index];
 
     }
 
     public Gradient GetTrackGradient(int index)
     {
-        if (index > trackInfo.Gradients.Count - 1) return defaultGradient;
+        if (trackInfo.Gradients.Count == 0) return defaultGradient;
+        if (index > trackInfo.Gradients.Count - 1) return trackInfo.Gradients[0];
         return trackInfo.Gradients[index];
     }
 
@@ -650,23 +679,27 @@ public class VisualizerManager : MonoBehaviour
 
     public TMP_FontAsset GetFont(int index)
     {
-        if (index > loadedFontData.Count - 1) return defaultFont;
+        if (trackInfo.Fonts.Count == 0) return defaultFont;
+        if (index > loadedFontData.Count - 1) return trackInfo.Fonts[0];
         return loadedTMPFontAssets[GetFontKeyAtIndex(index)];
     }
 
     public Color GetDefaultColor()
     {
-        return defaultColor;
+        if (trackInfo.Colors.Count == 0) return Color.white;
+        return trackInfo.Colors[trackInfo.Colors.Count - 1];
     }
 
     public Gradient GetDefaultGradient()
     {
-        return defaultGradient;
+        if (trackInfo.Gradients.Count == 0) return defaultGradient;
+        return trackInfo.Gradients[trackInfo.Gradients.Count - 1];
     }
 
     public TMP_FontAsset GetDefaultFont()
     {
-        return defaultFont;
+        if (trackInfo.Fonts.Count == 0) return defaultFont;
+        return trackInfo.Fonts[trackInfo.Fonts.Count - 1];
     }
 
     public string GetFontName(int index)
@@ -880,7 +913,7 @@ public class VisualizerManager : MonoBehaviour
             return ImportableAudioSource.YOUTUBE;
         else
         {
-            throw new UncaughtSwitchTypeException(typeof(ImportableAudioSource)); // TODO: Custom Exceptions
+            throw new UncaughtSwitchTypeException(typeof(ImportableAudioSource), url);
         }
     }
 
@@ -1042,25 +1075,38 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => completed);
     }
 
+    private string[] MakeFileBrowserFilterArray(List<string> fileTypes)
+    {
+        return StringHelper.AppendTextToAll(fileTypes, ".", "");
+    }
+
     private IEnumerator BrowseForTrack()
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", MakeFileBrowserFilterArray(audioFileExtensions)));
+        FileBrowser.SetDefaultFilter("Audio");
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
-            Debug.Log("Attempting to Load Audio from File: " + x);
+            string extension = StringHelper.GetFileExtension(x);
+            if (!audioFileExtensions.Contains(extension))
+            {
+                Debug.Log("Unsupported font file selected");
+                PrintUnsupportedFileTypeMessage(extension, audioFileExtensions);
+            } else
+            {
+                Debug.Log("Attempting to Load Audio from File: " + x);
 
-            StartCoroutine(LoadAudioClipFromFile(x,
-                (filePath, clip) =>
-                {
-                    SetTrack(filePath, clip);
-                },
-                x =>
-                {
-                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load track from selected file " +
-                        "- Ensure the file selected is an appropriate file type");
-                    Debug.Log("Failed to Load Audio Clip from path = " + x);
-                }));
+                StartCoroutine(LoadAudioClipFromFile(x,
+                    (filePath, clip) =>
+                    {
+                        SetTrack(filePath, clip);
+                    },
+                    x =>
+                    {
+                        Debug.Log("Failed to Load Audio Clip from path = " + x);
+                        PrintUnableToLoadFileMessage("Image", imageFileExtensions);
+                    }));
+            }
         }, "Select Track", "Load"));
 
         loadingTrackButton.interactable = true;
@@ -1069,9 +1115,8 @@ public class VisualizerManager : MonoBehaviour
     // duration will take the format of mm:ss
     private void SetTrack(string filePath, AudioClip clip, string trackName = "", string durationSeconds = "")
     {
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Track Set");
-
         audioSource.clip = clip;
+        prePlaybackPositionTracker = 0;
 
         if (string.IsNullOrEmpty(trackName))
         {
@@ -1152,12 +1197,12 @@ public class VisualizerManager : MonoBehaviour
         yield return StartCoroutine(DownloadImage(url,
                 (url, tex) =>
                 {
-                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded image from: " + url);
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded image");
                     SetCoverArt(tex);
                 },
                 url =>
                 {
-                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download image from: " + url);
+                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download image from url");
                 }));
 
         UIManager._Instance.RemoveLoading(loadingKey);
@@ -1176,23 +1221,34 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator BrowseForImage()
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", MakeFileBrowserFilterArray(imageFileExtensions)));
+        FileBrowser.SetDefaultFilter("Images");
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
-            Debug.Log("Attempting to Load Image from File: " + x);
-            LoadImageFromFile(x,
-                (filePath, texture) =>
-                {
-                    Debug.Log("Successfully Loaded Image from path = " + x);
-                    SetCoverArt(texture);
-                },
-            x =>
+            string extension = StringHelper.GetFileExtension(x);
+            if (!imageFileExtensions.Contains(extension))
             {
-                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load image from selected file " +
-                    "- Ensure the file selected is an appropriate file type");
-                Debug.Log("Failed to Load Image from path = " + x);
-            });
+                Debug.Log("Unsupported image file selected");
+                PrintUnsupportedFileTypeMessage(extension, imageFileExtensions);
+            }
+            else
+            {
+                Debug.Log("Attempting to Load Image from File: " + x);
+
+                LoadImageFromFile(x,
+                    (filePath, texture) =>
+                    {
+                        Debug.Log("Successfully Loaded Image from path = " + x);
+                        SetCoverArt(texture);
+                    },
+                    x =>
+                    {
+                        PrintUnableToLoadFileMessage("Image", imageFileExtensions);
+                        Debug.Log("Failed to Load Image from path = " + x);
+                    }
+                );
+            }
         }, "Select Cover Art", "Load"));
 
         loadingImageButton.interactable = true;
@@ -1200,18 +1256,14 @@ public class VisualizerManager : MonoBehaviour
 
     private void SetCoverArt(Texture2D texture)
     {
-        trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+        trackInfo.CoverArt = MakeSpriteFromTex(texture);
 
         Debug.Log("Setting track cover");
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Cover Art Set");
 
-        if (setDefaultColorsFromTexture)
+        if (addColorWhenLoadingTexture)
         {
-            defaultColor = AverageColorFromTexture(texture);
-            AddColorElement(defaultColor);
-            defaultGradient = new Gradient();
-            defaultGradient.SetKeys(new GradientColorKey[] { new GradientColorKey(defaultColor, 0), new GradientColorKey(Color.white, 1) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1) });
+            Color c = AverageColorFromTexture(texture);
+            AddColorElement(c);
         }
 
         BroadcastTrackInfo();
@@ -1239,7 +1291,7 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator DownloadImage(string mediaUrl, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.INFO, "Attempting to Download Image from: " + mediaUrl);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.INFO, "Attempting to Download Image");
 
         Texture2D tex;
 
@@ -1250,12 +1302,18 @@ public class VisualizerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(request.error);
-                onFailure(mediaUrl);
+                onFailure?.Invoke(mediaUrl);
             }
             else
             {
                 tex = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                onSuccess(mediaUrl, tex);
+                if (tex == null)
+                {
+                    onFailure?.Invoke(mediaUrl);
+                } else
+                {
+                    onSuccess?.Invoke(mediaUrl, tex);
+                }
             }
         }
     }
@@ -1299,7 +1357,7 @@ public class VisualizerManager : MonoBehaviour
     private void BroadcastSetupValues()
     {
         BroadcastTrackInfo();
-        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerFloatValues();
         BroadcastVisualizerIntValues();
@@ -1308,7 +1366,8 @@ public class VisualizerManager : MonoBehaviour
 
     public IEnumerator RunLoadPresetSelection()
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Presets", ".dat"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Preset Files", ".dat"));
+        FileBrowser.SetDefaultFilter("Preset Files");
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
@@ -1324,14 +1383,23 @@ public class VisualizerManager : MonoBehaviour
         BroadcastTrackInfo();
     }
 
-    public IEnumerator SelectOneFont(Action<string, TMP_FontAsset> onSuccess)
+    public IEnumerator BrowseForFont(Action<string, TMP_FontAsset> onSuccess)
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Font", ".ttf", ".otf"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Fonts", MakeFileBrowserFilterArray(fontFileExtensions)));
+        FileBrowser.SetDefaultFilter("Fonts");
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
-            TMP_FontAsset font = LoadTMPFontFromFile(x);
-            onSuccess(x, font);
+            string extension = StringHelper.GetFileExtension(x);
+            if (!fontFileExtensions.Contains(extension))
+            {
+                Debug.Log("Unsupported font file selected");
+                PrintUnsupportedFileTypeMessage(extension, fontFileExtensions);
+            } else
+            {
+                TMP_FontAsset font = LoadTMPFontFromFile(x);
+                onSuccess(x, font);
+            }
         }, "Select Font", "Load"));
     }
 
@@ -1369,54 +1437,6 @@ public class VisualizerManager : MonoBehaviour
         return Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
     }
 
-    public IEnumerator BrowseForImageFile(Action<Sprite> onSuccess, Action always)
-    {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".png", ".jpeg"));
-
-        yield return StartCoroutine(BrowseForSingleFile(x =>
-        {
-            Debug.Log("Attempting to Load Image from File: " + x);
-            LoadImageFromFile(x,
-                (filePath, texture) =>
-                {
-                    Debug.Log("Successfully Loaded Image from path = " + x);
-                    onSuccess?.Invoke(MakeSpriteFromTex(texture));
-                },
-            x =>
-            {
-                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load image from selected file " +
-                    "- Ensure the file selected is an appropriate file type");
-                Debug.Log("Failed to Load Image from path = " + x);
-            });
-        }, "Select Image", "Load"));
-
-        always?.Invoke();
-    }
-
-    public IEnumerator BrowseForTrackFile(Action<AudioClip> onSuccess, Action always)
-    {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", ".mp3", ".wav", ".ogg"));
-
-        yield return StartCoroutine(BrowseForSingleFile(x =>
-        {
-            Debug.Log("Attempting to Load Audio from File: " + x);
-
-            StartCoroutine(LoadAudioClipFromFile(x,
-                (filePath, clip) =>
-                {
-                    onSuccess?.Invoke(clip);
-                },
-                x =>
-                {
-                    UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load track from selected file " +
-                        "- Ensure the file selected is an appropriate file type");
-                    Debug.Log("Failed to Load Audio Clip from path = " + x);
-                }));
-        }, "Select Track", "Load"));
-
-        always?.Invoke();
-    }
-
     private void OnFileSucessfullySelected(string filePath, Action<string> toDoWithFile)
     {
         toDoWithFile(filePath);
@@ -1437,7 +1457,7 @@ public class VisualizerManager : MonoBehaviour
         catch (InvalidFileTypeException e)
         {
             UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Attempted to load an invalid audio file - Supported audio file extensions are " 
-                + GetSupportedAudioFileExtensions());
+                + MakeFileBrowserFilterArray(audioFileExtensions));
             yield break;
         }
 
@@ -1464,11 +1484,6 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    private string GetSupportedAudioFileExtensions()
-    {
-        return "[ .wav, .mp3, .ogg ]";
-    }
-
     private void LoadImageFromFile(string filePath, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
         byte[] bytes = File.ReadAllBytes(filePath);
@@ -1484,7 +1499,6 @@ public class VisualizerManager : MonoBehaviour
             else
             {
                 onFailure?.Invoke(filePath);
-                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load Image");
             }
         }
         catch (Exception e)
@@ -1493,27 +1507,46 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    private void PrintUnsupportedFileTypeMessage(string recievedFileType, List<string> acceptedFileTypes)
+    {
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Selected file with an unsupported file extension (" + recievedFileType + ") - " +
+            "Supported extensions=" + StringHelper.CombineCollection(MakeFileBrowserFilterArray(acceptedFileTypes), ", "));
+    }
+
+    private void PrintUnableToLoadFileMessage(string expectedFileType, List<string> acceptedFileTypes)
+    {
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Failed to load " + expectedFileType + " from selected file - " +
+                            "Ensure the file selected is an appropriate file type " +
+                            "(" + StringHelper.CombineCollection(MakeFileBrowserFilterArray(acceptedFileTypes), ", ") + ")");
+    }
+
     private TMP_FontAsset LoadTMPFontFromFile(string filePath)
     {
-        Debug.Log("Loading Font from File: " + filePath);
-
         return LoadTMPFontFromFontAsset(new Font(filePath));
     }
 
     private TMP_FontAsset LoadTMPFontFromFontAsset(Font font)
     {
-        TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(font);
-        return asset;
+        TMP_FontAsset fontAsset = null;
+        try
+        {
+            fontAsset = TMP_FontAsset.CreateFontAsset(font);
+        } catch (Exception e)
+        {
+            Debug.Log("Could not load font from file");
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "An error occurred while generating font asset");
+        }
+
+        return fontAsset;
     }
 
     private Font LoadFontFromByteArray(byte[] bytes)
     {
-        string filePath = UnityEngine.Application.dataPath + "/LoadingFont.ttf";
+        string filePath = Application.dataPath + "/Fonts/LoadingFont.ttf";
         Debug.Log("Loading font from byte array - Helper file at: " + filePath);
         File.WriteAllBytes(filePath, bytes);
         return new Font(filePath);
     }
-
 
     private AudioType GetAudioType(string filePath)
     {
@@ -1554,11 +1587,12 @@ public class VisualizerManager : MonoBehaviour
 
     private void AddGradientElement()
     {
-        Gradient g = new Gradient();
-        g.SetKeys(defaultGradient.colorKeys, defaultGradient.alphaKeys);
-        trackInfo.Gradients.Add(g);
+        Gradient newGradient = new Gradient();
+        Gradient defaultGradient = GetDefaultGradient();
+        newGradient.SetKeys(defaultGradient.colorKeys, defaultGradient.alphaKeys);
+        trackInfo.Gradients.Add(newGradient);
         GradientListElement spawned = Instantiate(gradientListElement, colorsList);
-        spawned.Set(trackInfo.Gradients.Count - 1, g);
+        spawned.Set(trackInfo.Gradients.Count - 1, newGradient);
     }
 
     private void PopulateColorsList()
@@ -1588,14 +1622,16 @@ public class VisualizerManager : MonoBehaviour
     {
         if (index > trackInfo.Colors.Count - 1) return;
         trackInfo.Colors[index] = c;
-        BroadcastTrackInfo();
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void UpdateTrackGradient(int index, Gradient g)
     {
         if (index > trackInfo.Gradients.Count - 1) return;
         trackInfo.Gradients[index] = g;
-        BroadcastTrackInfo();
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
     private void ClearFontsList()
@@ -1606,13 +1642,47 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
+    private bool HasFontNameAlreadyBeenLoaded(string fontName)
+    {
+        return loadedFontData.ContainsKey(fontName);
+    }
+
+    private void PrintDuplicateFontNameMessage(string fontName)
+    {
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Ignored attempt to add a duplicate font (" + fontName + ") " +
+            "- Fonts must have a unique file to be loaded");
+    }
+
     public void AddFontElement()
     {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Fonts", MakeFileBrowserFilterArray(fontFileExtensions)));
+        FileBrowser.SetDefaultFilter("Fonts");
+
         StartCoroutine(BrowseForMultipleFiles(x =>
         {
-            string fontName = RegisterNewFont(x);
-            FontListElement spawned = Instantiate(fontListElement, fontsList);
-            spawned.Set(loadedFontIndices[fontName]);
+            string extension = StringHelper.GetFileExtension(x);
+            if (!fontFileExtensions.Contains(extension))
+            {
+                Debug.Log("Unsupported font file selected");
+                PrintUnsupportedFileTypeMessage(extension, fontFileExtensions);
+            } else
+            {
+                string fontName = StringHelper.GetFileName(x);
+                
+                if (HasFontNameAlreadyBeenLoaded(fontName))
+                {
+                    Debug.Log("Ignored attempt to add a duplicate font");
+                    PrintDuplicateFontNameMessage(fontName);
+                } else
+                {
+                    // register font
+                    RegisterNewFont(x);
+
+                    // make ui
+                    FontListElement spawned = Instantiate(fontListElement, fontsList);
+                    spawned.Set(loadedFontIndices[fontName]);
+                }
+            }
         }, "Choose Fonts", "Load"));
     }
 
@@ -1627,10 +1697,12 @@ public class VisualizerManager : MonoBehaviour
 
     public void UpdateFont(string filePath, int index)
     {
-        string newFontName = StringHelper.GetFileName(filePath);
-        if (loadedFontData.ContainsKey(newFontName))
+        string fontName = StringHelper.GetFileName(filePath);
+
+        if (HasFontNameAlreadyBeenLoaded(fontName))
         {
-            Debug.LogWarning("Ignoring attempt to add a font that already exists");
+            Debug.Log("Ignored attempt to add a duplicate font");
+            PrintDuplicateFontNameMessage(fontName);
             return;
         }
 
@@ -1643,18 +1715,23 @@ public class VisualizerManager : MonoBehaviour
         // Add new
         RegisterNewFont(filePath, index);
 
-        BroadcastTrackInfo();
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
-    public string RegisterNewFont(string filePath, int index = -1)
+    public void RegisterNewFont(string filePath, int index = -1)
     {
+        string fontName = StringHelper.GetFileName(filePath);
         byte[] fileContents = File.ReadAllBytes(filePath);
-        FontFileData fontFileData = new FontFileData(StringHelper.GetFileName(filePath), fileContents);
+        TMP_FontAsset fontAsset = LoadTMPFontFromFontAsset(LoadFontFromByteArray(fileContents));
+        FontFileData fontFileData = new FontFileData(fontName, fileContents);
 
-        loadedFontData.Add(fontFileData.FontName, fontFileData);
-        loadedTMPFontAssets.Add(fontFileData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fileContents)));
-        loadedFontIndices.Add(fontFileData.FontName, (index == -1 ? loadedFontIndices.Count : index));
-        return fontFileData.FontName;
+        loadedFontData.Add(fontName, fontFileData);
+        loadedTMPFontAssets.Add(fontName, fontAsset);
+        loadedFontIndices.Add(fontName, (index == -1 ? loadedFontIndices.Count : index));
+
+        Debug.Log("Successfully loaded Font from File");
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully loaded Font");
     }
 
     private void UpdateTrackFonts()
@@ -1802,7 +1879,7 @@ public class VisualizerManager : MonoBehaviour
             visualizerSpecificElementsInfo[key] = settings;
         }
 
-        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
 
@@ -1827,13 +1904,13 @@ public class VisualizerManager : MonoBehaviour
     public void RegisterVisualizerSpecificElement(string key)
     {
         RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
     {
         visualizerSpecificElementsInfo.Add(key, settings);
-        BroadcastVisualizerSpecificsElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
@@ -1946,7 +2023,7 @@ public class VisualizerManager : MonoBehaviour
             // Loading cover
             Texture2D texture = new Texture2D(preset.CoverArt.Width, preset.CoverArt.Height, preset.CoverArt.TextureFormat, false);
             texture.LoadImage(preset.CoverArt.PNGEncodedData);
-            trackInfo.CoverArt = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+            trackInfo.CoverArt = MakeSpriteFromTex(texture);
         }
 
         // Set colors
@@ -2046,7 +2123,7 @@ public class VisualizerManager : MonoBehaviour
     }
 
     [ContextMenu("BroadcastVisualizerElementsInfo")]
-    private void BroadcastVisualizerSpecificsElementsInfo()
+    private void BroadcastVisualizerSpecificElementsInfo()
     {
         visualizerSpecificElementsInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerSpecificElementsInfo>().ToList();
 

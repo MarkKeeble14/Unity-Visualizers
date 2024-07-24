@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 6
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!1 &730601667641401917
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 6
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!1 &774344703965552612
@@ -642,6 +644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 2
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!114 &5788612160787266091
@@ -669,6 +672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 2
+  ignoreBroadcasts: 0
   index: 0
   text: {fileID: 4692421920290114003}
 --- !u!1 &1807501826889787740
@@ -741,11 +745,7 @@ GameObject:
   - component: {fileID: 1807501827369941025}
   - component: {fileID: 1807501827369941047}
   - component: {fileID: 1807501827369941032}
-  - component: {fileID: 1807501827369941036}
-  - component: {fileID: 1807501827369941037}
   - component: {fileID: 1807501827369941038}
-  - component: {fileID: 1807501827369941039}
-  - component: {fileID: 1807501827369941024}
   m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
@@ -793,7 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a00afda211f274f6ca6cce958e4e13a5, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -801,7 +801,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a9981726e9292e944b62c745de1f83b7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2324e96ff727a3e4f998d52924dce661, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -811,40 +811,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1807501827369941036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807501827369941026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b43ef59a7b1fe1d499996c93020a1a3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signalMultiplier: 1
-  startDirection: 0
-  speed: 5
---- !u!114 &1807501827369941037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807501827369941026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad40df0705b31594088eade1869b8d37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bypass: 0
-  shouldExecuteLock: {fileID: 0}
-  slowAdust: 0
-  adjustSpeed: 25
-  defaultValue: 0
-  multiplier: 1
-  rotateOn: 2
 --- !u!114 &1807501827369941038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -857,35 +823,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fda436d03c7ffc439701fd5292e63c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1807501827369941039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807501827369941026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  directions:
-  - key: {fileID: 1807501827369941036}
-    value:
-    - {fileID: 1807501827369941037}
---- !u!114 &1807501827369941024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807501827369941026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  greaterThan: 0.15
 --- !u!1 &1807501827883093437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,6 +1529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 0
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!114 &2719737812417008288
@@ -1607,6 +1545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 0
+  ignoreBroadcasts: 0
   index: 0
   text: {fileID: 6611571563060356526}
 --- !u!114 &3324943199677356691
@@ -1879,6 +1818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 6
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!1 &6469233316254432249
@@ -2241,6 +2181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 1
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
 --- !u!114 &2924234893796334349
@@ -2256,6 +2197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 1
+  ignoreBroadcasts: 0
   index: 0
   text: {fileID: 2880485430267212935}
 --- !u!1 &8550863678934763263

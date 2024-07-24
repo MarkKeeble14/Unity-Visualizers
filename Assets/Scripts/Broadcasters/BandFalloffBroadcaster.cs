@@ -16,7 +16,7 @@ public class BandFalloffBroadcaster : FalloffBroadcaster
             case BandType.AUDIO:
                 return VisualizerManager._Instance.GetAudioBandValue(band, false) * signalMultiplier;
             default:
-                throw new UncaughtSwitchTypeException(typeof(BandType)); // TODO: Custom Exception
+                throw new UncaughtSwitchTypeException(typeof(BandType), bandType.ToString());
         }
     }
 }

@@ -17,7 +17,7 @@ public class ControlPanelQuadControlElement : ControlPanelElement
 
     protected override void MakeElement(ControlPanelElementInfo info)
     {
-        if (info.KeyControls.Length != 4) throw new System.Exception(); // TODO: Custom Exception
+        if (info.KeyControls.Length != 4) throw new MalformedKeyControlsForControlElementException(info.KeyControls.Length, 4);
 
         SetKeyAndActionText(info.KeyControls[0], upActionText, upKeyText);
         SetKeyAndActionText(info.KeyControls[1], rightActionText, rightKeyText);

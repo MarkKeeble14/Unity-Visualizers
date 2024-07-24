@@ -62,7 +62,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 1
+  m_ReverseArrangement: 0
 --- !u!1 &6495997046775087040
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiStack: {fileID: 471900910484961645}
   popupMessagesList: {fileID: 7143388773397040941}
+  mirroredPopupMessageLists: []
   messagePopupPrefab: {fileID: 8719568564946339257, guid: 9580bdcbd8dc3704d849366480aa6651, type: 3}
   messageClassColors:
   - key: 0
@@ -233,6 +234,7 @@ MonoBehaviour:
   loadingPopupPrefab: {fileID: 4790709197132060419, guid: cef2197eb53a3644e80639f19923d2e6, type: 3}
   inputFieldDialogPrefab: {fileID: 6542063617483799250, guid: 5876f898c7f518746bff4c72699249f5, type: 3}
   actionSelectionPopupPrefab: {fileID: 9156748837003629425, guid: 2050e4b987c565e4795d64de98b64c57, type: 3}
+  minLoadingDuration: 0
 --- !u!223 &7116243022475085256
 Canvas:
   m_ObjectHideFlags: 0

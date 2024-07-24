@@ -41,6 +41,7 @@ public class ComputerBlinkTransition : Transition
         volume.profile.TryGet<AnalogGlitchVolume>(out analogGlitchVolume);
 
         VisualizerSelectionInfo selected = VisualizerSelectionGridGenerator._Instance.SelectedScene;
+
         coverImage.sprite = selected.ScenarioBackgroundSprite;
         coverText.text = selected.ScenarioName;
         coverText.font = selected.TextFont;

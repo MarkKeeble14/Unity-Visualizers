@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dd00808463355f54f89381d343a8c8d2
+guid: 5c795b44056feaa4bbc1cb35c06fc63d
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,8 +8,7 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontNames:
-  - Night Scream Personal Use
+  fontNames: []
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

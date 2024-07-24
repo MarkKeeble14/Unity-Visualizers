@@ -86,9 +86,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 5
+  ignoreBroadcasts: 0
   colorType: 0
   index: 0
-  segmentPrefab: {fileID: 7142856522332667449, guid: c91b2e4cfeab7484680c1cf58fdb396c, type: 3}
+  segmentPrefab: {fileID: 7142856522332667449, guid: 2fcd5a4f4a65a2c489cb217a9cf67c96, type: 3}
   attachmentType: 1
   signalMultiplier: 15000
   defaultValue: 15

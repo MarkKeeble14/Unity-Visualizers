@@ -9,9 +9,17 @@ public class PopupLoading : MonoBehaviour
 
     public string Text => text.text;
 
+    private float timeAlive = 0;
+    public float TimeAlive => timeAlive;
+
 
     public void Set(string text)
     {
         this.text.text = text;
+    }
+
+    private void Update()
+    {
+        timeAlive += Time.deltaTime;
     }
 }

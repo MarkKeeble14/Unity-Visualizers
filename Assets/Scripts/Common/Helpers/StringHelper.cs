@@ -15,6 +15,21 @@ public static class StringHelper
         return System.String.Format("{0}", v);
     }
 
+    public static string CombineCollection(string[] arr, string separator)
+    {
+        string res = string.Empty;
+        foreach (var item in arr)
+        {
+            res += item + separator;
+        }
+        return res.Substring(0, res.Length - separator.Length);
+    }
+
+    public static string CombineCollection(List<string> lst, string separator)
+    {
+        return CombineCollection(lst.ToArray(), separator);
+    }
+
     public static string GetDurationText(float totalSeconds)
     {
         float minutes = Mathf.FloorToInt(totalSeconds / 60);
@@ -53,5 +68,24 @@ public static class StringHelper
             fileName += c;
         }
         return Reverse(fileName);
+    }
+
+    public static string[] AppendTextToAll(string[] extensions, string prepend, string append)
+    {
+        for (int i = 0; i < extensions.Length; i++)
+        {
+            extensions[i] = prepend + extensions[i] + append;
+        }
+        return extensions;
+    }
+
+    public static string[] AppendTextToAll(List<string> extensions, string prepend, string append)
+    {
+        string[] result = new string[extensions.Count];
+        for (int i = 0; i < extensions.Count; i++)
+        {
+            result[i] = prepend + extensions[i] + append;
+        }
+        return result;
     }
 }

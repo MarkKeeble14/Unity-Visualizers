@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1938665e3b3c5534b94c5d420ebb514d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 270
   action: Increase Volume
   PartOfScheme: 0
@@ -67,6 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1938665e3b3c5534b94c5d420ebb514d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 269
   action: Decrease Volume
   PartOfScheme: 0
@@ -123,6 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f001826072cf6fe43b04af94037f5741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 32
   action: Pause/Unpause Playback
   PartOfScheme: 0
@@ -138,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67c1514f8f564841895c906dad77255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 114
   action: Reset Playback
   PartOfScheme: 0
@@ -153,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16a8585ae6fffd442829c7b7ebebaadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 112
   action: Start Playback
   PartOfScheme: 0
@@ -208,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fdfe804bf5691478159d0757f9b87c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 274
   action: Decrease Seek Speed
   PartOfScheme: 0
@@ -228,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3457db45262a0b2439ec2f47d6c67633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 276
   action: Seek Backwards
   PartOfScheme: 0
@@ -245,6 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fdfe804bf5691478159d0757f9b87c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 273
   action: Increase Seek Speed
   PartOfScheme: 0
@@ -265,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3457db45262a0b2439ec2f47d6c67633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 275
   action: Seek Forward
   PartOfScheme: 0
@@ -619,6 +628,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2326328255298533827, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2358685801413044308, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2425992411509589796, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
@@ -2006,20 +2019,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8132890764476425818, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132890764476425818, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8132890764476425818, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 490
       objectReference: {fileID: 0}
     - target: {fileID: 8132890764476425818, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 255
       objectReference: {fileID: 0}
     - target: {fileID: 8132890764476425818, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 8190527491519180561, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_AnchorMax.y

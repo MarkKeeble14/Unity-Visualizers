@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -125, y: -450}
+  m_AnchoredPosition: {x: -150, y: -355}
   m_SizeDelta: {x: 250, y: 660}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1127671771329158489
@@ -306,8 +306,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tabList: {fileID: 7100500643565999204}
-  hiddenX: -125
-  shownX: 125
+  hiddenX: -150
+  shownX: 150
   moveSpeed: 10
   moveMethod: 0
   allowOpenTabMenuWithEscapeOpen: 0
@@ -324,6 +324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 9
   action: Open Setup Menu
   PartOfScheme: 0
@@ -1231,7 +1232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2264402256908671240, guid: 0a2673aa754ffde44aa70206518d6488, type: 3}
       propertyPath: m_text
-      value: Load Song
+      value: Load Track
       objectReference: {fileID: 0}
     - target: {fileID: 2264402256908671240, guid: 0a2673aa754ffde44aa70206518d6488, type: 3}
       propertyPath: m_fontStyle

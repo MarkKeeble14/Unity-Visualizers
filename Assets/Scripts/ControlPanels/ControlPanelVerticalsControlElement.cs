@@ -11,7 +11,7 @@ public class ControlPanelVerticalsControlElement : ControlPanelElement
 
     protected override void MakeElement(ControlPanelElementInfo info)
     {
-        if (info.KeyControls.Length != 2) throw new System.Exception(); // TODO: Custom Exception
+        if (info.KeyControls.Length != 2) throw new MalformedKeyControlsForControlElementException(info.KeyControls.Length, 2);
 
         SetKeyAndActionText(info.KeyControls[0], upActionText, upKeyText);
         SetKeyAndActionText(info.KeyControls[1], downActionText, downKeyText);

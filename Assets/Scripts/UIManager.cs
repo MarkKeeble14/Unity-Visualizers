@@ -24,6 +24,9 @@ public class UIManager : MonoBehaviour
 
     [Header("Messages")]
     [SerializeField] private Transform popupMessagesList;
+    [SerializeField] private Transform[] mirroredPopupMessageLists;
+    private Dictionary<Transform, List<GameObject>> mirroredPopupMessages = new();
+
     [SerializeField] private PopupMessage messagePopupPrefab;
     [SerializeField] private List<SerializableKeyValuePair<MessageClass, Color>> messageClassColors = new();
     private TimerDictionary<StringWithAnIndex> popupMessageDict = new();
@@ -38,6 +41,9 @@ public class UIManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputFieldPopup inputFieldDialogPrefab;
     [SerializeField] private ActionSelectionPopup actionSelectionPopupPrefab;
+    private Dictionary<PopupLoading, float> minTimeDurationDict = new();
+    private List<PopupLoading> loadingPopupsCanDestroy = new();
+    private Queue<PopupLoading> loadingPopupsToDestroy = new();
 
     private int numMessagesLifetime;
 
@@ -64,6 +70,27 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         popupMessageDict.Update();
+
+        UpdateLoadingPopups();
+    }
+
+    private void UpdateLoadingPopups()
+    {
+        for (int i = 0; i < loadingPopupsCanDestroy.Count; i++)
+        {
+            if (loadingPopupsCanDestroy[i].TimeAlive > minTimeDurationDict[loadingPopupsCanDestroy[i]])
+            {
+                loadingPopupsToDestroy.Enqueue(loadingPopupsCanDestroy[i]);
+            }
+        }
+
+        while (loadingPopupsToDestroy.Count > 0)
+        {
+            PopupLoading destroying = loadingPopupsToDestroy.Dequeue();
+            loadingPopupsCanDestroy.Remove(destroying);
+            minTimeDurationDict.Remove(destroying);
+            Destroy(destroying.gameObject);
+        }
     }
 
     public IEnumerator PopupInputField(string defaultText, string directions, string confirmButtonText, string cancelButtonText, bool allowCopyToClipboard,
@@ -94,17 +121,19 @@ public class UIManager : MonoBehaviour
         yield return actionSelectionPopup.Consume(directions, cancelButtonText, onCancel, actions);
     }
 
-    public int AddLoading(string message)
+    public int AddLoading(string message, float minDuration = 1)
     {
         // spawn the prefab
         PopupLoading spawned = Instantiate(loadingPopupPrefab, popupLoadingList);
         spawned.Set(message);
 
+
         // find a key
         int messageKey = 0;
         while (spawnedLoadingDict.ContainsKey(messageKey)) { messageKey++; }
-
         spawnedLoadingDict.Add(messageKey, spawned);
+
+        minTimeDurationDict.Add(spawned, minDuration);
 
         return messageKey;
     }
@@ -113,11 +142,12 @@ public class UIManager : MonoBehaviour
     {
         PopupLoading loading = spawnedLoadingDict[key];
         spawnedLoadingDict.Remove(key);
-        Destroy(loading.gameObject);
+        loadingPopupsCanDestroy.Add(loading);
+
         return;
     }
 
-    public void AddNewMessage(MessageClass messageClass, string message, float duration = 3)
+    public void AddNewMessage(MessageClass messageClass, string message, float duration = 5)
     {
         addedMessages.Add(new KeyValuePair<string, MessageClass>(message, messageClass));
         popupMessageDict.Add(new StringWithAnIndex(numMessagesLifetime++, message), duration);
@@ -145,8 +175,20 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        // 
         spawned.SetText(str.str);
         spawnedMessagesDict.Add(new KeyValuePair<string, PopupMessage>(str.str, spawned));
+
+        // spawn mirror messages
+        List<GameObject> mirroredMessages = new();
+        foreach (Transform t in mirroredPopupMessageLists)
+        {
+            PopupMessage copy = Instantiate(messagePopupPrefab, t);
+            copy.SetText(spawned.Text);
+            copy.SetColor(spawned.Color);
+            mirroredMessages.Add(copy.gameObject);
+        }
+        mirroredPopupMessages.Add(spawned.transform, mirroredMessages);
     }
 
     private void RemoveMessage(StringWithAnIndex str)
@@ -163,11 +205,13 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        if (retrievedText == null)
-        {
-            AddNewMessage(MessageClass.ERROR, "I don't feel so good Mr. Stark");
-            return;
-        }
+        if (retrievedText == null) { throw new ElementWithKeyNotFoundException(typeof(PopupMessage), str.str); }
+
+        // destroy mirrored messages
+        List<GameObject> retrievedMirroredMessages = mirroredPopupMessages[retrievedText.transform];
+        foreach (GameObject obj in retrievedMirroredMessages) { Destroy(obj); }
+        mirroredPopupMessages.Remove(retrievedText.transform);
+
         Destroy(retrievedText.gameObject);
     }
 

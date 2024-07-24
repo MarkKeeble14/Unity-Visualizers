@@ -47,10 +47,7 @@ public class VisualizerSelectionButton : MonoBehaviour
 
     private void LoadScene()
     {
-        VisualizerSelectionGridGenerator._Instance.SetSelectedScene(sceneInfo);
-        TransitionManager._Instance.Transition(sceneInfo.TransitionName, TransitionDirection.IN,
-            () => TransitionManager._Instance.PlayAudioClip(sceneInfo.OnSelectSound), 
-            () => SceneManager.LoadScene(sceneInfo.LoadSceneName));
+        VisualizerSelectionGridGenerator._Instance.LoadScene(sceneInfo);
     }
 
     public void SetAesthetics(float scenarioImagePadding, float textHolderVerticalPadding, float buttonFontSize)

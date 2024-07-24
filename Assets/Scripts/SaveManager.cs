@@ -160,14 +160,37 @@ public class SaveManager : MonoBehaviour
     public async Task LoadPreset(string loadFromPath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
     {
         Debug.Log("Attempting to load data from: " + loadFromPath);
-        int loadingKey = UIManager._Instance.AddLoading("Loading Preset...");
+        string fileExtension = StringHelper.GetFileExtension(loadFromPath);
+        int loadingKey = UIManager._Instance.AddLoading("Loading Preset=" 
+            + StringHelper.GetFileName(loadFromPath) + "." + fileExtension, 3);
+
+        if (!fileExtension.Equals("dat"))
+        {
+            Debug.Log("Incorrect file type specified for loading preset");
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Selected file is incorrect " +
+                "- Preset files will have the .dat file extension");
+
+            UIManager._Instance.RemoveLoading(loadingKey);
+            return;
+        }
 
         try
         {
             int loadingKey2 = UIManager._Instance.AddLoading("Reading File...");
 
-            var readFileTask = Task.Run(async () => await System.IO.File.ReadAllBytesAsync(loadFromPath));
-            await readFileTask;
+            Task<byte[]> readFileTask;
+            try
+            {
+                readFileTask = Task.Run(async () => await System.IO.File.ReadAllBytesAsync(loadFromPath));
+                await readFileTask;
+            } catch (Exception e)
+            {
+                Debug.Log("Unable to read file");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Unable to parse file " +
+                    "- File is either not a preset file or contains corrupted data");
+                UIManager._Instance.RemoveLoading(loadingKey2);
+                throw new AllPartOfThePlanException();
+            }
 
             UIManager._Instance.RemoveLoading(loadingKey2);
 
@@ -175,7 +198,18 @@ public class SaveManager : MonoBehaviour
 
             byte[] readBytes = readFileTask.Result;
             byte[] jsonAsBytes = new byte[0];
-            var decompressTask = await Task.Run(() => jsonAsBytes = Zip.Decompress(readBytes));
+
+            try
+            {
+                var decompressTask = await Task.Run(() => jsonAsBytes = Zip.Decompress(readBytes));
+            } catch (Exception e)
+            {
+                Debug.Log("Unable to decompress file");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Unable to decompress file " +
+                    "- File may be corrupted");
+                UIManager._Instance.RemoveLoading(loadingKey2);
+                throw new AllPartOfThePlanException();
+            }
 
             UIManager._Instance.RemoveLoading(loadingKey2);
 
@@ -184,7 +218,17 @@ public class SaveManager : MonoBehaviour
             loadingKey2 = UIManager._Instance.AddLoading("Deserializing...");
 
             VisualizerPreset loadedPreset = new();
-            var deserializeTask = await Task.Run(() => loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json));
+            try
+            {
+                var deserializeTask = await Task.Run(() => loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json));
+            } catch (Exception e)
+            {
+                Debug.Log("Unable to desieralize json");
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Unable to desieralize json " +
+                    "- File may be corrupted");
+                UIManager._Instance.RemoveLoading(loadingKey2);
+                throw new AllPartOfThePlanException();
+            }
 
             UIManager._Instance.RemoveLoading(loadingKey2);
 

@@ -19,7 +19,7 @@ public class BandBroadcaster : SignalBroadcaster
             case BandType.AUDIO:
                 return VisualizerManager._Instance.GetAudioBandValue(band, useBuffer) * signalMultiplier;
             default:
-                throw new System.Exception(); // TODO: Custom Exception
+                throw new UncaughtSwitchTypeException(typeof(BandType), bandType.ToString());
         }
     }
 }

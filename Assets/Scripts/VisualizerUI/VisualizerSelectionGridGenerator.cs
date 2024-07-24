@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using URPGlitch.Runtime.AnalogGlitch;
 using URPGlitch.Runtime.DigitalGlitch;
@@ -29,19 +30,19 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
     [SerializeField] private float blinkGlitchDuration = 0.1f;
     [SerializeField] private Volume volume;
 
-    private bool hasSelectedScene;
+    private bool isSceneSelected;
     private VisualizerSelectionInfo selectedScene;
     public VisualizerSelectionInfo SelectedScene
     {
         get
         {
-            if (hasSelectedScene)
+            if (isSceneSelected)
             {
                 return selectedScene;
             }
             else
             {
-                throw new Exception(); // TODO: Custom Exceptions
+                throw new VisualizerSceneNotSelectedException();
             }
         }
     }
@@ -137,12 +138,18 @@ public class VisualizerSelectionGridGenerator : MonoBehaviour
                 return kvp.Value;
             }
         }
-        throw new System.Exception(); // TODO: Custom Exceptions
+        throw new ElementWithKeyNotFoundException(typeof(VisualizerSelectionInfo), key);
     }
 
-    internal void SetSelectedScene(VisualizerSelectionInfo sceneInfo)
+    public void LoadScene(VisualizerSelectionInfo sceneInfo)
     {
+        if (isSceneSelected) return;
+
+        isSceneSelected = true;
         selectedScene = sceneInfo;
-        hasSelectedScene = true;
+
+        TransitionManager._Instance.Transition(sceneInfo.TransitionName, TransitionDirection.IN,
+            () => TransitionManager._Instance.PlayAudioClip(sceneInfo.OnSelectSound),
+            () => SceneManager.LoadScene(sceneInfo.LoadSceneName));
     }
 }

@@ -18,10 +18,12 @@ public abstract class DropdownMenu : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private int elementHeight;
     protected List<DropdownElement> dropdownElements = new();
+    [SerializeField] private string elementType;
 
     public Action<int> OnSelectElement;
     protected int selectedIndex;
     private bool isOpen;
+    public bool IsOpen => isOpen;
 
     private void Awake()
     {
@@ -43,7 +45,8 @@ public abstract class DropdownMenu : MonoBehaviour
     {
         if (dropdownElements.Count == 0)
         {
-            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, "Request to open dropdown refused - No available choices");
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
+                "Request to open dropdown ignored - No " + elementType + "s to select from. Please load a " + elementType + " to select from first");
             return;
         }
 
@@ -52,7 +55,7 @@ public abstract class DropdownMenu : MonoBehaviour
         dropdown.gameObject.SetActive(true);
     }
 
-    private void Close()
+    public void Close()
     {
         isOpen = false;
 

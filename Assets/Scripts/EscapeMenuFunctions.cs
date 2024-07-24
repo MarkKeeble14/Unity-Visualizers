@@ -7,19 +7,20 @@ using UnityEngine.SceneManagement;
 public class EscapeMenuFunctions : MonoBehaviour
 {
     [SerializeField] private CanvasGroup cv;
-    [SerializeField] private List<SerializableKeyValuePair<ControlScheme, string>> availableControlSchemes = new();
     [SerializeField] private Transform controlsDisplay;
     [SerializeField] private ControlDisplay controlDisplayPrefab;
     [SerializeField] private ControlScrollView listPrefab;
     [SerializeField] private ControlScheme defaultToControlScheme;
-    private int currentlyDisplayedControlSchemeIndex = 0;
-    private Dictionary<ControlScheme, ControlScrollView> controlSchemeScrollViews = new();
-    private ControlScrollView currentlyDisplayedControlScheme;
-    private List<ControlScheme> foundControlSchemes = new();
     [SerializeField] private TextMeshProUGUI activeSchemeText;
     [SerializeField] private GameObject prevSchemeButton;
     [SerializeField] private GameObject nextSchemeButton;
     [SerializeField] private string outTransition;
+
+    private int currentlyDisplayedControlSchemeIndex = 0;
+    private List<SerializableKeyValuePair<ControlScheme, string>> availableControlSchemes = new();
+    private Dictionary<ControlScheme, ControlScrollView> controlSchemeScrollViews = new();
+    private ControlScrollView currentlyDisplayedControlScheme;
+    private List<ControlScheme> foundControlSchemes = new();
 
     public static EscapeMenuFunctions _Instance { get; private set; }
     public bool IsOpen => cv.alpha == 1;
@@ -193,5 +194,10 @@ public class EscapeMenuFunctions : MonoBehaviour
             activeSchemeText.color = Color.red;
             activeSchemeText.text += " (Inactive)";
         }
+    }
+
+    public void SetAvailableControlSchemes(List<SerializableKeyValuePair<ControlScheme, string>> dict)
+    {
+        availableControlSchemes = dict;
     }
 }

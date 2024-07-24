@@ -8,7 +8,7 @@ public class ControlPanelSingleControlElement : ControlPanelElement
 
     protected override void MakeElement(ControlPanelElementInfo info)
     {
-        if (info.KeyControls.Length != 1) throw new System.Exception(); // TODO: Custom Exception
+        if (info.KeyControls.Length != 1) throw new MalformedKeyControlsForControlElementException(info.KeyControls.Length, 1);
 
         SetKeyAndActionText(info.KeyControls[0], keyText, actionText);
     }

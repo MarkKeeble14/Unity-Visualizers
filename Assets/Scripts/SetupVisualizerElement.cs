@@ -164,6 +164,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
     {
         VisualizerElementsSettings newSettings = GetElementSettings();
         newSettings.ColorType = type;
+        newSettings.ColorIndex = 0;
 
         UpdateSettings(newSettings);
     }

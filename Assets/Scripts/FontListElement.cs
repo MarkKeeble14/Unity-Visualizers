@@ -15,7 +15,7 @@ public class FontListElement : ListSelectionElement
 
     public override void OpenListSelection()
     {
-        StartCoroutine(VisualizerManager._Instance.SelectOneFont(
+        StartCoroutine(VisualizerManager._Instance.BrowseForFont(
             (filePath, font) =>
             {
                 VisualizerManager._Instance.UpdateFont(filePath, Index);

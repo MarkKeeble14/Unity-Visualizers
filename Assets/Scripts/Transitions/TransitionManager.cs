@@ -17,18 +17,10 @@ public class TransitionManager : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource;
 
-    [SerializeField] private TransitionData initialTransition;
-
     private void Awake()
     {
         if (_Instance != null) Destroy(gameObject);
         else _Instance = this;
-    }
-
-    private void Start()
-    {
-        if (initialTransition.transition == null) return;
-        initialTransition.transition.InitiateTransition(initialTransition.direction);
     }
 
     public void Transition(string transitionKey, TransitionDirection direction, Action onBegin = null, Action onEnd = null)
@@ -38,6 +30,7 @@ public class TransitionManager : MonoBehaviour
             if (kvp.Key == transitionKey)
             {
                 kvp.Value.InitiateTransition(direction, onBegin, onEnd);
+                Debug.Log(transitionKey + ", " + kvp.Value);
                 break;
             }
         }

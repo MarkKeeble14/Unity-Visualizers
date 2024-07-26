@@ -15,8 +15,6 @@ using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
-using AForge.Math;
-using UnityEditor.Presets;
 
 [System.Serializable]
 public struct AudioClipData
@@ -82,7 +80,6 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool loadDefaultPreset = true;
     [SerializeField] private string defaultPresetName;
     [SerializeField] private TrackInfo trackInfo;
-    public string TrackTitle => trackInfo.Title;
 
     private Dictionary<string, int> loadedFontIndices = new();
     private Dictionary<string, FontFileData> loadedFontData = new();
@@ -161,21 +158,28 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
+    [SerializeField] private EscapeMenuFunctions escapeMenu;
+
+    [Header("Tapping UI")]
     [SerializeField] private GameObject tempoMenuUI;
     [SerializeField] private TMP_InputField tempoTapperInputField;
     [SerializeField] private Button tempoTapperButton;
+
+    [Header("Setup UI")]
     [SerializeField] private GameObject baseVisualizerElementsUI;
     [SerializeField] private GameObject visualizerSpecificElementsUI;
     [SerializeField] private GameObject colorsUI;
     [SerializeField] private GameObject fontsUI;
-
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
     [SerializeField] private Button loadingTrackButton;
-    [SerializeField] private Button loadingImageButton;
-    [SerializeField] private EscapeMenuFunctions escapeMenu;
+    [SerializeField] private Button loadCoverArtButton;
+    [SerializeField] private Button loadBackgroundButton;
+
+    [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private Volume volume;
+    private Camera activeCamera;
     private PostProcessingCamera ppCamera;
 
     [Header("Prefabs")]
@@ -191,6 +195,7 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
     private List<IRecieveVisualizerIntValues> visualizerIntValueListeners = new();
     private List<IRecieveVisualizerBoolValues> visualizerBoolValueListeners = new();
+    private List<IRecieveActiveCamera> activeCameraListeners = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
 
@@ -674,7 +679,7 @@ public class VisualizerManager : MonoBehaviour
                 return kvp.Key;
             }
         }
-        throw new IndexOutOfRangeException();
+        throw new IndexNotFoundException<string>(index, loadedFontIndices);
     }
 
     public TMP_FontAsset GetFont(int index)
@@ -774,6 +779,23 @@ public class VisualizerManager : MonoBehaviour
     public void ChooseCoverArt()
     {
         StartCoroutine(RunCoverArtSelection());
+    }
+
+    public void ChooseBackground()
+    {
+        StartCoroutine(RunBackgroundSelection());
+    }
+
+    public void ClearCoverArt()
+    {
+        trackInfo.CoverArt = null;
+        BroadcastTrackInfo();
+    }
+
+    public void ClearBackground()
+    {
+        trackInfo.Background = null;
+        BroadcastTrackInfo();
     }
 
     public void EditColors()
@@ -1048,7 +1070,9 @@ public class VisualizerManager : MonoBehaviour
         if (useCover)
         {
             // load cover art on success as well
-            onSuccess += (path, name, clip) => StartCoroutine(AttemptToDownloadImageFromURL(track.ArtworkUrl.ToString()));
+            onSuccess += (path, name, clip) => StartCoroutine(
+                AttemptToDownloadImageFromURL(track.ArtworkUrl.ToString(), tex => SetCoverArt(tex), null)
+            );
         }
 
         StartCoroutine(LoadAudioClipFromFile(outputFilePath, (path, clip) =>
@@ -1162,19 +1186,41 @@ public class VisualizerManager : MonoBehaviour
     #endregion
 
     #region Cover Art Selection
+    public IEnumerator RunImageSelection(Action<Texture2D> onSuccess, Action onFailure)
+    {
+
+        yield return UIManager._Instance.PopupActionSelection("Load Art from URL or File?", "Cancel", null, 
+            new List<ActionSelection>()
+            {
+                        new ActionSelection("URL", null, PopoutEnterImageURL(onSuccess, onFailure)),
+                        new ActionSelection("File", null, BrowseForImage(onSuccess, onFailure))
+            });
+    }
+
     public IEnumerator RunCoverArtSelection()
     {
-        loadingImageButton.interactable = false;
+        loadCoverArtButton.interactable = false;
 
-        yield return UIManager._Instance.PopupActionSelection("Load Art from URL or File?", "Cancel", 
-        () =>
-        {
-            loadingImageButton.interactable = true;
-        }, new List<ActionSelection>()
-        {
-            new ActionSelection("URL", null, PopoutEnterImageURL()),
-            new ActionSelection("File", null, BrowseForImage())
-        });
+        yield return RunImageSelection(
+            tex =>
+            {
+                SetCoverArt(tex);
+            }, null);
+
+        loadCoverArtButton.interactable = true;
+    }
+
+    public IEnumerator RunBackgroundSelection()
+    {
+        loadBackgroundButton.interactable = false;
+
+        yield return RunImageSelection(
+            tex =>
+            {
+                SetBackground(tex);
+            }, null);
+
+        loadBackgroundButton.interactable = true;
     }
 
     public IEnumerator RunCoverArtSelection(Action<Sprite> onEnd)
@@ -1184,13 +1230,31 @@ public class VisualizerManager : MonoBehaviour
         onEnd?.Invoke(trackInfo.CoverArt);
     }
 
-    private IEnumerator PopoutEnterImageURL()
+    private IEnumerator PopoutEnterImageURL(Action<Texture2D> onSuccess, Action onFailure)
     {
+        string url = string.Empty;
         yield return UIManager._Instance.PopupInputField("URL", "Enter Image URL", "Confirm", "Cancel", false,
-                    AttemptToDownloadImageFromURL, OnFailDownloadImageFromURL());
+                    x =>
+                    {
+                        url = x;
+                    }, 
+                    () =>
+                    {
+                        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Cancelled load image from URL");
+                    });
+
+        if (string.IsNullOrEmpty(url))
+        {
+            onFailure?.Invoke();
+            yield break;
+        }
+        else
+        {
+            yield return AttemptToDownloadImageFromURL(url, onSuccess, onFailure);
+        }
     }
 
-    private IEnumerator AttemptToDownloadImageFromURL(string url)
+    private IEnumerator AttemptToDownloadImageFromURL(string url, Action<Texture2D> onSuccess, Action onFailure)
     {
         int loadingKey = UIManager._Instance.AddLoading("Downloading Image from URL");
 
@@ -1198,28 +1262,18 @@ public class VisualizerManager : MonoBehaviour
                 (url, tex) =>
                 {
                     UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully downloaded image");
-                    SetCoverArt(tex);
+                    onSuccess?.Invoke(tex);
                 },
                 url =>
                 {
                     UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download image from url");
+                    onFailure?.Invoke();
                 }));
 
         UIManager._Instance.RemoveLoading(loadingKey);
-
-        loadingImageButton.interactable = true;
     }
 
-    private IEnumerator OnFailDownloadImageFromURL()
-    {
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Image from URL");
-
-        loadingImageButton.interactable = true;
-
-        yield return null;
-    }
-
-    private IEnumerator BrowseForImage()
+    private IEnumerator BrowseForImage(Action<Texture2D> onSuccess, Action onFailure)
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", MakeFileBrowserFilterArray(imageFileExtensions)));
         FileBrowser.SetDefaultFilter("Images");
@@ -1239,19 +1293,18 @@ public class VisualizerManager : MonoBehaviour
                 LoadImageFromFile(x,
                     (filePath, texture) =>
                     {
+                        onSuccess?.Invoke(texture);
                         Debug.Log("Successfully Loaded Image from path = " + x);
-                        SetCoverArt(texture);
                     },
                     x =>
                     {
+                        onFailure?.Invoke();
                         PrintUnableToLoadFileMessage("Image", imageFileExtensions);
                         Debug.Log("Failed to Load Image from path = " + x);
                     }
                 );
             }
-        }, "Select Cover Art", "Load"));
-
-        loadingImageButton.interactable = true;
+        }, "Select Image", "Load"));
     }
 
     private void SetCoverArt(Texture2D texture)
@@ -1259,6 +1312,24 @@ public class VisualizerManager : MonoBehaviour
         trackInfo.CoverArt = MakeSpriteFromTex(texture);
 
         Debug.Log("Setting track cover");
+
+        if (addColorWhenLoadingTexture)
+        {
+            Color c = AverageColorFromTexture(texture);
+            if (!trackInfo.Colors.Contains(c))
+            {
+                AddColorElement(c);
+            }
+        }
+
+        BroadcastTrackInfo();
+    }
+
+    private void SetBackground(Texture2D texture)
+    {
+        trackInfo.Background = MakeSpriteFromTex(texture);
+
+        Debug.Log("Setting background");
 
         if (addColorWhenLoadingTexture)
         {
@@ -1634,6 +1705,60 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerSpecificElementsInfo();
     }
 
+    public void DeleteGradient(int index)
+    {
+        if (trackInfo.Gradients.Count < index) return;
+        trackInfo.Gradients.RemoveAt(index);
+
+        ClearColorsList();
+        PopulateColorsList();
+
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
+    }
+
+    public void DeleteColor(int index)
+    {
+        if (trackInfo.Colors.Count < index) return;
+        trackInfo.Colors.RemoveAt(index);
+
+        ClearColorsList();
+        PopulateColorsList();
+
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
+    }
+
+    public void DeleteFont(int index)
+    {
+        if (trackInfo.Fonts.Count < index) return;
+
+        // remove from tracking
+        string key = GetFontName(index);
+
+        loadedFontData.Remove(key);
+        loadedTMPFontAssets.Remove(key);
+        loadedFontIndices.Remove(key);
+        trackInfo.Fonts.RemoveAt(index);
+
+        string[] indexKeys = loadedFontIndices.Keys.ToArray();
+        for (int i = 0; i < indexKeys.Length; i++)
+        {
+            string indexKey = indexKeys[i];
+            if (loadedFontIndices[indexKey] >= index)
+            {
+                loadedFontIndices[indexKey] -= 1;
+            }
+        }
+
+        // remake fonts list
+        ClearFontsList();
+        PopulateFontsList();
+
+        BroadcastVisualizerElementsInfo();
+        BroadcastVisualizerSpecificElementsInfo();
+    }
+
     private void ClearFontsList()
     {
         foreach (Transform child in fontsList.transform)
@@ -1729,6 +1854,8 @@ public class VisualizerManager : MonoBehaviour
         loadedFontData.Add(fontName, fontFileData);
         loadedTMPFontAssets.Add(fontName, fontAsset);
         loadedFontIndices.Add(fontName, (index == -1 ? loadedFontIndices.Count : index));
+
+        trackInfo.Fonts.Add(fontAsset);
 
         Debug.Log("Successfully loaded Font from File");
         UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully loaded Font");
@@ -1954,6 +2081,7 @@ public class VisualizerManager : MonoBehaviour
             {
                 AudioClipData audioClip = new();
                 SpriteData coverArt = new();
+                SpriteData background = new();
                 if (savingAudioAndCoverArt)
                 {
                     if (audioSource.clip != null)
@@ -1967,7 +2095,7 @@ public class VisualizerManager : MonoBehaviour
                     } else
                     {
                         UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING,
-                            "No audio has been loaded to include in preset - No audio will be included in preset");
+                            "No Track loaded - No track will be included in preset");
                     }
 
                     if (trackInfo.CoverArt != null)
@@ -1978,11 +2106,23 @@ public class VisualizerManager : MonoBehaviour
                     } else
                     {
                         UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
-                            "No cover art has been loaded to include in preset - No audio will be included in preset");
+                            "No cover art loaded - No cover art will be included in preset");
+                    }
+
+                    if (trackInfo.Background != null)
+                    {
+                        // for saving cover art
+                        Texture2D tex = MakeTexFromSprite(trackInfo.Background);
+                        background = new SpriteData(tex.EncodeToPNG(), tex.width, tex.height, tex.format);
+                    }
+                    else
+                    {
+                        UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING,
+                            "No background loaded - No background will be included in preset");
                     }
                 }
 
-                VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, audioClip, coverArt,
+                VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, audioClip, coverArt, background,
                     trackInfo.Colors, trackInfo.Gradients,
                     loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo,
                     visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
@@ -2026,6 +2166,14 @@ public class VisualizerManager : MonoBehaviour
             trackInfo.CoverArt = MakeSpriteFromTex(texture);
         }
 
+        if (preset.Background.Set)
+        {
+            // Loading cover
+            Texture2D texture = new Texture2D(preset.Background.Width, preset.Background.Height, preset.Background.TextureFormat, false);
+            texture.LoadImage(preset.Background.PNGEncodedData);
+            trackInfo.Background = MakeSpriteFromTex(texture);
+        }
+
         // Set colors
         ClearColorsList();
         trackInfo.Colors = preset.Colors;
@@ -2046,9 +2194,13 @@ public class VisualizerManager : MonoBehaviour
         for (int i = 0; i < preset.Fonts.Count; i++)
         {
             FontFileData fontData = preset.Fonts[i];
-            loadedTMPFontAssets.Add(fontData.FontName, LoadTMPFontFromFontAsset(LoadFontFromByteArray(fontData.FileContents)));
+            TMP_FontAsset fontAsset = LoadTMPFontFromFontAsset(LoadFontFromByteArray(fontData.FileContents));
+            fontAsset.name = fontData.FontName;
+            loadedTMPFontAssets.Add(fontData.FontName, fontAsset);
             loadedFontIndices.Add(fontData.FontName, i);
             loadedFontData.Add(fontData.FontName, fontData);
+
+            trackInfo.Fonts.Add(fontAsset);
 
             // Create UI
             FontListElement spawned = Instantiate(fontListElement, fontsList);
@@ -2159,6 +2311,14 @@ public class VisualizerManager : MonoBehaviour
 
         // Send data out
         visualizerBoolValueListeners.ForEach(item => item.RecieveVisualizerBoolValues(visualizerBoolValues));
+    }
+
+    [ContextMenu("BroadcastActiveCamera")]
+    private void BroadcastActiveCamera()
+    {
+        activeCameraListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveActiveCamera>().ToList();
+
+        activeCameraListeners.ForEach(item => item.RecieveCamera(activeCamera));
     }
 
     private void SetVisualizerCVActive()
@@ -2358,9 +2518,16 @@ public class VisualizerManager : MonoBehaviour
         BroadcastControlScheme();
     }
 
+    public void SetActiveCamera(Camera camera)
+    {
+        activeCamera = camera;
+
+        BroadcastActiveCamera();
+    }
+
     public void EditTrackTitle()
     {
-        StartCoroutine(UIManager._Instance.PopupInputField(VisualizerManager._Instance.TrackTitle, "Enter a new Title", "Accept", "Cancel", false,
-            x => VisualizerManager._Instance.UpdateTrackTitle(x), null));
+        StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Enter a new Title", "Accept", "Cancel", false,
+            x => UpdateTrackTitle(x), null));
     }
 }

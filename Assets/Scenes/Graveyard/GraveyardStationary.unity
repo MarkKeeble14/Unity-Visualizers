@@ -10661,6 +10661,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2925753136708514352, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: defaultGradient.key1.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925753136708514352, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: defaultGradient.key1.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925753136708514352, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: defaultGradient.key1.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925753136708514352, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
       propertyPath: activeCameraAdditionalCameraData
       value: 
       objectReference: {fileID: 2144958518}
@@ -11020,6 +11032,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7282242202215116106, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282242202215116106, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282242202215116106, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282242202215116106, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282242202215116106, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7282295469716474699, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11108,6 +11140,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7911080142259220394, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 2144958519}
     - target: {fileID: 8066924608991008517, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11192,6 +11228,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9143142897708599331, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 2144958519}
     - target: {fileID: 9200006416250232562, guid: 5dbbc12c7d3769e42b1284d3c290b248, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

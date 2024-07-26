@@ -13,7 +13,7 @@ public class GradientListElement : ListSelectionElement
         display.UpdateColors(g);
     }
 
-    public override void OpenListSelection()
+    public override void Open()
     {
         GradientEditor._Instance.Open(gradient);
         GradientEditor._Instance.OnGradientFinalized += OnGradientSelected;
@@ -28,5 +28,10 @@ public class GradientListElement : ListSelectionElement
 
         // Remove callback
         GradientEditor._Instance.OnGradientFinalized -= OnGradientSelected;
+    }
+
+    public override void Delete()
+    {
+        VisualizerManager._Instance.DeleteGradient(Index);
     }
 }

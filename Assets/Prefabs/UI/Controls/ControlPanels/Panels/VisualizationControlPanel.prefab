@@ -2274,7 +2274,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8734234059815918761, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
   m_PrefabInstance: {fileID: 5061962873848979982}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2795528447378628282
+--- !u!114 &4797250437695960378
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2283,8 +2283,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4542319976937815719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7417a19e49095e47b938c807b1fc257, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a0aa0199dd2f0f458327bb67b6e47c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controlActiveStateOf: {fileID: 4542319976937815719}
   activeOnThisScheme: 0
+  camera: {fileID: 0}

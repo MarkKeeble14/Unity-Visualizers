@@ -139,6 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 115
   action: Move Backwards
   PartOfScheme: 2
@@ -169,6 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 97
   action: Move Left
   PartOfScheme: 2
@@ -199,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 100
   action: Move Right
   PartOfScheme: 2
@@ -229,6 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 119
   action: Move Forward
   PartOfScheme: 2
@@ -259,6 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 113
   action: Look Left
   PartOfScheme: 2
@@ -289,6 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 101
   action: Look Right
   PartOfScheme: 2
@@ -319,6 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 114
   action: Look Up
   PartOfScheme: 2
@@ -349,6 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 102
   action: Look Down
   PartOfScheme: 2
@@ -391,7 +399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 114174164918751693}
   - component: {fileID: 2595587483458955122}
-  - component: {fileID: 2787200550636341683}
+  - component: {fileID: 5911627060045698808}
   m_Layer: 0
   m_Name: FreeCameraController
   m_TagString: Untagged
@@ -435,7 +443,7 @@ MonoBehaviour:
   speedUpButton: 304
   instructionsText: {fileID: 0}
   freeCam: {fileID: 2542281718230091041}
---- !u!114 &2787200550636341683
+--- !u!114 &5911627060045698808
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -444,8 +452,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7334868950011197012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7417a19e49095e47b938c807b1fc257, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a0aa0199dd2f0f458327bb67b6e47c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controlActiveStateOf: {fileID: 7334868950011197012}
   activeOnThisScheme: 2
+  camera: {fileID: 7940460713034542543}

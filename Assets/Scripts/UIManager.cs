@@ -121,7 +121,7 @@ public class UIManager : MonoBehaviour
         yield return actionSelectionPopup.Consume(directions, cancelButtonText, onCancel, actions);
     }
 
-    public int AddLoading(string message, float minDuration = 1)
+    public int AddLoading(string message, float minDuration = 0)
     {
         // spawn the prefab
         PopupLoading spawned = Instantiate(loadingPopupPrefab, popupLoadingList);

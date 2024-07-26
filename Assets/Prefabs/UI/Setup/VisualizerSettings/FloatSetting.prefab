@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5139347664666004675}
   - component: {fileID: 3806098386610296448}
   - component: {fileID: 8688336323408191647}
+  - component: {fileID: 4541591648595218854}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -135,6 +136,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4541591648595218854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613259801565629814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c2a8dc070e21c545adce42d222a2082, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  container: {fileID: 2492100724286098886}
+  spawnOn: {fileID: 5139347664666004675}
+  toolTipText: WHABBA
 --- !u!1 &2121437505472781570
 GameObject:
   m_ObjectHideFlags: 0

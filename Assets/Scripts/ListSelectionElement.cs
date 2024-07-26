@@ -13,7 +13,8 @@ public abstract class ListSelectionElement : MonoBehaviour
     private int index;
     public int Index => index;
 
-    public abstract void OpenListSelection();
+    public abstract void Open();
+    public abstract void Delete();
 
     private void Awake()
     {

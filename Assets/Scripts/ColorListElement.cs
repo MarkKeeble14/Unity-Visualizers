@@ -14,7 +14,7 @@ public class ColorListElement : ListSelectionElement
         image.color = c;
     }
 
-    public override void OpenListSelection()
+    public override void Open()
     {
         RGBColorPicker._Instance.Open(image.color);
         RGBColorPicker._Instance.OnColorFinalized += OnColorSelected;
@@ -29,5 +29,10 @@ public class ColorListElement : ListSelectionElement
 
         // Remove callback
         RGBColorPicker._Instance.OnColorFinalized -= OnColorSelected;
+    }
+
+    public override void Delete()
+    {
+        VisualizerManager._Instance.DeleteColor(Index);
     }
 }

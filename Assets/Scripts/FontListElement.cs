@@ -10,23 +10,28 @@ public class FontListElement : ListSelectionElement
     public void Set(int index)
     {
         SetIndex(index);
-        SetFontInfo(VisualizerManager._Instance.GetFontName(index), VisualizerManager._Instance.GetFont(index));
+        SetFontInfo(VisualizerManager._Instance.GetFont(index));
     }
 
-    public override void OpenListSelection()
+    public override void Open()
     {
         StartCoroutine(VisualizerManager._Instance.BrowseForFont(
             (filePath, font) =>
             {
                 VisualizerManager._Instance.UpdateFont(filePath, Index);
-                SetFontInfo(VisualizerManager._Instance.GetFontName(Index), VisualizerManager._Instance.GetFont(Index));
+                SetFontInfo(VisualizerManager._Instance.GetFont(Index));
             }));
     }
 
-    private void SetFontInfo(string fontName, TMP_FontAsset newFont)
+    private void SetFontInfo(TMP_FontAsset newFont)
     {
-        this.fontName.font = newFont;
-        this.fontName.text = fontName;
+        fontName.font = newFont;
+        fontName.text = VisualizerManager._Instance.GetFontName(Index);
         exampleText.font = newFont;
+    }
+
+    public override void Delete()
+    {
+        VisualizerManager._Instance.DeleteFont(Index);
     }
 }

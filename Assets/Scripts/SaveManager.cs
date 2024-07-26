@@ -49,8 +49,9 @@ public struct VisualizerPreset
     [SerializeField] public string Title;
     [SerializeField] public AudioClipData Audio;
     [SerializeField] public SpriteData CoverArt;
+    [SerializeField] public SpriteData Background;
 
-    public VisualizerPreset(string title, AudioClipData audio, SpriteData coverArt,
+    public VisualizerPreset(string title, AudioClipData audio, SpriteData coverArt, SpriteData background,
         List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
         Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
@@ -59,6 +60,7 @@ public struct VisualizerPreset
         Title = title;
         Audio = audio;
         CoverArt = coverArt;
+        Background = background;
         Colors = colors;
 
         Gradients = new List<GradientData>();

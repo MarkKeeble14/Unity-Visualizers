@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UncaughtSwitchTypeException : Exception
@@ -47,5 +49,14 @@ public class AllPartOfThePlanException : Exception
     public AllPartOfThePlanException()
     {
         Debug.Log("All part of the plan captain");
+    }
+}
+
+public class IndexNotFoundException<T> : Exception
+{
+    public IndexNotFoundException(int index, Dictionary<T, int> dict)
+    {
+        Debug.LogError("Index requested was not found within options - Requested Index=" + index + ", " +
+            "Available Indices=" + StringHelper.CombineCollection(dict.Values.ToArray(), ", "));
     }
 }

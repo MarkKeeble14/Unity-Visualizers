@@ -685,6 +685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1807501826889787739}
   - component: {fileID: 1807501826889787738}
+  - component: {fileID: 6938811235067118125}
   m_Layer: 10
   m_Name: BackgroundCanvas
   m_TagString: Untagged
@@ -734,6 +735,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &6938811235067118125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807501826889787740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a76c02077f430c49978828ffe981cfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 1807501826889787738}
 --- !u!1 &1807501827369941026
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,7 +759,8 @@ GameObject:
   - component: {fileID: 1807501827369941025}
   - component: {fileID: 1807501827369941047}
   - component: {fileID: 1807501827369941032}
-  - component: {fileID: 1807501827369941038}
+  - component: {fileID: 3252668331468576070}
+  - component: {fileID: 2804704196635566608}
   m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
@@ -801,7 +816,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2324e96ff727a3e4f998d52924dce661, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -811,7 +826,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1807501827369941038
+--- !u!114 &3252668331468576070
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -820,9 +835,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1807501827369941026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fda436d03c7ffc439701fd5292e63c1, type: 3}
+  m_Script: {fileID: 11500000, guid: c2f43f90faa83c74c9424e7c60906bdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2804704196635566608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807501827369941026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e675eb5b387714283fa530de874bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: 7
+  ignoreBroadcasts: 0
+  colorType: 0
+  index: 0
 --- !u!1 &1807501827883093437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1468,7 +1499,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 1024
   m_textAlignment: 65535

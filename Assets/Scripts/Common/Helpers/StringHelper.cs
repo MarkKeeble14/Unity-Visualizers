@@ -25,6 +25,16 @@ public static class StringHelper
         return res.Substring(0, res.Length - separator.Length);
     }
 
+    public static string CombineCollection(int[] arr, string separator)
+    {
+        string res = string.Empty;
+        foreach (var item in arr)
+        {
+            res += item + separator;
+        }
+        return res.Substring(0, res.Length - separator.Length);
+    }
+
     public static string CombineCollection(List<string> lst, string separator)
     {
         return CombineCollection(lst.ToArray(), separator);

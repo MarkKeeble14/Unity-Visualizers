@@ -22,6 +22,8 @@ public class SpawnToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         Destroy(spawnedToolTip.gameObject);
     }
 
+    public void SetToolTipText(string text) => toolTipText = text;
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         CreateToolTip();

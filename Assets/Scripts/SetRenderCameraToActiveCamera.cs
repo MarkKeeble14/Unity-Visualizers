@@ -6,7 +6,6 @@ public class SetRenderCameraToActiveCamera : MonoBehaviour, IRecieveActiveCamera
 
     public void RecieveCamera(Camera camera)
     {
-        Debug.Log("Recieved Camera: " + camera);
         canvas.worldCamera = camera;
     }
 }

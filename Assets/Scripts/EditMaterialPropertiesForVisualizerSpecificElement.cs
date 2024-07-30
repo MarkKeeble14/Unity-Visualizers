@@ -7,7 +7,6 @@ public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour,
     [SerializeField] private string key;
     [SerializeField] private Material mat;
     [SerializeField] private string emissionIntensityKey;
-    [SerializeField] private float defaultEmissionIntensity;
     private float emissionIntensity;
 
     private void Start()
@@ -15,7 +14,6 @@ public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour,
         Color startColor = VisualizerManager._Instance.GetColor(VisualizerColorType.COLOR, 0);
         mat.SetColor("_BaseColor", startColor);
         mat.SetColor("_EmissionColor", startColor);
-        emissionIntensity = defaultEmissionIntensity;
     }
 
     public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)

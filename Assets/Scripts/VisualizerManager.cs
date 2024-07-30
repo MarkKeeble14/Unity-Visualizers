@@ -198,6 +198,7 @@ public class VisualizerManager : MonoBehaviour
     private List<IRecieveActiveCamera> activeCameraListeners = new();
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
     private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
+    private Dictionary<string, SetupVisualizerElement> setupElements = new();
 
     private Dictionary<string, float> visualizerFloatValues = new();
     private Dictionary<string, int> visualizerIntValues = new();
@@ -280,6 +281,8 @@ public class VisualizerManager : MonoBehaviour
         }
 
         Initialize();
+
+        MakeSetupElementsDict();
 
         // Set variables from scene
         ppCamera = FindObjectOfType<PostProcessingCamera>(true);
@@ -2025,13 +2028,7 @@ public class VisualizerManager : MonoBehaviour
     public void RegisterBoolValue(string key, bool v)
     {
         visualizerBoolValues.Add(key, v);
-        BroadcastVisualizerIntValues();
-    }
-
-    public void RegisterVisualizerSpecificElement(string key)
-    {
-        RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        BroadcastVisualizerSpecificElementsInfo();
+        BroadcastVisualizerBoolValues();
     }
 
     public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
@@ -2529,5 +2526,31 @@ public class VisualizerManager : MonoBehaviour
     {
         StartCoroutine(UIManager._Instance.PopupInputField(trackInfo.Title, "Enter a new Title", "Accept", "Cancel", false,
             x => UpdateTrackTitle(x), null));
+    }
+
+    private void MakeSetupElementsDict()
+    {
+        foreach (SetupVisualizerElement e in FindObjectsOfType<SetupVisualizerElement>(true))
+        {
+            if (e.GetType() == typeof(SetupVisualizerSpecificElement))
+            {
+                SetupVisualizerSpecificElement vsE = (SetupVisualizerSpecificElement)e;
+                setupElements.Add(vsE.Key.ToUpper(), e);
+            } else if (e.GetType() == typeof(SetupBasicVisualizerElement))
+            {
+                SetupBasicVisualizerElement bvE = (SetupBasicVisualizerElement)e;
+                setupElements.Add(bvE.Label.ToString().ToUpper(), e);
+            } else
+            {
+                throw new UncaughtSwitchTypeException(typeof(SetupVisualizerElement), e.GetType().ToString());
+            }
+        }
+    }
+
+    public Transform GetSetupElementExtraSettingsTransform(string key)
+    {
+        key = key.ToUpper();
+        if (!setupElements.ContainsKey(key)) { throw new KeyNotFoundException(key); }
+        return setupElements[key].ExtraSettings;
     }
 }

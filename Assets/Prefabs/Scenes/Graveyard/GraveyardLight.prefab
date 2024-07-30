@@ -221,8 +221,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightAttachment: {fileID: 2524593381381155647}
-  defaultValueKey: PersonalLightRangeDefaultValue
-  multiplierKey: PersonalLightRangeMultiplier
+  defaultValueKey: PERSONAL_LIGHT_RANGE_DEFAULT_VALUE
+  multiplierKey: PERSONAL_LIGHT_RANGE_MULTIPLIER
 --- !u!114 &7332758849650738569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,8 +236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightAttachment: {fileID: 2524593381381155640}
-  defaultValueKey: PersonalLightIntensityDefaultValue
-  multiplierKey: PersonalLightIntensityMultiplier
+  defaultValueKey: PERSONAL_LIGHT_INTENSITY_DEFAULT_VALUE
+  multiplierKey: PERSONAL_LIGHT_INTENSITY_MULTIPLIER
 --- !u!114 &4417893412816094159
 MonoBehaviour:
   m_ObjectHideFlags: 0

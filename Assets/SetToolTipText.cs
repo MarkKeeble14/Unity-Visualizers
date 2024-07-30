@@ -22,7 +22,13 @@ public class SetToolTipText : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spawnToolTip.SetToolTipText(GetToolTipContent(toolTipContentType));
+        SetToolTipToText(toolTipContentType);
+    }
+
+    public void SetToolTipToText(ToolTipContentType type)
+    {
+        toolTipContentType = type;
+        spawnToolTip.SetToolTipText(GetToolTipContent(type));
     }
 
     private string GetToolTipContent(ToolTipContentType key)

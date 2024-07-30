@@ -5,11 +5,13 @@ public class SetupVisualizerSpecificElement : SetupVisualizerElement, IRecieveVi
 {
     [SerializeField] private string key;
 
+    public string Key => key;
+
     public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)
     {
         if (!info.ContainsKey(key))
         {
-            VisualizerManager._Instance.RegisterVisualizerSpecificElement(key);
+            VisualizerManager._Instance.RegisterVisualizerSpecificElement(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
             return;
         }
 

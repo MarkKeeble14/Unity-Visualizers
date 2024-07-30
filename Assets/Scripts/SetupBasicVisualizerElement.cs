@@ -5,6 +5,8 @@ public class SetupBasicVisualizerElement : SetupVisualizerElement, IRecieveVisua
 {
     [SerializeField] private VisualizerElementLabel label;
 
+    public VisualizerElementLabel Label => label;
+
     public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
         colorType = info[label].ColorType;

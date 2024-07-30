@@ -8,6 +8,8 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 {
     [Header("Transforms")]
     [SerializeField] private Transform extraSettingsHolder;
+    public Transform ExtraSettings => extraSettingsHolder;
+
     [SerializeField] private RectTransform myRect;
 
     [Header("Display Info")]

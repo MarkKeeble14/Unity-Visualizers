@@ -133,8 +133,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 0.1
   adjustSpeed: 5
+  defaultValue: 0.1
   multiplier: 2.5
   light: {fileID: 1665319223827245638}
 --- !u!114 &6065993059783569579
@@ -152,8 +152,8 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  defaultValue: 2.5
   adjustSpeed: 25
+  defaultValue: 2.5
   multiplier: 5
   light: {fileID: 1665319223827245638}
 --- !u!114 &4630862152619677037
@@ -220,8 +220,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightAttachment: {fileID: 6065993059783569579}
-  multiplierKey: RavenLightRangeMultiplier
-  defaultValueKey: RavenLightRangeDefaultValue
+  defaultValueKey: RAVENS_RANGE_DEFAULT_VALUE
+  multiplierKey: RAVENS_RANGE_MULTIPLIER
 --- !u!114 &4410960671952383426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,8 +235,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightAttachment: {fileID: 1295133467051189678}
-  multiplierKey: RavenLightIntensityMultiplier
-  defaultValueKey: RavenLightIntensityDefaultValue
+  defaultValueKey: RAVENS_INTENSITY_DEFAULT_VALUE
+  multiplierKey: RAVENS_INTENSITY_MULTIPLIER
 --- !u!1 &4376952548609669394
 GameObject:
   m_ObjectHideFlags: 0

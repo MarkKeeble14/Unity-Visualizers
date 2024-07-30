@@ -199,8 +199,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightAttachment: {fileID: 4088317014146891776}
-  defaultValueKey: MoonlightIntensityDefaultValue
-  multiplierKey: MoonlightIntensityMultiplier
+  defaultValueKey: MOONLIGHT_INTENSITY_DEFAULT_VALUE
+  multiplierKey: MOONLIGHT_INTENSITY_MULTIPLIER
 --- !u!114 &5413806145393600221
 MonoBehaviour:
   m_ObjectHideFlags: 0

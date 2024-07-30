@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2377764859460232042, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
+      propertyPath: label
+      value: Visualizer Attachment Type
+      objectReference: {fileID: 0}
     - target: {fileID: 3217036923961110516, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -173,46 +177,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
---- !u!114 &3951304830609987828 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1800761018790477435, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
-  m_PrefabInstance: {fileID: 3325992256689366671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3584535cc0159214e90ef78f00ac8d05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6380450452258972706 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8548858712075993773, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
-  m_PrefabInstance: {fileID: 3325992256689366671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &7318672328053067604 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5456508839643769307, guid: f241885c1173df74a92a9b2d7062623f, type: 3}
-  m_PrefabInstance: {fileID: 3325992256689366671}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2949246187101775030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7318672328053067604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3816162aa21001c4eb6d6f0dc7f880b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  label: Visualizer Attachment Type
-  key: 
-  labelText: {fileID: 6380450452258972706}
-  dropdown: {fileID: 3951304830609987828}

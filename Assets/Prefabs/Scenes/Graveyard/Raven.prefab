@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 7280916645131800707}
   - component: {fileID: 4786187733197428513}
   - component: {fileID: 4410960671952383426}
+  - component: {fileID: 3777398518786291098}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -206,7 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 1665319223827245638}
-  key: Ravens
+  key: 10
 --- !u!114 &4786187733197428513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,9 +220,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementLabel: 10
   lightAttachment: {fileID: 6065993059783569579}
-  defaultValueKey: RAVENS_RANGE_DEFAULT_VALUE
-  multiplierKey: RAVENS_RANGE_MULTIPLIER
+  defaultValue: 1
+  multiplier: 2
 --- !u!114 &4410960671952383426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,9 +236,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementLabel: 10
   lightAttachment: {fileID: 1295133467051189678}
-  defaultValueKey: RAVENS_INTENSITY_DEFAULT_VALUE
-  multiplierKey: RAVENS_INTENSITY_MULTIPLIER
+  defaultValue: 3
+  multiplier: 4
+--- !u!114 &3777398518786291098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64756399544970092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70caf78741caacc4e91032fd82dd8f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elementLabel: 10
+  bandBroadcaster: {fileID: 6413788118135270205}
 --- !u!1 &4376952548609669394
 GameObject:
   m_ObjectHideFlags: 0

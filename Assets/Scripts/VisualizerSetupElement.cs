@@ -1,16 +1,52 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
-public abstract class SetupVisualizerElement : MonoBehaviour
+[System.Serializable]
+public struct SetupElementHelperButtonInfo
 {
-    [Header("Transforms")]
-    [SerializeField] private Transform extraSettingsHolder;
-    public Transform ExtraSettings => extraSettingsHolder;
+    public UnityEvent OnPress;
+    public UnityEvent<Button> ControlInteractable;
+    public string Label;
+}
 
-    [SerializeField] private RectTransform myRect;
+[System.Serializable]
+public struct SetupElementInfo
+{
+    public VisualizerElementLabel Label;
+    public VisualizerElementsSettings DefaultSettings;
+    public string Name;
+    public bool AllowSolidColor;
+    public bool AllowTimeBasedGradient;
+    public bool AllowPositionBasedGradient;
+    public bool AllowColorSelection;
+    public bool AllowFontSelection;
+    public SetupElementHelperButtonInfo[] HelperButtons;
+
+    public SetupElementInfo(VisualizerElementLabel label, VisualizerElementsSettings defaultSettings, string name, bool allowFontSelection, bool allowColorSelection,
+        bool allowSolidColor, bool allowTimeBasedGradient, bool allowPositionBasedGradient, SetupElementHelperButtonInfo[] helperButtons)
+    {
+        Label = label;
+        DefaultSettings = defaultSettings;
+        Name = name;
+        AllowFontSelection = allowFontSelection;
+        AllowColorSelection = allowColorSelection;
+        AllowSolidColor = allowSolidColor;
+        AllowTimeBasedGradient = allowTimeBasedGradient;
+        AllowPositionBasedGradient = allowPositionBasedGradient;
+        HelperButtons = helperButtons;
+    }
+}
+
+public class VisualizerSetupElement : MonoBehaviour, IRecieveVisualizerElementsInfo
+{
+    [SerializeField] private VisualizerElementLabel label;
+
+    [SerializeField] private GameObject fontSelection;
+    [SerializeField] private GameObject colorSelection;
+    [SerializeField] private VisualizerSetupHelperButton[] helperButtons;
 
     [Header("Display Info")]
     [SerializeField] private TextMeshProUGUI labelText;
@@ -23,24 +59,47 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     [Header("Set Color Type Buttons")]
     [SerializeField] private Button setSolidColorTypeButton;
-    [SerializeField] private Button setGradientByTimeColorTypeButton;
-    [SerializeField] private Button setGradientByIndexColorTypeButton;
+    [SerializeField] private Button setTimeBasedGradientButton;
+    [SerializeField] private Button setPositionBasedGradientButton;
 
     [Header("Other Settings")]
     [SerializeField] private float extraSettingHeight = 30;
     [SerializeField] private float expandedHeightAdjustment = 20;
+
+    [Header("Transforms")]
+    [SerializeField] private Transform extraSettingsHolder;
+    private RectTransform rect => transform as RectTransform;
+
+    protected bool active = true;
     private float expandedHeight;
     private float defaultHeight;
     private bool expanded;
-
-    protected bool active = true;
     protected int colorIndex;
     protected int fontIndex;
     protected VisualizerColorType colorType;
 
-    protected abstract void UpdateSettings(VisualizerElementsSettings newSettings);
+    public void Init(SetupElementInfo info)
+    {
+        labelText.text = info.Name;
+        label = info.Label;
 
-    protected abstract VisualizerElementsSettings GetElementSettings();
+        fontSelection.SetActive(info.AllowFontSelection);
+        colorSelection.SetActive(info.AllowColorSelection);
+        setSolidColorTypeButton.gameObject.SetActive(info.AllowSolidColor); 
+        setTimeBasedGradientButton.gameObject.SetActive(info.AllowTimeBasedGradient);
+        setPositionBasedGradientButton.gameObject.SetActive(info.AllowPositionBasedGradient);
+
+        for (int i = 0; i < info.HelperButtons.Length; i++)
+        {
+            VisualizerSetupHelperButton b = helperButtons[i];
+            b.gameObject.SetActive(true);
+            b.ControlButtonInteractable = button => info.HelperButtons[b.Index].ControlInteractable?.Invoke(button);
+            b.Button.onClick.AddListener(() => { info.HelperButtons[b.Index].OnPress?.Invoke(); });
+            b.Text.text = info.HelperButtons[i].Label;
+        }
+    }
+
+    public Transform ExtraSettingsHolder => extraSettingsHolder;
 
     private void Awake()
     {
@@ -62,11 +121,16 @@ public abstract class SetupVisualizerElement : MonoBehaviour
             UpdateColorIndex();
         };
 
-        // set height variables
-        defaultHeight = myRect.sizeDelta.y;
+        // set variables
+        defaultHeight = rect.sizeDelta.y;
 
+        CalcLayout();
+    }
+
+    private void CalcLayout()
+    {
         float extraSettingsHeight = extraSettingsHolder.childCount * extraSettingHeight;
-        expandedHeight = myRect.sizeDelta.y + extraSettingsHeight + expandedHeightAdjustment;
+        expandedHeight = rect.sizeDelta.y + extraSettingsHeight + expandedHeightAdjustment;
 
         // set height of settings
         RectTransform extraSettingsRect = extraSettingsHolder.GetComponent<RectTransform>();
@@ -91,7 +155,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
         if (extraSettingsHolder.childCount == 0) return;
 
         expanded = !expanded;
-        Vector2 sizeDelta = myRect.sizeDelta;
+        Vector2 sizeDelta = rect.sizeDelta;
         if (expanded)
         {
             sizeDelta.y = expandedHeight;
@@ -100,7 +164,7 @@ public abstract class SetupVisualizerElement : MonoBehaviour
         {
             sizeDelta.y = defaultHeight;
         }
-        myRect.sizeDelta = sizeDelta;
+        rect.sizeDelta = sizeDelta;
         extraSettingsHolder.gameObject.SetActive(expanded);
     }
 
@@ -117,8 +181,8 @@ public abstract class SetupVisualizerElement : MonoBehaviour
 
     private void SetColorType()
     {
-        setGradientByIndexColorTypeButton.interactable = colorType != VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT;
-        setGradientByTimeColorTypeButton.interactable = colorType != VisualizerColorType.TIME_BASED_GRADIENT;
+        setPositionBasedGradientButton.interactable = colorType != VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT;
+        setTimeBasedGradientButton.interactable = colorType != VisualizerColorType.TIME_BASED_GRADIENT;
         setSolidColorTypeButton.interactable = colorType != VisualizerColorType.COLOR;
 
         if (colorType == VisualizerColorType.COLOR)
@@ -190,5 +254,25 @@ public abstract class SetupVisualizerElement : MonoBehaviour
         VisualizerElementsSettings newSettings = GetElementSettings();
         newSettings.FontIndex = fontIndex;
         UpdateSettings(newSettings);
+    }
+
+    private VisualizerElementsSettings GetElementSettings()
+    {
+        return VisualizerManager._Instance.GetBaseVisualizerElementSettings(label);
+    }
+
+    private void UpdateSettings(VisualizerElementsSettings newSettings)
+    {
+        VisualizerManager._Instance.UpdateBaseVisualizerElementSettings(label, newSettings);
+    }
+
+    public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
+    {
+        colorType = info[label].ColorType;
+        colorIndex = info[label].ColorIndex;
+        fontIndex = info[label].FontIndex;
+        active = info[label].Enabled;
+
+        Set();
     }
 }

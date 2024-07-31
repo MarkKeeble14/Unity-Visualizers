@@ -42,7 +42,6 @@ public struct VisualizerPreset
     [SerializeField] public List<Color> Colors;
     [SerializeField] public List<GradientData> Gradients;
     [SerializeField] public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> BaseVisualizerElements;
-    [SerializeField] public Dictionary<string, VisualizerElementsSettings> VisualizerSpecificElements;
     [SerializeField] public Dictionary<string, float> VisualizerFloatValues;
     [SerializeField] public Dictionary<string, int> VisualizerIntValues;
     [SerializeField] public Dictionary<string, bool> VisualizerBoolValues;
@@ -54,7 +53,6 @@ public struct VisualizerPreset
     public VisualizerPreset(string title, AudioClipData audio, SpriteData coverArt, SpriteData background,
         List<Color> colors, List<Gradient> gradients, List<FontFileData> fonts, 
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElements,
-        Dictionary<string, VisualizerElementsSettings> visualizerSpecificElements,
         Dictionary<string, float> floatValues, Dictionary<string, int> intValues, Dictionary<string, bool> boolValues)
     {
         Title = title;
@@ -71,7 +69,6 @@ public struct VisualizerPreset
 
         Fonts = fonts;
         BaseVisualizerElements = baseVisualizerElements;
-        VisualizerSpecificElements = visualizerSpecificElements;
         VisualizerFloatValues = floatValues;
         VisualizerIntValues = intValues;
         VisualizerBoolValues = boolValues;
@@ -176,6 +173,7 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
+        VisualizerPreset loadedPreset = new();
         try
         {
             int loadingKey2 = UIManager._Instance.AddLoading("Reading File...");
@@ -219,7 +217,6 @@ public class SaveManager : MonoBehaviour
 
             loadingKey2 = UIManager._Instance.AddLoading("Deserializing...");
 
-            VisualizerPreset loadedPreset = new();
             try
             {
                 var deserializeTask = await Task.Run(() => loadedPreset = JsonConvert.DeserializeObject<VisualizerPreset>(json));
@@ -233,8 +230,6 @@ public class SaveManager : MonoBehaviour
             }
 
             UIManager._Instance.RemoveLoading(loadingKey2);
-
-            onSuccess?.Invoke(loadFromPath, loadedPreset);
         } catch (Exception e)
         {
             Debug.LogError(e);
@@ -242,5 +237,7 @@ public class SaveManager : MonoBehaviour
         }
 
         UIManager._Instance.RemoveLoading(loadingKey);
+
+        onSuccess?.Invoke(loadFromPath, loadedPreset);
     }
 }

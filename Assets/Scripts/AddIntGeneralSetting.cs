@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AddIntSetupElementSetting : AddSetupElementSetting
+public class AddIntGeneralSetting : AddGeneralSetting
 {
     public override VisualizerElementSettingType Type => VisualizerElementSettingType.INT;
 

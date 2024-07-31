@@ -14,7 +14,10 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
         {
             if (sprite != null)
             {
-                i.color = Color.white;
+                VisualizerElementsSettings cur = VisualizerManager._Instance.GetBaseVisualizerElementSettings(VisualizerElementLabel.BACKGROUND);
+                cur.ColorIndex = 0;
+                VisualizerManager._Instance.UpdateBaseVisualizerElementSettings(VisualizerElementLabel.BACKGROUND, cur);
+
                 i.sprite = sprite;
             }
             Cursor.visible = false;

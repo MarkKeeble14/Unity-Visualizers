@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VisualizerBoolSetting : VisualizerSetting, IRecieveVisualizerBoolValues
+public class VisualizerElementBoolSetting : VisualizerSetting, IRecieveVisualizerBoolValues
 {
     [SerializeField] private Checkbox checkbox;
 
@@ -19,6 +19,12 @@ public class VisualizerBoolSetting : VisualizerSetting, IRecieveVisualizerBoolVa
         }
 
         checkbox.Active = values[key];
+    }
+
+    public void Set(bool b)
+    {
+        checkbox.Active = b;
+        VisualizerManager._Instance.UpdateSetting(key, b);
     }
 
     public void Toggle()

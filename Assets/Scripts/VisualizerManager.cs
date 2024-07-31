@@ -55,10 +55,10 @@ public struct SpriteData
 [System.Serializable]
 public struct VisualizerElementsSettings
 {
-    [SerializeField, HideInInspector] public VisualizerColorType ColorType;
-    [SerializeField, HideInInspector] public int ColorIndex;
-    [SerializeField, HideInInspector] public int FontIndex;
-    [SerializeField, HideInInspector] public bool Enabled;
+    [SerializeField] public VisualizerColorType ColorType;
+    [SerializeField] public int ColorIndex;
+    [SerializeField] public int FontIndex;
+    [SerializeField] public bool Enabled;
 
     public VisualizerElementsSettings(VisualizerColorType colorType, int colorIndex, int fontIndex, bool enabled)
     {
@@ -74,7 +74,7 @@ public class VisualizerManager : MonoBehaviour
 {
     public static VisualizerManager _Instance { get; private set; }
 
-    [Header("Default Track Info")]
+    [Header("Track Info")]
     [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
     [SerializeField] private bool loadDefaultPreset = true;
@@ -85,15 +85,15 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, FontFileData> loadedFontData = new();
     private Dictionary<string, TMP_FontAsset> loadedTMPFontAssets = new();
 
+    [Header("Setup")]
+    [SerializeField] private List<SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo>> baseVisualizerElements = new();
+    [SerializeField] private List<SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo>> visualizerSpecificElements = new();
+
     [Header("Other Settings")]
     [SerializeField] private bool addColorWhenLoadingTexture = true;
     [SerializeField] private bool startImmedietelyUponLoadingTrack;
     [SerializeField] private bool applyPostProcessing;
     [SerializeField, Range(0, 1)] private float volumeWeight;
-
-    [SerializeField] private List<SerializableKeyValuePair<string, float>> startingFloatSettings = new();
-    [SerializeField] private List<SerializableKeyValuePair<string, int>> startingIntSettings = new();
-    [SerializeField] private List<SerializableKeyValuePair<string, bool>> startingBoolSettings = new();
 
     [Header("File Settings")]
     [SerializeField] private List<string> fontFileExtensions = new List<string>() { "ttf", "otf" };
@@ -102,17 +102,10 @@ public class VisualizerManager : MonoBehaviour
 
     [Header("Audio Sampling Settings")]
     [SerializeField] private AudioChannel channel;
-    private int numSamples = 512;
-
     [SerializeField] private float defaultBandBufferDecrease = 0.005f;
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
-
-    [Header("Smoothing")]
-    [SerializeField] private bool enableSmoothing;
-    [SerializeField] private float smoothingEquationStrength = .5f;
-    [SerializeField] private float smoothingEquationShift = 1;
-    [SerializeField] private float smoothingEquationScale = 128;
+    private int numSamples = 512;
     private float cachedSmoothingValue;
 
     [Header("Normalizing")]
@@ -156,9 +149,16 @@ public class VisualizerManager : MonoBehaviour
     [Header("Transition Settings")]
     [SerializeField] private TransitionData initialTransition;
 
+    [SerializeField] private float defaultExtraSettingHeight;
+    public float DefaultExtraSettingHeight => defaultExtraSettingHeight;
+
     [Header("References")]
     [SerializeField] private CanvasGroup visualizerCanvasGroup;
     [SerializeField] private EscapeMenuFunctions escapeMenu;
+    [SerializeField] private Button loadTrackButton;
+    [SerializeField] private Transform generalSettingsList;
+    public Transform GeneralSettingsList => generalSettingsList;
+
 
     [Header("Tapping UI")]
     [SerializeField] private GameObject tempoMenuUI;
@@ -168,13 +168,13 @@ public class VisualizerManager : MonoBehaviour
     [Header("Setup UI")]
     [SerializeField] private GameObject baseVisualizerElementsUI;
     [SerializeField] private GameObject visualizerSpecificElementsUI;
+    [SerializeField] private GameObject visualizerGeneralSettingsUI;
+    [SerializeField] private Transform baseVisualizerElementsList;
+    [SerializeField] private Transform visualizerSpecificElementsList;
     [SerializeField] private GameObject colorsUI;
     [SerializeField] private GameObject fontsUI;
     [SerializeField] private Transform colorsList;
     [SerializeField] private Transform fontsList;
-    [SerializeField] private Button loadingTrackButton;
-    [SerializeField] private Button loadCoverArtButton;
-    [SerializeField] private Button loadBackgroundButton;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -183,22 +183,24 @@ public class VisualizerManager : MonoBehaviour
     private PostProcessingCamera ppCamera;
 
     [Header("Prefabs")]
+    [SerializeField] private VisualizerSetupElement setupVisualizerElementPrefab;
     [SerializeField] private ColorListElement colorListElement;
     [SerializeField] private GradientListElement gradientListElement;
     [SerializeField] private FontListElement fontListElement;
+    [SerializeField] private VisualizerElementFloatSetting floatSetting;
+    [SerializeField] private VisualizerElementIntSetting intSetting;
+    [SerializeField] private VisualizerElementBoolSetting boolSetting;
 
     private List<IRecieveTrackInfo> trackInfoListeners = new();
     private List<IRecieveTempo> tempoListeners = new();
     private List<IRecieveControlScheme> controlSchemeListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElementsInfoListeners = new();
-    private List<IRecieveVisualizerSpecificElementsInfo> visualizerSpecificElementsInfoListeners = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
     private List<IRecieveVisualizerIntValues> visualizerIntValueListeners = new();
     private List<IRecieveVisualizerBoolValues> visualizerBoolValueListeners = new();
     private List<IRecieveActiveCamera> activeCameraListeners = new();
-    private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> baseVisualizerElementsInfo = new();
-    private Dictionary<string, VisualizerElementsSettings> visualizerSpecificElementsInfo = new();
-    private Dictionary<string, SetupVisualizerElement> setupElements = new();
+    private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> visualizerElementsInfo = new();
+    private Dictionary<VisualizerElementLabel, VisualizerSetupElement> setupElements = new();
 
     private Dictionary<string, float> visualizerFloatValues = new();
     private Dictionary<string, int> visualizerIntValues = new();
@@ -207,6 +209,9 @@ public class VisualizerManager : MonoBehaviour
     private bool hasSongStarted;
     private float lastAudioSourceTime;
     private float prePlaybackPositionTracker;
+
+    private bool coverArtSelectionActive;
+    private bool backgroundSelectionActive;
 
     // Events
     public Action OnSongEnd;
@@ -282,13 +287,37 @@ public class VisualizerManager : MonoBehaviour
 
         Initialize();
 
-        MakeSetupElementsDict();
-
         // Set variables from scene
         ppCamera = FindObjectOfType<PostProcessingCamera>(true);
 
         // Set other components
         escapeMenuFunctions.SetAvailableControlSchemes(availableControlSchemes);
+    }
+
+    private void PopulateVisualizerElements()
+    {
+        // populate dictionaries
+        foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in baseVisualizerElements)
+        {
+            // only add if the preset hasn't already contained the key to avoid duplicates
+            if (!visualizerElementsInfo.ContainsKey(kvp.Key))
+                visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
+
+            // always instantiate ui elements
+            setupElements.Add(kvp.Key, Instantiate(setupVisualizerElementPrefab, baseVisualizerElementsList));
+            setupElements[kvp.Key].Init(kvp.Value);
+        }
+
+        foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in visualizerSpecificElements)
+        {
+            // only add if the preset hasn't already contained the key to avoid duplicates
+            if (!visualizerElementsInfo.ContainsKey(kvp.Key))
+                visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
+
+            // always instantiate ui elements
+            setupElements.Add(kvp.Key, Instantiate(setupVisualizerElementPrefab, visualizerSpecificElementsList));
+            setupElements[kvp.Key].Init(kvp.Value);
+        }
     }
 
     private void Initialize()
@@ -313,25 +342,7 @@ public class VisualizerManager : MonoBehaviour
     {
         PopulateColorsList();
         PopulateFontsList();
-
-        // populate dictionaries
-        foreach (VisualizerElementLabel item in Enum.GetValues(typeof(VisualizerElementLabel)))
-        {
-            baseVisualizerElementsInfo.Add(item, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        }
-
-        foreach (SerializableKeyValuePair<string, float> kvp in startingFloatSettings)
-        {
-            visualizerFloatValues.Add(kvp.Key, kvp.Value);
-        }
-        foreach (SerializableKeyValuePair<string, int> kvp in startingIntSettings)
-        {
-            visualizerIntValues.Add(kvp.Key, kvp.Value);
-        }
-        foreach (SerializableKeyValuePair<string, bool> kvp in startingBoolSettings)
-        {
-            visualizerBoolValues.Add(kvp.Key, kvp.Value);
-        }
+        PopulateVisualizerElements();
     }
 
     private void Start()
@@ -353,7 +364,7 @@ public class VisualizerManager : MonoBehaviour
         if (audioSource.isPlaying)
         {
             // Spectrum Data
-            if (enableSmoothing)
+            if (visualizerBoolValues["ENABLE_SMOOTHING"])
             {
                 GetSmoothedSpectrumData();
             } else
@@ -361,7 +372,7 @@ public class VisualizerManager : MonoBehaviour
                 OnlyGetSpectrumData();
             }
 
-            if (normalizeSamples)
+            if (visualizerBoolValues["ENABLE_NORMALIZATION"])
             {
                 NormalizeSamples();
             }
@@ -467,7 +478,8 @@ public class VisualizerManager : MonoBehaviour
 
     private float GetSmoothingValue(int i, int total)
     {
-        return Mathf.Pow((((float)i / total) * smoothingEquationScale) + smoothingEquationShift, 2) * smoothingEquationStrength;
+        return Mathf.Pow((((float)i / total) * visualizerFloatValues["SMOOTHING_SCALE"]) +
+            visualizerFloatValues["SMOOTHING_SHIFT"], 2) * visualizerFloatValues["SMOOTHING_STRENGTH"];
     }
 
     private void MakeFrequencyBands()
@@ -820,12 +832,12 @@ public class VisualizerManager : MonoBehaviour
 
     public IEnumerator RunTrackSelection()
     {
-        loadingTrackButton.interactable = false;
+        loadTrackButton.interactable = false;
 
         yield return UIManager._Instance.PopupActionSelection("Load Track from URL or File?", "Cancel", 
         () =>
         {
-            loadingTrackButton.interactable = true;
+            loadTrackButton.interactable = true;
         }, new List<ActionSelection>()
         {
             new ActionSelection("URL", null, PopoutEnterTrackURL()),
@@ -850,7 +862,7 @@ public class VisualizerManager : MonoBehaviour
     {
         UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track from URL");
 
-        loadingTrackButton.interactable = true;
+        loadTrackButton.interactable = true;
 
         yield return null;
     }
@@ -874,7 +886,7 @@ public class VisualizerManager : MonoBehaviour
 
             UIManager._Instance.RemoveLoading(loadingKey);
 
-            loadingTrackButton.interactable = true;
+            loadTrackButton.interactable = true;
 
             yield break;
         }
@@ -885,7 +897,7 @@ public class VisualizerManager : MonoBehaviour
 
                 UIManager._Instance.RemoveLoading(loadingKey);
 
-                loadingTrackButton.interactable = true;
+                loadTrackButton.interactable = true;
 
                 Debug.Log("Unsupported Origin: " + origin);
                 break;
@@ -905,7 +917,7 @@ public class VisualizerManager : MonoBehaviour
 
                         UIManager._Instance.RemoveLoading(loadingKey);
 
-                        loadingTrackButton.interactable = true;
+                        loadTrackButton.interactable = true;
                     }, null));
                 break;
             default:
@@ -1136,7 +1148,7 @@ public class VisualizerManager : MonoBehaviour
             }
         }, "Select Track", "Load"));
 
-        loadingTrackButton.interactable = true;
+        loadTrackButton.interactable = true;
     }
 
     // duration will take the format of mm:ss
@@ -1202,7 +1214,7 @@ public class VisualizerManager : MonoBehaviour
 
     public IEnumerator RunCoverArtSelection()
     {
-        loadCoverArtButton.interactable = false;
+        coverArtSelectionActive = true;
 
         yield return RunImageSelection(
             tex =>
@@ -1210,12 +1222,13 @@ public class VisualizerManager : MonoBehaviour
                 SetCoverArt(tex);
             }, null);
 
-        loadCoverArtButton.interactable = true;
+        coverArtSelectionActive = false;
     }
+
 
     public IEnumerator RunBackgroundSelection()
     {
-        loadBackgroundButton.interactable = false;
+        backgroundSelectionActive = true;
 
         yield return RunImageSelection(
             tex =>
@@ -1223,7 +1236,7 @@ public class VisualizerManager : MonoBehaviour
                 SetBackground(tex);
             }, null);
 
-        loadBackgroundButton.interactable = true;
+        backgroundSelectionActive = false;
     }
 
     public IEnumerator RunCoverArtSelection(Action<Sprite> onEnd)
@@ -1413,7 +1426,6 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => !baseVisualizerElementsUI.activeSelf);
 
         BroadcastSetupValues();
-        BroadcastTrackInfo();
     }
 
     public IEnumerator RunEditVisualizerSpecificElements()
@@ -1425,13 +1437,22 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => !visualizerSpecificElementsUI.activeSelf);
 
         BroadcastSetupValues();
-        BroadcastTrackInfo();
+    }
+    
+    public IEnumerator RunEditGeneralSettings()
+    {
+        BroadcastSetupValues();
+
+        visualizerGeneralSettingsUI.SetActive(true);
+
+        yield return new WaitUntil(() => !visualizerGeneralSettingsUI.activeSelf);
+
+        BroadcastSetupValues();
     }
 
     private void BroadcastSetupValues()
     {
         BroadcastTrackInfo();
-        BroadcastVisualizerSpecificElementsInfo();
         BroadcastVisualizerElementsInfo();
         BroadcastVisualizerFloatValues();
         BroadcastVisualizerIntValues();
@@ -1697,7 +1718,6 @@ public class VisualizerManager : MonoBehaviour
         if (index > trackInfo.Colors.Count - 1) return;
         trackInfo.Colors[index] = c;
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void UpdateTrackGradient(int index, Gradient g)
@@ -1705,7 +1725,6 @@ public class VisualizerManager : MonoBehaviour
         if (index > trackInfo.Gradients.Count - 1) return;
         trackInfo.Gradients[index] = g;
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void DeleteGradient(int index)
@@ -1717,7 +1736,6 @@ public class VisualizerManager : MonoBehaviour
         PopulateColorsList();
 
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void DeleteColor(int index)
@@ -1729,7 +1747,6 @@ public class VisualizerManager : MonoBehaviour
         PopulateColorsList();
 
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void DeleteFont(int index)
@@ -1759,7 +1776,6 @@ public class VisualizerManager : MonoBehaviour
         PopulateFontsList();
 
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     private void ClearFontsList()
@@ -1844,7 +1860,6 @@ public class VisualizerManager : MonoBehaviour
         RegisterNewFont(filePath, index);
 
         BroadcastVisualizerElementsInfo();
-        BroadcastVisualizerSpecificElementsInfo();
     }
 
     public void RegisterNewFont(string filePath, int index = -1)
@@ -1896,25 +1911,6 @@ public class VisualizerManager : MonoBehaviour
         else
         {
             visualizerFloatValues[key] = v;
-
-            switch (key)
-            {
-                case "SMOOTHING_STRENGTH":
-                    smoothingEquationStrength = v;
-                    break;
-                case "SMOOTHING_SHIFT":
-                    smoothingEquationShift = v;
-                    break;
-                case "SMOOTHING_SCALE":
-                    smoothingEquationScale = v;
-                    break;
-                case "MIN_NORMALIZED_VALUE":
-                    minNormalizedSampleValue = v;
-                    break;
-                case "MAX_NORMALIZED_VALUE":
-                    maxNormalizedSampleValue = v;
-                    break;
-            }
         }
 
         BroadcastVisualizerFloatValues();
@@ -1943,16 +1939,6 @@ public class VisualizerManager : MonoBehaviour
         else
         {
             visualizerBoolValues[key] = v;
-
-            switch (key)
-            {
-                case "ENABLE_SMOOTHING":
-                    enableSmoothing = v;
-                    break;
-                case "ENABLE_NORMALIZATION":
-                    normalizeSamples = v;
-                    break;
-            }
         }
 
         BroadcastVisualizerBoolValues();
@@ -1988,30 +1974,6 @@ public class VisualizerManager : MonoBehaviour
         return visualizerBoolValues[key];
     }
 
-    public VisualizerElementsSettings GetVisualizerSpecificElementSettings(string key)
-    {
-        if (!visualizerSpecificElementsInfo.ContainsKey(key))
-        {
-            visualizerSpecificElementsInfo.Add(key, new VisualizerElementsSettings(VisualizerColorType.COLOR, 0, 0, true));
-        }
-
-        return visualizerSpecificElementsInfo[key];
-    }
-
-    public void UpdateVisualizerSpecificElementsSettings(string key, VisualizerElementsSettings settings)
-    {
-        if (!visualizerSpecificElementsInfo.ContainsKey(key))
-        {
-            RegisterVisualizerSpecificElement(key, settings);
-        }
-        else
-        {
-            visualizerSpecificElementsInfo[key] = settings;
-        }
-
-        BroadcastVisualizerSpecificElementsInfo();
-    }
-
 
     public void RegisterFloatValue(string key, float v)
     {
@@ -2031,31 +1993,25 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerBoolValues();
     }
 
-    public void RegisterVisualizerSpecificElement(string key, VisualizerElementsSettings settings)
-    {
-        visualizerSpecificElementsInfo.Add(key, settings);
-        BroadcastVisualizerSpecificElementsInfo();
-    }
-
     public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
     {
-        return baseVisualizerElementsInfo[label];
+        return visualizerElementsInfo[label];
     }
 
     public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetBaseVisualizerElementSettings()
     {
-        return baseVisualizerElementsInfo;
+        return visualizerElementsInfo;
     }
 
     public void UpdateBaseVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
     {
-        baseVisualizerElementsInfo = settings;
+        visualizerElementsInfo = settings;
         BroadcastVisualizerElementsInfo();
     }
 
     public void UpdateBaseVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
     {
-        baseVisualizerElementsInfo[label] = newSettings;
+        visualizerElementsInfo[label] = newSettings;
         BroadcastVisualizerElementsInfo();
     }
 
@@ -2121,7 +2077,7 @@ public class VisualizerManager : MonoBehaviour
 
                 VisualizerPreset preset = new VisualizerPreset(trackInfo.Title, audioClip, coverArt, background,
                     trackInfo.Colors, trackInfo.Gradients,
-                    loadedFontData.Values.ToList(), baseVisualizerElementsInfo, visualizerSpecificElementsInfo,
+                    loadedFontData.Values.ToList(), visualizerElementsInfo,
                     visualizerFloatValues, visualizerIntValues, visualizerBoolValues);
 
                 SaveManager._Instance.SavePreset(x, preset, null, null);
@@ -2205,11 +2161,12 @@ public class VisualizerManager : MonoBehaviour
         }
 
         // Set other visualizer data
-        baseVisualizerElementsInfo = preset.BaseVisualizerElements;
-        visualizerSpecificElementsInfo = preset.VisualizerSpecificElements;
         visualizerFloatValues = preset.VisualizerFloatValues;
         visualizerIntValues = preset.VisualizerIntValues;
         visualizerBoolValues = preset.VisualizerBoolValues;
+
+        visualizerElementsInfo = preset.BaseVisualizerElements;
+        PopulateVisualizerElements();
 
         BroadcastSetupValues();
     }
@@ -2259,25 +2216,9 @@ public class VisualizerManager : MonoBehaviour
     [ContextMenu("BroadcastVisualizerElementsInfo")]
     private void BroadcastVisualizerElementsInfo()
     {
-        // Attempt to find any listeners if the list is empty
-        if (visualizerElementsInfoListeners.Count == 0)
-        {
-            visualizerElementsInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList();
-        }
-
         // Send data out
-        visualizerElementsInfoListeners.ForEach(item => item.RecieveVisualizerElementsInfo(baseVisualizerElementsInfo));
-
-        SetVisualizerCVActive();
-    }
-
-    [ContextMenu("BroadcastVisualizerElementsInfo")]
-    private void BroadcastVisualizerSpecificElementsInfo()
-    {
-        visualizerSpecificElementsInfoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerSpecificElementsInfo>().ToList();
-
-        // Send data out
-        visualizerSpecificElementsInfoListeners.ForEach(item => item.RecieveVisualizerSpecificElementsInfo(visualizerSpecificElementsInfo));
+        (FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveVisualizerElementsInfo>().ToList()).ForEach(
+            item => item.RecieveVisualizerElementsInfo(visualizerElementsInfo));
 
         SetVisualizerCVActive();
     }
@@ -2500,10 +2441,10 @@ public class VisualizerManager : MonoBehaviour
         tempoTapperInputField.text = Math.Round(estimatedBPM, 2).ToString();
     }
 
-    public void SetLightColorToVisualizerSpecificElementSettings(string key, Light light)
+    public void SetLightColorToVisualizerElement(VisualizerElementLabel label, Light light)
     {
-        if (!visualizerSpecificElementsInfo.ContainsKey(key)) return;
-        light.color = GetColor(visualizerSpecificElementsInfo[key].ColorType, visualizerSpecificElementsInfo[key].ColorIndex);
+        if (!visualizerElementsInfo.ContainsKey(label)) return;
+        light.color = GetColor(visualizerElementsInfo[label].ColorType, visualizerElementsInfo[label].ColorIndex);
     }
 
     public void SelectControlScheme(ControlScheme newScheme)
@@ -2528,29 +2469,29 @@ public class VisualizerManager : MonoBehaviour
             x => UpdateTrackTitle(x), null));
     }
 
-    private void MakeSetupElementsDict()
+    public VisualizerSetupElement GetSetupElement(VisualizerElementLabel label)
     {
-        foreach (SetupVisualizerElement e in FindObjectsOfType<SetupVisualizerElement>(true))
-        {
-            if (e.GetType() == typeof(SetupVisualizerSpecificElement))
-            {
-                SetupVisualizerSpecificElement vsE = (SetupVisualizerSpecificElement)e;
-                setupElements.Add(vsE.Key.ToUpper(), e);
-            } else if (e.GetType() == typeof(SetupBasicVisualizerElement))
-            {
-                SetupBasicVisualizerElement bvE = (SetupBasicVisualizerElement)e;
-                setupElements.Add(bvE.Label.ToString().ToUpper(), e);
-            } else
-            {
-                throw new UncaughtSwitchTypeException(typeof(SetupVisualizerElement), e.GetType().ToString());
-            }
-        }
+        if (!setupElements.ContainsKey(label)) { throw new KeyNotFoundException(label.ToString()); }
+        return setupElements[label];
     }
 
-    public Transform GetSetupElementExtraSettingsTransform(string key)
+    public void SetCoverArtSelectionButtonInteractable(Button b)
     {
-        key = key.ToUpper();
-        if (!setupElements.ContainsKey(key)) { throw new KeyNotFoundException(key); }
-        return setupElements[key].ExtraSettings;
+        b.interactable = !coverArtSelectionActive;
+    }
+
+    public void SetBackgroundSelectionButtonInteractable(Button b)
+    {
+        b.interactable = !backgroundSelectionActive;
+    }
+
+    public void SetClearCoverArtButtonInteractable(Button b)
+    {
+        b.interactable = trackInfo.CoverArt != null;
+    }
+
+    public void SetClearBackgroundButtonInteractable(Button b)
+    {
+        b.interactable = trackInfo.Background != null;
     }
 }

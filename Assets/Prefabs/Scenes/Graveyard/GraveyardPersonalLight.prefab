@@ -19,8 +19,9 @@ GameObject:
   - component: {fileID: 6789114372219357856}
   - component: {fileID: 7332758849650738569}
   - component: {fileID: 4417893412816094159}
+  - component: {fileID: 5970763906555326712}
   m_Layer: 0
-  m_Name: GraveyardLight
+  m_Name: GraveyardPersonalLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10794a658f47d04b8565262b366c424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: PersonalLight
+  label: 9
   light: {fileID: 2524593381381155642}
 --- !u!114 &6789114372219357856
 MonoBehaviour:
@@ -220,9 +221,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementLabel: 9
   lightAttachment: {fileID: 2524593381381155647}
-  defaultValueKey: PERSONAL_LIGHT_RANGE_DEFAULT_VALUE
-  multiplierKey: PERSONAL_LIGHT_RANGE_MULTIPLIER
+  defaultValue: 1
+  multiplier: 2
 --- !u!114 &7332758849650738569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,9 +237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementLabel: 9
   lightAttachment: {fileID: 2524593381381155640}
-  defaultValueKey: PERSONAL_LIGHT_INTENSITY_DEFAULT_VALUE
-  multiplierKey: PERSONAL_LIGHT_INTENSITY_MULTIPLIER
+  defaultValue: 3
+  multiplier: 4
 --- !u!114 &4417893412816094159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,3 +256,17 @@ MonoBehaviour:
   followSpeed: 25
   mathMethod: 0
   offset: {x: 0, y: 5, z: 0}
+--- !u!114 &5970763906555326712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524593381381155619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70caf78741caacc4e91032fd82dd8f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elementLabel: 9
+  bandBroadcaster: {fileID: 2524593381381155641}

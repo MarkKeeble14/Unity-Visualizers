@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7978580424755283156}
   - component: {fileID: 7734411718265880145}
   - component: {fileID: 5413806145393600221}
+  - component: {fileID: 91905496190036704}
   m_Layer: 0
   m_Name: GraveyardMoonlight
   m_TagString: Untagged
@@ -184,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10794a658f47d04b8565262b366c424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: Moonlight
+  label: 8
   light: {fileID: 4088317014146891782}
 --- !u!114 &7734411718265880145
 MonoBehaviour:
@@ -198,9 +199,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4556447c3c8ce94a855cd5f5f8cd001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementLabel: 8
   lightAttachment: {fileID: 4088317014146891776}
-  defaultValueKey: MOONLIGHT_INTENSITY_DEFAULT_VALUE
-  multiplierKey: MOONLIGHT_INTENSITY_MULTIPLIER
+  defaultValue: 1
+  multiplier: 2
 --- !u!114 &5413806145393600221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,3 +218,17 @@ MonoBehaviour:
   followSpeed: 25
   mathMethod: 0
   offset: {x: -50, y: 30, z: 20}
+--- !u!114 &91905496190036704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088317014146891804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70caf78741caacc4e91032fd82dd8f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elementLabel: 8
+  bandBroadcaster: {fileID: 4088317014146891777}

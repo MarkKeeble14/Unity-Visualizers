@@ -6,6 +6,8 @@ public abstract class VisualizerSetting : MonoBehaviour
 {
     [SerializeField] private string label;
     [SerializeField] protected string key;
+
+    [Header("References")]
     [SerializeField] private TextMeshProUGUI labelText;
     [SerializeField] private SetToolTipText setToolTipText;
 
@@ -22,7 +24,7 @@ public abstract class VisualizerSetting : MonoBehaviour
 
     protected abstract void Initialize();
 
-    public void SetToolTip(ToolTipContentType toolTipOnHover)
+    public void SetToolTip(SettingType toolTipOnHover)
     {
         setToolTipText.SetToolTipToText(toolTipOnHover);
     }
@@ -41,5 +43,13 @@ public abstract class VisualizerSetting : MonoBehaviour
     private void SetLabelText()
     {
         labelText.text = label;
+    }
+
+    public void SetHeight(float height)
+    {
+        RectTransform rectTransform = transform as RectTransform;
+        Vector2 sizeDelta = rectTransform.sizeDelta;
+        sizeDelta.y = height;
+        rectTransform.sizeDelta = sizeDelta;
     }
 }

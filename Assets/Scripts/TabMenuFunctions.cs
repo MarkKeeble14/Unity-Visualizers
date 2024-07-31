@@ -73,6 +73,12 @@ public class TabMenuFunctions : MonoBehaviour
         StartCoroutine(VisualizerManager._Instance.RunEditVisualizerSpecificElements());
     }
 
+    public void OpenGeneralSettings()
+    {
+        StartCoroutine(VisualizerManager._Instance.RunEditGeneralSettings());
+    }
+
+
     public void OpenPresetOptions()
     {
         StartCoroutine(UIManager._Instance.PopupActionSelection("Preset Options", "Cancel", null, new List<ActionSelection>()

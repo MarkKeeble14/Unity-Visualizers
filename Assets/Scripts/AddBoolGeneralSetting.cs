@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-public class AddBoolSetupElementSetting : AddSetupElementSetting
+public class AddBoolGeneralSetting : AddGeneralSetting
 {
     public override VisualizerElementSettingType Type => VisualizerElementSettingType.BOOL;
+
     [SerializeField] private bool defaultValue;
     private VisualizerElementBoolSetting boolSetting;
 

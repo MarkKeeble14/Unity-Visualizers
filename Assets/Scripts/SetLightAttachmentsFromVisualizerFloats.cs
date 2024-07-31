@@ -1,32 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SetLightAttachmentsFromVisualizerFloats: MonoBehaviour, IRecieveVisualizerFloatValues
+public class SetLightAttachmentsFromVisualizerFloats: SetValueFromVisualizerDatabase, IRecieveVisualizerFloatValues
 {
     [SerializeField] private AttachParameter lightAttachment;
 
     [Header("Keys")]
-    [SerializeField] private string defaultValueKey;
-    [SerializeField] private string multiplierKey;
+    [SerializeField] private SettingType defaultValue;
+    [SerializeField] private SettingType multiplier;
 
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
-        if (!values.ContainsKey(multiplierKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(multiplierKey, lightAttachment.Multiplier);
-        }
-        else
-        {
-            lightAttachment.Multiplier = values[multiplierKey];
-        }
-
-        if (!values.ContainsKey(defaultValueKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(defaultValueKey, lightAttachment.DefaultValue);
-        }
-        else
-        {
-            lightAttachment.DefaultValue = values[defaultValueKey];
-        }
+        TrySetValueFromDatabase(defaultValue, values, x => lightAttachment.DefaultValue = x);
+        TrySetValueFromDatabase(multiplier, values, x => lightAttachment.Multiplier = x);
     }
 }

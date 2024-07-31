@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AddFloatSetupElementSetting : AddSetupElementSetting
+public class AddFloatGeneralSetting : AddGeneralSetting
 {
     public override VisualizerElementSettingType Type => VisualizerElementSettingType.FLOAT;
 
@@ -11,11 +11,6 @@ public class AddFloatSetupElementSetting : AddSetupElementSetting
     {
         floatSetting = (VisualizerElementFloatSetting)obj;
         floatSetting.SetKey(MakeKey());
-
-        if (!VisualizerManager._Instance.HasFloatSetting(MakeKey()))
-        {
-            floatSetting.SetInputFieldText(defaultValue);
-            floatSetting.UpdateSetting(defaultValue.ToString());
-        }
+        floatSetting.UpdateSetting(defaultValue.ToString());
     }
 }

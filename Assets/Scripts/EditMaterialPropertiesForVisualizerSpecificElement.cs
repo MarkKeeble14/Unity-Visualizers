@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour, IRecieveVisualizerSpecificElementsInfo, IRecieveVisualizerFloatValues
+public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour, IRecieveVisualizerElementsInfo, IRecieveVisualizerFloatValues
 {
-    [SerializeField] private string key;
+    [SerializeField] private VisualizerElementLabel label;
     [SerializeField] private Material mat;
     [SerializeField] private string emissionIntensityKey;
     private float emissionIntensity;
@@ -14,16 +14,6 @@ public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour,
         Color startColor = VisualizerManager._Instance.GetColor(VisualizerColorType.COLOR, 0);
         mat.SetColor("_BaseColor", startColor);
         mat.SetColor("_EmissionColor", startColor);
-    }
-
-    public void RecieveVisualizerSpecificElementsInfo(Dictionary<string, VisualizerElementsSettings> info)
-    {
-        if (!info.ContainsKey(key))
-        {
-            return;
-        }
-
-        SetColors(VisualizerManager._Instance.GetColor(info[key].ColorType, info[key].ColorIndex), emissionIntensity);
     }
 
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
@@ -42,5 +32,12 @@ public class EditMaterialPropertiesForVisualizerSpecificElement : MonoBehaviour,
     {
         mat.SetColor("_BaseColor", c);
         mat.SetColor("_EmissionColor", c * emissionIntensity);
+    }
+
+    public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
+    {
+        if (!info.ContainsKey(label)) { return; }
+
+        SetColors(VisualizerManager._Instance.GetColor(info[label].ColorType, info[label].ColorIndex), emissionIntensity);
     }
 }

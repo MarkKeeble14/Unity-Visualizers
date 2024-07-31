@@ -13,7 +13,7 @@ public class VisualizerElementFloatSetting : VisualizerSetting, IRecieveVisualiz
             return;
         }
 
-        inputField.text = values[key].ToString();
+        SetInputFieldText(values[key]);
     }
 
     public void UpdateSetting(string s)
@@ -23,6 +23,11 @@ public class VisualizerElementFloatSetting : VisualizerSetting, IRecieveVisualiz
         {
             VisualizerManager._Instance.UpdateSetting(key, v);
         }
+    }
+
+    public void SetInputFieldText(float x)
+    {
+        inputField.text = x.ToString();
     }
 
     protected override void Initialize()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public static class StringHelper
@@ -97,5 +98,13 @@ public static class StringHelper
             result[i] = prepend + extensions[i] + append;
         }
         return result;
+    }
+
+    public static string ToTitleCase(this string s) =>
+        CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLower());
+
+    public static string EnumToTitleCase(string v)
+    {
+        return ToTitleCase(v.Replace('_', ' '));
     }
 }

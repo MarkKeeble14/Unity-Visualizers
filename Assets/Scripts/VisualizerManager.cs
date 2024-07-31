@@ -80,6 +80,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private bool loadDefaultPreset = true;
     [SerializeField] private string defaultPresetName;
     [SerializeField] private TrackInfo trackInfo;
+    public TrackInfo TrackInfo => trackInfo;
 
     private Dictionary<string, int> loadedFontIndices = new();
     private Dictionary<string, FontFileData> loadedFontData = new();
@@ -248,7 +249,7 @@ public class VisualizerManager : MonoBehaviour
             if (hasSongStarted)
             {
                 if (audioSource.clip == null) { return 0; }
-                return audioSource.time / audioSource.clip.length;
+                return audioSource.time / trackInfo.Duration;
             } else
             {
                 return prePlaybackPositionTracker;
@@ -299,9 +300,9 @@ public class VisualizerManager : MonoBehaviour
         // populate dictionaries
         foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in baseVisualizerElements)
         {
-            // only add if the preset hasn't already contained the key to avoid duplicates
-            if (!visualizerElementsInfo.ContainsKey(kvp.Key))
-                visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
+
+            Debug.Log("(Base) Adding: " + kvp.Key);
+            visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
 
             // always instantiate ui elements
             setupElements.Add(kvp.Key, Instantiate(setupVisualizerElementPrefab, baseVisualizerElementsList));
@@ -310,9 +311,9 @@ public class VisualizerManager : MonoBehaviour
 
         foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in visualizerSpecificElements)
         {
-            // only add if the preset hasn't already contained the key to avoid duplicates
-            if (!visualizerElementsInfo.ContainsKey(kvp.Key))
-                visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
+
+            Debug.Log("(Visualizer Specific) Adding: " + kvp.Key);
+            visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
 
             // always instantiate ui elements
             setupElements.Add(kvp.Key, Instantiate(setupVisualizerElementPrefab, visualizerSpecificElementsList));
@@ -322,6 +323,8 @@ public class VisualizerManager : MonoBehaviour
 
     private void Initialize()
     {
+        PopulateVisualizerElements();
+
         if (loadDefaultPreset)
         {
             SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "DefaultPresets", defaultPresetName + ".dat"),
@@ -342,7 +345,6 @@ public class VisualizerManager : MonoBehaviour
     {
         PopulateColorsList();
         PopulateFontsList();
-        PopulateVisualizerElements();
     }
 
     private void Start()
@@ -393,15 +395,19 @@ public class VisualizerManager : MonoBehaviour
             CheckBeat();
         }
 
-        // Determine if Song has Started/Ended
+        // Determine if Song has Started
         if (!hasSongStarted && audioSource.time != lastAudioSourceTime)
         {
             hasSongStarted = true;
             OnSongStart?.Invoke();
         }
 
-        if (hasSongStarted && audioSource.time == 0)
+        // Determine if Song has Ended
+        if (hasSongStarted && audioSource.time > trackInfo.Duration)
         {
+            audioSource.Stop();
+            audioSource.time = 0;
+            prePlaybackPositionTracker = 0;
             hasSongStarted = false;
             OnSongEnd?.Invoke();
         }
@@ -636,7 +642,7 @@ public class VisualizerManager : MonoBehaviour
 
         if (!hasSongStarted)
         {
-            audioSource.time = prePlaybackPositionTracker * audioSource.clip.length;
+            audioSource.time = prePlaybackPositionTracker * trackInfo.Duration;
         }
     }
 
@@ -757,13 +763,13 @@ public class VisualizerManager : MonoBehaviour
             return;
         }
 
-        v *= audioSource.clip.length;
-        if (v < audioSource.clip.length)
+        v *= trackInfo.Duration;
+        if (v < trackInfo.Duration)
         {
             audioSource.time = v;
         } else
         {
-            audioSource.time = audioSource.clip.length - 1;
+            audioSource.time = trackInfo.Duration - 1;
         }
     }
 
@@ -874,8 +880,6 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator AttemptToDownloadTrackFromURL(string url)
     {
-        int loadingKey = UIManager._Instance.AddLoading("Downloading Track from URL");
-
         ImportableAudioSource origin;
         try
         {
@@ -883,8 +887,6 @@ public class VisualizerManager : MonoBehaviour
         } catch (Exception e)
         {
             UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download track from URL");
-
-            UIManager._Instance.RemoveLoading(loadingKey);
 
             loadTrackButton.interactable = true;
 
@@ -894,8 +896,6 @@ public class VisualizerManager : MonoBehaviour
         {
             case ImportableAudioSource.SOUNDCLOUD:
                 UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Unsupported Origin, Supported Origins are: " + GetSupportedOrigins());
-
-                UIManager._Instance.RemoveLoading(loadingKey);
 
                 loadTrackButton.interactable = true;
 
@@ -914,8 +914,6 @@ public class VisualizerManager : MonoBehaviour
                     (url, clip, name, duration) =>
                     {
                         SetTrack(url, clip, name, duration);
-
-                        UIManager._Instance.RemoveLoading(loadingKey);
 
                         loadTrackButton.interactable = true;
                     }, null));
@@ -1167,14 +1165,14 @@ public class VisualizerManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(durationSeconds))
         {
-            trackInfo.Duration = StringHelper.GetDurationText(audioSource.clip.length);
+            trackInfo.DurationString = StringHelper.GetDurationText(audioSource.clip.length);
         }
         else
         {
             float v;
             if (float.TryParse(durationSeconds, out v))
             {
-                trackInfo.Duration = StringHelper.GetDurationText(v);
+                trackInfo.DurationString = StringHelper.GetDurationText(v);
             } else
             {
                 Debug.Log("Unable to parse duration - ensure durationSeconds represents a numerical value");
@@ -1225,6 +1223,13 @@ public class VisualizerManager : MonoBehaviour
         coverArtSelectionActive = false;
     }
 
+    public IEnumerator RunCoverArtSelection(Action<Sprite> onEnd)
+    {
+        yield return RunCoverArtSelection();
+
+        onEnd?.Invoke(trackInfo.CoverArt);
+    }
+
 
     public IEnumerator RunBackgroundSelection()
     {
@@ -1239,11 +1244,11 @@ public class VisualizerManager : MonoBehaviour
         backgroundSelectionActive = false;
     }
 
-    public IEnumerator RunCoverArtSelection(Action<Sprite> onEnd)
+    public IEnumerator RunBackgroundSelection(Action<Sprite> onEnd)
     {
-        yield return RunCoverArtSelection();
+        yield return RunBackgroundSelection();
 
-        onEnd?.Invoke(trackInfo.CoverArt);
+        onEnd?.Invoke(trackInfo.Background);
     }
 
     private IEnumerator PopoutEnterImageURL(Action<Texture2D> onSuccess, Action onFailure)
@@ -1993,23 +1998,23 @@ public class VisualizerManager : MonoBehaviour
         BroadcastVisualizerBoolValues();
     }
 
-    public VisualizerElementsSettings GetBaseVisualizerElementSettings(VisualizerElementLabel label)
+    public VisualizerElementsSettings GetVisualizerElementSettings(VisualizerElementLabel label)
     {
         return visualizerElementsInfo[label];
     }
 
-    public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetBaseVisualizerElementSettings()
+    public Dictionary<VisualizerElementLabel, VisualizerElementsSettings> GetVisualizerElementSettingsDict()
     {
         return visualizerElementsInfo;
     }
 
-    public void UpdateBaseVisualizerElementsSettings(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
+    public void UpdateVisualizerElementsSettingsDict(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> settings)
     {
         visualizerElementsInfo = settings;
         BroadcastVisualizerElementsInfo();
     }
 
-    public void UpdateBaseVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
+    public void UpdateVisualizerElementSettings(VisualizerElementLabel label, VisualizerElementsSettings newSettings)
     {
         visualizerElementsInfo[label] = newSettings;
         BroadcastVisualizerElementsInfo();
@@ -2107,7 +2112,7 @@ public class VisualizerManager : MonoBehaviour
             audioSource.clip = clip;
 
             trackInfo.AudioClip = clip;
-            trackInfo.Duration = StringHelper.GetDurationText(clip.length);
+            trackInfo.DurationString = StringHelper.GetDurationText(clip.length);
             trackInfo.Title = preset.Title;
         }
 
@@ -2164,9 +2169,11 @@ public class VisualizerManager : MonoBehaviour
         visualizerFloatValues = preset.VisualizerFloatValues;
         visualizerIntValues = preset.VisualizerIntValues;
         visualizerBoolValues = preset.VisualizerBoolValues;
-
-        visualizerElementsInfo = preset.BaseVisualizerElements;
-        PopulateVisualizerElements();
+        foreach (KeyValuePair<VisualizerElementLabel, VisualizerElementsSettings> kvp in preset.BaseVisualizerElements)
+        {
+            visualizerElementsInfo[kvp.Key] = kvp.Value;
+            Debug.Log("Loaded: " + kvp.Key + " - from Preset");
+        }
 
         BroadcastSetupValues();
     }

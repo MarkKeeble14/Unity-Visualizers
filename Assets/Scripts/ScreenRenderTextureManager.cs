@@ -119,11 +119,12 @@ public class ScreenRenderTextureManager : MonoBehaviour
             Dictionary<VisualizerElementLabel, VisualizerElementsSettings> newVisualElementSettings = MakeScreenieSettings();
 
             // Store previous values
-            Dictionary<VisualizerElementLabel, VisualizerElementsSettings> previousVisualElementSettings = VisualizerManager._Instance.GetBaseVisualizerElementSettings();
+            Dictionary<VisualizerElementLabel, VisualizerElementsSettings> previousVisualElementSettings 
+                = VisualizerManager._Instance.GetVisualizerElementSettingsDict();
 
             RequestRenderToTex();
 
-            VisualizerManager._Instance.UpdateBaseVisualizerElementsSettings(newVisualElementSettings);
+            VisualizerManager._Instance.UpdateVisualizerElementsSettingsDict(newVisualElementSettings);
 
             yield return new WaitForEndOfFrame();
 
@@ -139,7 +140,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
 
-            VisualizerManager._Instance.UpdateBaseVisualizerElementsSettings(previousVisualElementSettings);
+            VisualizerManager._Instance.UpdateVisualizerElementsSettingsDict(previousVisualElementSettings);
         }
 
         Time.timeScale = prevTimeScale;
@@ -153,7 +154,7 @@ public class ScreenRenderTextureManager : MonoBehaviour
 
     private Dictionary<VisualizerElementLabel, VisualizerElementsSettings> MakeScreenieSettings()
     {
-        Dictionary<VisualizerElementLabel, VisualizerElementsSettings> currentDict = VisualizerManager._Instance.GetBaseVisualizerElementSettings();
+        Dictionary<VisualizerElementLabel, VisualizerElementsSettings> currentDict = VisualizerManager._Instance.GetVisualizerElementSettingsDict();
         Dictionary<VisualizerElementLabel, VisualizerElementsSettings> result = new();
         foreach (SerializableKeyValuePair<VisualizerElementLabel, Checkbox> kvp in enableVisualizerElementCheckboxes)
         {

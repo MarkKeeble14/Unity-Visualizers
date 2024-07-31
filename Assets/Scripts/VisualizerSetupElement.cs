@@ -40,7 +40,7 @@ public struct SetupElementInfo
     }
 }
 
-public class VisualizerSetupElement : MonoBehaviour, IRecieveVisualizerElementsInfo
+public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElementsInfo
 {
     [SerializeField] private VisualizerElementLabel label;
 
@@ -258,21 +258,24 @@ public class VisualizerSetupElement : MonoBehaviour, IRecieveVisualizerElementsI
 
     private VisualizerElementsSettings GetElementSettings()
     {
-        return VisualizerManager._Instance.GetBaseVisualizerElementSettings(label);
+        return VisualizerManager._Instance.GetVisualizerElementSettings(label);
     }
 
     private void UpdateSettings(VisualizerElementsSettings newSettings)
     {
-        VisualizerManager._Instance.UpdateBaseVisualizerElementSettings(label, newSettings);
+        VisualizerManager._Instance.UpdateVisualizerElementSettings(label, newSettings);
     }
 
     public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
-        colorType = info[label].ColorType;
-        colorIndex = info[label].ColorIndex;
-        fontIndex = info[label].FontIndex;
-        active = info[label].Enabled;
+        TrySet(info, label, x =>
+        {
+            colorType = x.ColorType;
+            colorIndex = x.ColorIndex;
+            fontIndex = x.FontIndex;
+            active = x.Enabled;
 
-        Set();
+            Set();
+        });
     }
 }

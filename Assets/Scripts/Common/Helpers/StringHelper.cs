@@ -48,6 +48,35 @@ public static class StringHelper
         return minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds);
     }
 
+    public static float GetDurationFromText(string durationString)
+    {
+        // 4:51
+        float v = 0, x, y;
+        string[] parts = durationString.Split(":");
+
+        // i = 0, 4
+        // i = 1, 51
+
+        for (int i = parts.Length - 1; i >= 0; i--)
+        {
+            if (float.TryParse(parts[i], out x))
+            {
+                y = (60 * (parts.Length - 1 - i));
+                if (y == 0)
+                {
+                    v += x;
+                } else
+                {
+                    v += x * y;
+                }
+            } else
+            {
+                Debug.LogError("Encountered an error while parsing duration string");
+            }
+        }
+        return v;
+    }
+
     public static string Reverse(string s)
     {
         char[] charArray = s.ToCharArray();

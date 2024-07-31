@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SetFogColorFromVisualizerElementInfo : MonoBehaviour, IRecieveVisualizerElementsInfo
+public class SetFogColorFromVisualizerElementInfo : DatabaseSetter, IRecieveVisualizerElementsInfo
 {
     public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
-        RenderSettings.fogColor = 
-            VisualizerManager._Instance.GetColor(info[VisualizerElementLabel.FOG].ColorType, info[VisualizerElementLabel.FOG].ColorIndex);
+        TrySet(info, VisualizerElementLabel.FOG, x =>
+        {
+            RenderSettings.fogColor = 
+                VisualizerManager._Instance.GetColor(x.ColorType, x.ColorIndex);
+        });
     }
 }

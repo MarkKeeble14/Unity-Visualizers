@@ -58,7 +58,6 @@ public class RGBColorPicker : MonoBehaviour
         SetDisplayColors();
     }
 
-
     private void Update()
     {
         if (redTextField.isFocused && Input.GetKeyDown(KeyCode.Tab))

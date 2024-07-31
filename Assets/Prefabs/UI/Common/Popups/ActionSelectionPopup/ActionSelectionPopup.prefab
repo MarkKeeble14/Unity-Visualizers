@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 576443291944181206}
   - component: {fileID: 9156748837003629425}
+  - component: {fileID: 5034326174134644604}
   m_Layer: 0
   m_Name: ActionSelectionPopup
   m_TagString: Untagged
@@ -56,6 +57,22 @@ MonoBehaviour:
   buttonPrefab: {fileID: 4422963117855909432, guid: b36e1cc37a9be9746a3267e9ff03103a, type: 3}
   cancelButton: {fileID: 3462229206627858413}
   display: {fileID: 6103965746362771116}
+--- !u!114 &5034326174134644604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791935123964693465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f799f123dfd8c4b92eee40c0eb617d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformOfUIToMove: {fileID: 576443291944181206}
+  canvasRect: {fileID: 0}
+  forceLockOnScreen: 1
+  autoFindCanvasInParent: 1
 --- !u!1 &1168343210320666885
 GameObject:
   m_ObjectHideFlags: 0

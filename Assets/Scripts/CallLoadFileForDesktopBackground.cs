@@ -5,20 +5,28 @@ using UnityEngine.UI;
 
 public class CallLoadFileForDesktopBackground : MonoBehaviour
 {
-    [SerializeField] private Image i;
-
     public void LoadFile()
     {
         Cursor.visible = true;
-        StartCoroutine(VisualizerManager._Instance.RunCoverArtSelection(sprite =>
+        StartCoroutine(VisualizerManager._Instance.RunBackgroundSelection(sprite =>
         {
             if (sprite != null)
             {
-                VisualizerElementsSettings cur = VisualizerManager._Instance.GetBaseVisualizerElementSettings(VisualizerElementLabel.BACKGROUND);
-                cur.ColorIndex = 0;
-                VisualizerManager._Instance.UpdateBaseVisualizerElementSettings(VisualizerElementLabel.BACKGROUND, cur);
-
-                i.sprite = sprite;
+                int whiteIndex = -1;
+                for (int i = 0; i < VisualizerManager._Instance.TrackInfo.Colors.Count; i++)
+                {
+                    if (VisualizerManager._Instance.GetColor(VisualizerColorType.COLOR, i) == Color.white)
+                    {
+                        whiteIndex = i;
+                        break;
+                    }
+                }
+                if (whiteIndex >= 0)
+                {
+                    VisualizerElementsSettings cur = VisualizerManager._Instance.GetVisualizerElementSettings(VisualizerElementLabel.BACKGROUND);
+                    cur.ColorIndex = whiteIndex;
+                    VisualizerManager._Instance.UpdateVisualizerElementSettings(VisualizerElementLabel.BACKGROUND, cur);
+                }
             }
             Cursor.visible = false;
         }));

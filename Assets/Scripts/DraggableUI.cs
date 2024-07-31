@@ -8,9 +8,15 @@ public class DraggableUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 {
     [SerializeField] private RectTransform transformOfUIToMove;
     [SerializeField] private RectTransform canvasRect;
+    [SerializeField] private bool forceLockOnScreen = true;
+    [SerializeField] private bool autoFindCanvasInParent;
     private Vector2 dragOffset;
 
-    [SerializeField] private bool forceLockOnScreen = true;
+
+    private void Awake()
+    {
+        if (autoFindCanvasInParent) { canvasRect = GetComponentInParent<Canvas>().transform as RectTransform; }
+    }
 
     public void BeginDrag(Vector2 pos)
     {

@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class GradientKeyDisplay : MonoBehaviour, IDragHandler, IEndDragHandler
+public class GradientKeyDisplay : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
     [SerializeField] private Color color;
     public Color Color => color;
@@ -25,8 +25,8 @@ public class GradientKeyDisplay : MonoBehaviour, IDragHandler, IEndDragHandler
     public void Set(int setAtChildIndex, int assignedKeyIndex, Color c, float time)
     {
         this.time = time;
-        this.transformIndex = setAtChildIndex;
-        this.keyIndex = assignedKeyIndex;
+        transformIndex = setAtChildIndex;
+        keyIndex = assignedKeyIndex;
         color = c;
         keyImage.color = color;
     }
@@ -95,5 +95,10 @@ public class GradientKeyDisplay : MonoBehaviour, IDragHandler, IEndDragHandler
         else
             newTime = (float)transform.GetSiblingIndex() / transform.parent.childCount;
         GradientEditor._Instance.ReadKeysFromChildIndices();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        SelectKey();
     }
 }

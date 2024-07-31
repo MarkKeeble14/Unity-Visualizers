@@ -81,6 +81,7 @@ public class GradientEditor : MonoBehaviour
         selectedKeyColorDisplay.color = c;
         SetPositionText(time);
     }
+
     private void SetCurrentlyEditingKeyIndex(int index)
     {
         currentlyEditingKeyIndex = index;
@@ -157,6 +158,8 @@ public class GradientEditor : MonoBehaviour
         currentGradient.SetKeys(colorKeys.ToArray(), currentGradient.alphaKeys);
 
         UpdateGradientDisplay();
+
+        SetCurrentlyEditingKeyIndex(-1);
     }
 
     private void UpdateGradientDisplay()

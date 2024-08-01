@@ -2,6 +2,22 @@
 using UnityEngine.UI;
 using System;
 using TMPro;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
+
+public struct ColorRequest
+{
+    public Action<Color> Action;
+    public Color StartingColor;
+    public string Label;
+
+    public ColorRequest(Action<Color> action, Color startingColor, string label)
+    {
+        Action = action;
+        StartingColor = startingColor;
+        Label = label;
+    }
+}
 
 public class RGBColorPicker : MonoBehaviour
 {
@@ -21,6 +37,8 @@ public class RGBColorPicker : MonoBehaviour
     [SerializeField] private Image greenColorComponent;
     [SerializeField] private Image blueColorComponent;
     [SerializeField] private GameObject picker;
+    [SerializeField] private TextMeshProUGUI labelText;
+    private EventSystem eventSystem;
 
     [Header("Inputs")]
     [SerializeField] private TMP_InputField redTextField;
@@ -38,7 +56,9 @@ public class RGBColorPicker : MonoBehaviour
 
     public static RGBColorPicker _Instance { get; private set; }
 
-    public Action<Color> OnColorFinalized;
+    private Stack<ColorRequest> requests = new();
+    private ColorRequest curRequest;
+    private bool processingRequest;
 
     private bool isDropperSelectActive;
 
@@ -50,6 +70,8 @@ public class RGBColorPicker : MonoBehaviour
     {
         if (_Instance != null) Destroy(gameObject);
         else _Instance = this;
+
+        eventSystem = FindObjectOfType<EventSystem>();
     }
 
     private void Start()
@@ -90,6 +112,50 @@ public class RGBColorPicker : MonoBehaviour
         if (IsPickerHidden) { altCompositeColorDisplay.color = hoveredPixelColor; }
     }
 
+    public void AddColorRequest(ColorRequest request)
+    {
+        if (processingRequest)
+        {
+            // shelve previous
+            requests.Push(curRequest);
+
+            // insert new
+            requests.Push(request);
+            InitializeNewRequest();
+        }
+        else
+        {
+            // no previous request, can initialize
+            requests.Push(request);
+            InitializeNewRequest();
+            processingRequest = true;
+        }
+    }
+
+    private void InitializeNewRequest()
+    {
+        curRequest = requests.Pop();
+
+        Open(curRequest.StartingColor);
+
+        labelText.text = curRequest.Label;
+    }
+
+    private void ResolveCurrentColorRequest(Color c)
+    {
+        curRequest.Action?.Invoke(c);
+
+        if (requests.Count > 0)
+        {
+            InitializeNewRequest();
+        }
+        else
+        {
+            processingRequest = false;
+            Close();
+        }
+    }
+
     private Color GetColorOfHoveredPixel()
     {
         Texture2D tex = ScreenRenderTextureManager._Instance.Tex;
@@ -117,14 +183,12 @@ public class RGBColorPicker : MonoBehaviour
 
     public void Cancel()
     {
-        OnColorFinalized?.Invoke(openColor);
-        Close();
+        ResolveCurrentColorRequest(openColor);
     }
 
     public void FinalizeColor()
     {
-        OnColorFinalized?.Invoke(GetCurrentColorRepresentation());
-        Close();
+        ResolveCurrentColorRequest(GetCurrentColorRepresentation());
     }
 
     public void ParseHexadecimalColor(string hexString)
@@ -197,6 +261,8 @@ public class RGBColorPicker : MonoBehaviour
         SetColorPickerHeight(inDropperSelectionHeight);
 
         colorTexture.SetActive(true);
+
+        eventSystem.enabled = false;
     }
 
     private void DisableDropperSelection()
@@ -209,6 +275,8 @@ public class RGBColorPicker : MonoBehaviour
         SetColorPickerHeight(defaultHeight);
 
         colorTexture.SetActive(false);
+
+        eventSystem.enabled = true;
     }
 
     public void HideRGBPicker()

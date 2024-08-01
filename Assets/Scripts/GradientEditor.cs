@@ -99,9 +99,7 @@ public class GradientEditor : MonoBehaviour
 
     public void ChangeKeyColor()
     {
-        RGBColorPicker._Instance.OnColorFinalized += ColorChosen;
-
-        RGBColorPicker._Instance.Open(selectedKeyColorDisplay.color);
+        RGBColorPicker._Instance.AddColorRequest(new ColorRequest(ColorChosen, selectedKeyColorDisplay.color, "Gradient Key #" + currentlyEditingKeyIndex));
     }
 
     private void ColorChosen(Color c)
@@ -113,8 +111,6 @@ public class GradientEditor : MonoBehaviour
         selectedKeyColorDisplay.color = c;
 
         UpdateGradientDisplay();
-
-        RGBColorPicker._Instance.OnColorFinalized -= ColorChosen;
     }
 
     public void ChangeKeyTime(string s)

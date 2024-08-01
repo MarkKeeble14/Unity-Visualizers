@@ -16,8 +16,7 @@ public class ColorListElement : ListSelectionElement
 
     public override void Open()
     {
-        RGBColorPicker._Instance.Open(image.color);
-        RGBColorPicker._Instance.OnColorFinalized += OnColorSelected;
+        RGBColorPicker._Instance.AddColorRequest(new ColorRequest(OnColorSelected, image.color, "Color #" + Index));
     }
 
     private void OnColorSelected(Color c)
@@ -26,9 +25,6 @@ public class ColorListElement : ListSelectionElement
         image.color = c;
 
         VisualizerManager._Instance.UpdateTrackColor(Index, c);
-
-        // Remove callback
-        RGBColorPicker._Instance.OnColorFinalized -= OnColorSelected;
     }
 
     public override void Delete()

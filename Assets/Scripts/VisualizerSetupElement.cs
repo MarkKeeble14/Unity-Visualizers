@@ -69,6 +69,7 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
     [Header("Transforms")]
     [SerializeField] private Transform extraSettingsHolder;
     private RectTransform rect => transform as RectTransform;
+    public Transform ExtraSettingsHolder => extraSettingsHolder;
 
     protected bool active = true;
     private float expandedHeight;
@@ -77,29 +78,6 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
     protected int colorIndex;
     protected int fontIndex;
     protected VisualizerColorType colorType;
-
-    public void Init(SetupElementInfo info)
-    {
-        labelText.text = info.Name;
-        label = info.Label;
-
-        fontSelection.SetActive(info.AllowFontSelection);
-        colorSelection.SetActive(info.AllowColorSelection);
-        setSolidColorTypeButton.gameObject.SetActive(info.AllowSolidColor); 
-        setTimeBasedGradientButton.gameObject.SetActive(info.AllowTimeBasedGradient);
-        setPositionBasedGradientButton.gameObject.SetActive(info.AllowPositionBasedGradient);
-
-        for (int i = 0; i < info.HelperButtons.Length; i++)
-        {
-            VisualizerSetupHelperButton b = helperButtons[i];
-            b.gameObject.SetActive(true);
-            b.ControlButtonInteractable = button => info.HelperButtons[b.Index].ControlInteractable?.Invoke(button);
-            b.Button.onClick.AddListener(() => { info.HelperButtons[b.Index].OnPress?.Invoke(); });
-            b.Text.text = info.HelperButtons[i].Label;
-        }
-    }
-
-    public Transform ExtraSettingsHolder => extraSettingsHolder;
 
     private void Awake()
     {
@@ -125,6 +103,27 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
         defaultHeight = rect.sizeDelta.y;
 
         CalcLayout();
+    }
+
+    public void Init(SetupElementInfo info)
+    {
+        labelText.text = info.Name;
+        label = info.Label;
+
+        fontSelection.SetActive(info.AllowFontSelection);
+        colorSelection.SetActive(info.AllowColorSelection);
+        setSolidColorTypeButton.gameObject.SetActive(info.AllowSolidColor);
+        setTimeBasedGradientButton.gameObject.SetActive(info.AllowTimeBasedGradient);
+        setPositionBasedGradientButton.gameObject.SetActive(info.AllowPositionBasedGradient);
+
+        for (int i = 0; i < info.HelperButtons.Length; i++)
+        {
+            VisualizerSetupHelperButton b = helperButtons[i];
+            b.gameObject.SetActive(true);
+            b.ControlButtonInteractable = button => info.HelperButtons[b.Index].ControlInteractable?.Invoke(button);
+            b.Button.onClick.AddListener(() => { info.HelperButtons[b.Index].OnPress?.Invoke(); });
+            b.Text.text = info.HelperButtons[i].Label;
+        }
     }
 
     private void CalcLayout()
@@ -174,11 +173,6 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
         UpdateEnabled(active);
     }
 
-    private void SetCheckbox()
-    {
-        enabledCheckbox.Active = active;
-    }
-
     private void SetColorType()
     {
         setPositionBasedGradientButton.interactable = colorType != VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT;
@@ -214,11 +208,32 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
         fontDropdownMenu.ActivateElementAtIndex(fontIndex);
     }
 
+    private void SetCheckbox()
+    {
+        enabledCheckbox.Active = active;
+    }
+
     protected void Set()
     {
         SetCheckbox();
         SetColorType();
         SetFont();
+    }
+
+    public void Randomize()
+    {
+        VisualizerElementsSettings newSettings = GetElementSettings();
+        newSettings.FontIndex = RandomHelper.RandomIntExclusive(0, VisualizerManager._Instance.TrackInfo.Fonts.Count);
+        newSettings.ColorType = (VisualizerColorType)RandomHelper.RandomIntExclusive(0, 2);
+        if (newSettings.ColorType == VisualizerColorType.COLOR)
+        {
+            newSettings.ColorIndex = RandomHelper.RandomIntExclusive(0, VisualizerManager._Instance.TrackInfo.Colors.Count);
+        } else if (newSettings.ColorType == VisualizerColorType.TIME_BASED_GRADIENT 
+            || newSettings.ColorType == VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT)
+        {
+            newSettings.ColorIndex = RandomHelper.RandomIntExclusive(0, VisualizerManager._Instance.TrackInfo.Gradients.Count);
+        }
+        UpdateSettings(newSettings);
     }
 
     public void UpdateColorType(int enumIndex)

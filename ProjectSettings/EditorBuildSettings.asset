@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu/MainMenu.unity
     guid: c87d876e9bb57e5469ce01a469ead515
   - enabled: 1
-    path: Assets/Scenes/Basic/2DVisualizer.unity
+    path: Assets/Scenes/Basic/BasicVisualizer.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/Graveyard/GraveyardStationary.unity

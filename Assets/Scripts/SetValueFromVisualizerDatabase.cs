@@ -6,16 +6,16 @@ public abstract class SetValueFromVisualizerDatabase : MonoBehaviour
 {
     [SerializeField] private VisualizerElementLabel elementLabel;
 
-    protected void TrySetValueFromDatabase<T>(SettingType settingType, Dictionary<string, T> db, Action<T> setFunc, Action notFoundFunc)
+    protected bool TrySetValueFromDatabase<T>(SettingType settingType, Dictionary<string, T> db, Action<T> setFunc, Action notFoundFunc)
     {
         string dbKey = MakeKey(settingType);
-        if (db.ContainsKey(dbKey)) { setFunc?.Invoke(db[dbKey]); } else { notFoundFunc?.Invoke(); }
+        if (db.ContainsKey(dbKey)) { setFunc?.Invoke(db[dbKey]); return true; } else { notFoundFunc?.Invoke(); return false; }
     }
 
-    protected void TrySetValueFromDatabase<T>(SettingType settingType, Dictionary<string, T> db, Action<T> setFunc)
+    protected bool TrySetValueFromDatabase<T>(SettingType settingType, Dictionary<string, T> db, Action<T> setFunc)
     {
         string dbKey = MakeKey(settingType);
-        if (db.ContainsKey(dbKey)) { setFunc?.Invoke(db[dbKey]); } else { Debug.Log("key=" + dbKey + " - Not Found in Database"); }
+        if (db.ContainsKey(dbKey)) { setFunc?.Invoke(db[dbKey]); return true; } else { Debug.Log("key=" + dbKey + " - Not Found in Database"); return false; }
     }
 
     private string MakeKey(SettingType settingType)

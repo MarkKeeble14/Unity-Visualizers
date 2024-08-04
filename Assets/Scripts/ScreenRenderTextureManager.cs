@@ -28,32 +28,26 @@ public class ScreenRenderTextureManager : MonoBehaviour
         renderTex.height = Screen.height;
     }
 
-    [SerializeField] private Camera renderTextureCamera;
-    [SerializeField] private RenderTexture renderTex;
+    [Header("Settings")]
+    [SerializeField] private bool skipSavedScreenshotMessage;
+
 
     public Texture2D Tex { get; private set; }
 
     private Action onPreUpdateRenderTexture;
     private Action<Texture2D> onUpdateRenderTexture;
 
-    public void AddToOnUpdateRenderTexture(Action<Texture2D> tex)
-    {
-        onUpdateRenderTexture += tex;
-    }
-
-    public void RemoveFromOnUpdateRenderTexture(Action<Texture2D> tex)
-    {
-        onUpdateRenderTexture -= tex;
-    }
-
     private int numRenderRequests;
 
     private bool screenshotDecisionMade;
     private bool screenshotCancelled;
 
+
     [Header("References")]
     [SerializeField] private GameObject screenshotCanvas;
     [SerializeField] private List<SerializableKeyValuePair<VisualizerElementLabel, Checkbox>> enableVisualizerElementCheckboxes = new();
+    [SerializeField] private Camera renderTextureCamera;
+    [SerializeField] private RenderTexture renderTex;
 
     public void RequestRenderToTex()
     {
@@ -181,6 +175,18 @@ public class ScreenRenderTextureManager : MonoBehaviour
         // Write to file
         File.WriteAllBytes(filePath, Tex.EncodeToPNG());
 
+
+        if (skipSavedScreenshotMessage) return;
         UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Screenshot saved to: " + filePath);
+    }
+
+    public void AddToOnUpdateRenderTexture(Action<Texture2D> tex)
+    {
+        onUpdateRenderTexture += tex;
+    }
+
+    public void RemoveFromOnUpdateRenderTexture(Action<Texture2D> tex)
+    {
+        onUpdateRenderTexture -= tex;
     }
 }

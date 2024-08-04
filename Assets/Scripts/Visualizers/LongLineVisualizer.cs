@@ -1,42 +1,30 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(HorizontalOrVerticalLayoutGroup))]
-public class LongLineVisualizer : PremadeVisualizer, IRecieveVisualizerFloatValues
+public class LongLineVisualizer : PremadeVisualizer
 {
     [Header("Settings")]
     [SerializeField] private float spacing = 0;
-
-    [SerializeField] private string spacingKey;
+    public float Spacing {  get { return spacing; } set { spacing = value; } }
 
     private HorizontalOrVerticalLayoutGroup layoutGroup;
 
     protected override void PreMakingVisualizer()
     {
-        layoutGroup = GetComponent<HorizontalOrVerticalLayoutGroup>();
+        if (layoutGroup == null) { layoutGroup = GetComponent<HorizontalOrVerticalLayoutGroup>(); }
+    }
+
+    protected override void PostMakingVisualizer()
+    {
+        // 
     }
 
     protected override void UpdateSpecificSettings()
     {
         layoutGroup.spacing = spacing;
-    }
-
-    public override void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
-    {
-        if (ignoreBroadcasts) return;
-
-        base.RecieveVisualizerFloatValues(settings);
-
-        if (!settings.ContainsKey(spacingKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(spacingKey, spacing);
-        } else
-        {
-            spacing = settings[spacingKey];
-        }
     }
 }

@@ -497,7 +497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597314176735197424, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_Name
-      value: FontListElement Variant
+      value: FontListElement
       objectReference: {fileID: 0}
     - target: {fileID: 6597314176735197425, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_Pivot.x
@@ -605,6 +605,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597314177154328823, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7509195247360090454, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847618942604950243, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9024288884524066458, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

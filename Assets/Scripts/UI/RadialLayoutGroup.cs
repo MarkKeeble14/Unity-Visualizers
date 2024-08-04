@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 /*
@@ -26,6 +27,7 @@ public class RadialLayoutGroup : LayoutGroup
     public float MinAngle, MaxAngle, StartAngle;
 
     [SerializeField] private bool makePerpindicular;
+    [SerializeField] private bool reverseOrder;
     protected override void OnEnable() { base.OnEnable(); CalculateRadial(); }
     public override void SetLayoutHorizontal()
     {
@@ -63,7 +65,20 @@ public class RadialLayoutGroup : LayoutGroup
         float fOffsetAngle = ((MaxAngle - MinAngle)) / (transform.childCount - 1);
 
         float fAngle = StartAngle;
-        for (int i = 0; i < transform.childCount; i++)
+
+        int start = 0;
+        Func<int, bool> endCondition = x => x < transform.childCount;
+        int increment = 1;
+
+        if (reverseOrder)
+        {
+            start = transform.childCount - 1;
+            endCondition = x => x >= 0;
+            increment = -1;
+        }
+        
+
+        for (int i = start; endCondition(i); i += increment)
         {
             RectTransform child = (RectTransform)transform.GetChild(i);
             if (child != null)

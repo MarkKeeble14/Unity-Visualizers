@@ -16,13 +16,16 @@ public class GradientListElement : ListSelectionElement
     public override void Open()
     {
         GradientEditor._Instance.Open(gradient);
+
         GradientEditor._Instance.OnGradientFinalized += OnGradientSelected;
     }
 
     private void OnGradientSelected(Gradient g)
     {
+        gradient = g;
+
         // Update image color
-        display.UpdateColors(g);
+        display.UpdateColors(gradient);
 
         VisualizerManager._Instance.UpdateTrackGradient(Index, gradient);
 
@@ -33,5 +36,15 @@ public class GradientListElement : ListSelectionElement
     public override void Delete()
     {
         VisualizerManager._Instance.DeleteGradient(Index);
+    }
+
+    public override void Randomize()
+    {
+        gradient = RandomHelper.GetRandomOpaqueGradient();
+
+        // Update image color
+        display.UpdateColors(gradient);
+
+        VisualizerManager._Instance.UpdateTrackGradient(Index, gradient);
     }
 }

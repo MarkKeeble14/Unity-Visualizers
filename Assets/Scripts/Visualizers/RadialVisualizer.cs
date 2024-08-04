@@ -8,64 +8,31 @@ public class RadialVisualizer : PremadeVisualizer
 {
     [Header("Settings")]
     [SerializeField] private float distance = 0;
+    public float Distance { get { return distance; } set { distance = value; } }
     [SerializeField] private float segmentWidth = 10;
-    private float lastSegmentWidth;
-
-    [Header("Adjustable Settings")]
-    [SerializeField] private string distanceKey;
-    [SerializeField] private string segmentWidthKey;
+    public float SegmentWidth { get { return segmentWidth; } set { segmentWidth = value; UpdateSegmentWidth(); } }
 
     private RadialLayoutGroup layoutGroup;
 
     protected override void UpdateSpecificSettings()
     {
-        if (layoutGroup == null)
-            layoutGroup = GetComponent<RadialLayoutGroup>();
-
         // radial distance
         layoutGroup.UpdateDistance(distance);
-
-        // segment width
-        if (lastSegmentWidth != segmentWidth)
-        {
-            Vector2 newDelta = new Vector2(segmentWidth, 0);
-            foreach (RectTransform rect in segmentList)
-            {
-                rect.sizeDelta = newDelta;
-            }
-        }
-        lastSegmentWidth = segmentWidth;
     }
 
-    public override void RecieveVisualizerFloatValues(Dictionary<string, float> settings)
+    public void UpdateSegmentWidth()
     {
-        if (ignoreBroadcasts) return;
-
-        base.RecieveVisualizerFloatValues(settings);
-
-        if (!settings.ContainsKey(distanceKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(distanceKey, distance);
-        }
-        else
-        {
-            distance = settings[distanceKey];
-        }
-
-        if (!settings.ContainsKey(segmentWidthKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(segmentWidthKey, segmentWidth);
-        }
-        else
-        {
-            segmentWidth = settings[segmentWidthKey];
-        }
-
-        UpdateSpecificSettings();
+        Vector2 newDelta = new Vector2(segmentWidth, 0);
+        foreach (RectTransform rect in segmentList) { rect.sizeDelta = newDelta; }
     }
 
     protected override void PreMakingVisualizer()
     {
-        // 
+        if (layoutGroup == null) { layoutGroup = GetComponent<RadialLayoutGroup>(); }
+    }
+
+    protected override void PostMakingVisualizer()
+    {
+        UpdateSegmentWidth();
     }
 }

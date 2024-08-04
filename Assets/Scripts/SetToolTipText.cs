@@ -27,7 +27,7 @@ public class SetToolTipText : MonoBehaviour
             case SettingType.CUSTOM:
                 return defaultValue;
             case SettingType.ATTACHED_TO_BAND:
-                return "Controls the band that the element responds to";
+                return "The band the element responds to";
             case SettingType.INTENSITY_MULTIPLIER:
                 return "Controls the brightness of the light when it recieves a strong signal";
             case SettingType.INTENSITY_DEFAULT_VALUE:
@@ -38,8 +38,8 @@ public class SetToolTipText : MonoBehaviour
                 return "Controls the reach of the light when it recieves a strong signal";
             case SettingType.RANGE_DEFAULT_VALUE:
                 return "Controls the minimum reach of the light";
-            case SettingType.BACKGROUND_SCALE:
-                return "Scales the background";
+            case SettingType.SCALE:
+                return "Scales the elements size";
             case SettingType.SMOOTHING_SHIFT:
                 return "Shifts the smoothing equation";
             case SettingType.SMOOTHING_STRENGTH:
@@ -58,6 +58,20 @@ public class SetToolTipText : MonoBehaviour
                 return "The minimum value the normalizer can output";
             case SettingType.MAX_NORMALIZED_OUTPUT:
                 return "The maximum value the normalizer can output";
+            case SettingType.ADJUST_SPEED:
+                return "The speed at which the element adjusts";
+            case SettingType.DEFAULT_VALUE:
+                return "The minimum value for the element";
+            case SettingType.SIGNAL_MULTIPLIER:
+                return "Multiplies the strength of the signal";
+            case SettingType.SPACING:
+                return "The space between each segment";
+            case SettingType.SEGMENT_WIDTH:
+                return "The width of each segment";
+            case SettingType.RADIAL_DISTANCE:
+                return "The diameter of the circle";
+            case SettingType.VISUALIZER_SEGMENT_TYPE:
+                return "The type of attachment for the Visualizer";
             default:
                 throw new UncaughtSwitchTypeException(typeof(SettingType), key.ToString());
         }

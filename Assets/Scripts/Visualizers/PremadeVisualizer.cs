@@ -1,17 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackColor, IRecieveVisualizerFloatValues, IRecieveVisualizerIntValues
+public abstract class PremadeVisualizer : SetVisualizerElementColor
 {
     [Header("Segment Prefab")]
     [SerializeField] private GameObject segmentPrefab;
 
     [Header("Settings")]
     [SerializeField] protected AttachmentType attachmentType;
+    public AttachmentType AttachmentType 
+    { 
+        get 
+        { 
+            return attachmentType; 
+        } 
+        set 
+        { 
+            attachmentType = value; 
+            Reconstruct(); 
+        } 
+    }
+
     [SerializeField] protected float signalMultiplier;
     [SerializeField] private float defaultValue;
     [SerializeField] private float adjustSpeed;
@@ -22,18 +33,17 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
     protected List<Image> imageList = new List<Image>();
     protected List<RectTransform> segmentList = new List<RectTransform>();
 
-    [Header("Adjustable Settings Keys")]
-    [SerializeField] private string signalMultiplierKey;
-    [SerializeField] private string defaultValueKey;
-    [SerializeField] private string attachmentTypeKey;
+    public void SetFloatSettings(float signalMultiplier, float defaultValue, float adjustSpeed)
+    {
+        this.signalMultiplier = signalMultiplier;
+        this.defaultValue = defaultValue;
+        this.adjustSpeed = adjustSpeed;
+        UpdateAttachments();
+    }
 
     private void Start()
     {
-        PreMakingVisualizer();
-
         MakeDefaultVisualizer();
-
-        UpdateAttachments();
     }
 
     protected new void Update()
@@ -44,6 +54,8 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
     }
 
     protected abstract void PreMakingVisualizer();
+
+    protected abstract void PostMakingVisualizer();
 
     protected virtual void UpdateSpecificSettings() { }
 
@@ -62,12 +74,12 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
         segmentList.Clear();
 
         MakeDefaultVisualizer();
-
-        UpdateAttachments();
     }
 
     protected void MakeDefaultVisualizer()
     {
+        PreMakingVisualizer();
+
         int n = 0;
         if (attachmentType == AttachmentType.FIRST_64_SAMPLES)
             n = 64;
@@ -115,6 +127,10 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
                 TrackSegment(spawned, broadcaster, i, n);
             }
         }
+
+        UpdateAttachments();
+
+        PostMakingVisualizer();
     }
 
     [ContextMenu("UpdateAttachments")]
@@ -160,63 +176,5 @@ public abstract class PremadeVisualizer : SetBaseVisualizerElementColorToTrackCo
             else
                 imageList[i].color = VisualizerManager._Instance.GetColor(ColorType, ColorIndex, (float)i / imageList.Count);
         }
-    }
-
-    public virtual void RecieveVisualizerFloatValues(Dictionary<string, float> values)
-    {
-        if (ignoreBroadcasts) return;
-
-        if (!values.ContainsKey(signalMultiplierKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(signalMultiplierKey, signalMultiplier);
-        } else
-        {
-            signalMultiplier = values[signalMultiplierKey];
-        }
-
-        if (!values.ContainsKey(defaultValueKey))
-        {
-            VisualizerManager._Instance.RegisterFloatValue(defaultValueKey, defaultValue);
-        }
-        else
-        {
-            defaultValue = values[defaultValueKey];
-        }
-
-        UpdateAttachments();
-    }
-
-    public virtual void RecieveVisualizerIntValues(Dictionary<string, int> values)
-    {
-        if (ignoreBroadcasts) return;
-
-        if (!values.ContainsKey(attachmentTypeKey))
-        {
-            VisualizerManager._Instance.RegisterIntValue(attachmentTypeKey, (int)attachmentType);
-        }
-        else
-        {
-            attachmentType = (AttachmentType)values[attachmentTypeKey];
-        }
-
-        Reconstruct();
-    }
-
-    public override void RecieveTrackInfo(TrackInfo info)
-    {
-        if (ignoreBroadcasts) return;
-
-        base.RecieveTrackInfo(info);
-
-        UpdateAttachments();
-    }
-
-    public override void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
-    {
-        if (ignoreBroadcasts) return;
-
-        base.RecieveVisualizerElementsInfo(info);
-
-        UpdateAttachments();
     }
 }

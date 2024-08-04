@@ -22,10 +22,9 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: GhostParticleMat
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ValidKeywords:
-  - _EMISSION
+  m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 2
+  m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -310,12 +309,12 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.1254902, b: 0.1254902, a: 1}
+    - _BaseColor: {r: 0.12549016, g: 0.76862746, b: 0.6431373, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.12549013, b: 0.12549013, a: 1}
+    - _Color: {r: 0.12549013, g: 0.76862746, b: 0.6431373, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 3, g: 0.37647063, b: 0.37647063, a: 3}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}

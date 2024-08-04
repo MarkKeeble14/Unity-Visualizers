@@ -129,4 +129,45 @@ public static class RandomHelper
         }
         return result;
     }
+
+    public static Color GetRandomColor()
+    {
+        return new Color(RandomFloat(0, 1), RandomFloat(0, 1), RandomFloat(0, 1), RandomFloat(0, 1));
+    }
+
+    public static Color GetRandomOpaqueColor()
+    {
+        return new Color(RandomFloat(0, 1), RandomFloat(0, 1), RandomFloat(0, 1), 1);
+    }
+
+    public static Gradient GetRandomOpaqueGradient()
+    {
+        int numKeys = RandomIntExclusive(0, 8);
+        Gradient res = new Gradient();
+        GradientColorKey[] colorKeys = new GradientColorKey[numKeys];
+        for (int i = 0; i < numKeys; i++)
+        {
+            colorKeys[i].time = RandomFloat(0, 1);
+            colorKeys[i].color = GetRandomOpaqueColor();
+        }
+        res.SetKeys(colorKeys, new GradientAlphaKey[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1) });
+        return res;
+    }
+
+    public static Gradient GetRandomGradient()
+    {
+        int numKeys = RandomIntExclusive(0, 8);
+        Gradient res = new Gradient();
+        GradientColorKey[] colorKeys = new GradientColorKey[numKeys];
+        GradientAlphaKey[] alphaKeys = new GradientAlphaKey[numKeys];
+        for (int i = 0; i < numKeys; i++)
+        {
+            colorKeys[i].time = RandomFloat(0, 1);
+            colorKeys[i].color = GetRandomOpaqueColor();
+            alphaKeys[i].time = colorKeys[i].time;
+            alphaKeys[i].alpha = RandomFloat(0, 1);
+        }
+        res.SetKeys(colorKeys, alphaKeys);
+        return res;
+    }
 }

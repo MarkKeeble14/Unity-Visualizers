@@ -46,7 +46,8 @@ public abstract class DropdownMenu : MonoBehaviour
         if (dropdownElements.Count == 0)
         {
             UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING, 
-                "Request to open dropdown ignored - No " + elementType + "s to select from. Please load a " + elementType + " to select from first");
+                "Request to open dropdown ignored - No " + (string.IsNullOrEmpty(elementType) ? "option" : elementType) 
+                + "s to select from. Please load a " + (string.IsNullOrEmpty(elementType) ? "option" : elementType) + " to select first");
             return;
         }
 

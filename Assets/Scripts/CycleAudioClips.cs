@@ -29,13 +29,12 @@ public class CycleAudioClips : MonoBehaviour
 
     private void UpdateClip()
     {
-        source.clip = clips[currentId];
-        source.Play();
+        VisualizerManager._Instance.SetTrack(clips[currentId]);
     }
 
     private void Awake()
     {
-        source.clip = clips[currentId];
+        VisualizerManager._Instance.SetTrack(clips[currentId]);
     }
 
     // Update is called once per frame

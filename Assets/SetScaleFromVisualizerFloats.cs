@@ -8,6 +8,6 @@ public class SetScaleFromVisualizerFloats : SetValueFromVisualizerDatabase, IRec
 
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
-        TrySetValueFromDatabase(SettingType.BACKGROUND_SCALE, values, x => rect.localScale = Vector3.one * x);
+        TrySetValueFromDatabase(SettingType.SCALE, values, x => rect.localScale = Vector3.one * x);
     }
 }

@@ -7,7 +7,7 @@ public enum VisualizerElementSettingType
     INT,
     BOOL,
     INPUT,
-    DROPDOWN
+    TEXT_DROPDOWN
 }
 
 public class VisualizerSetupManager : MonoBehaviour

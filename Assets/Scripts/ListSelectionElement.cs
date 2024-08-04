@@ -8,7 +8,6 @@ public abstract class ListSelectionElement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TextMeshProUGUI indexText;
-    private LayoutElement layoutElement;
 
     private int index;
     public int Index => index;
@@ -16,14 +15,11 @@ public abstract class ListSelectionElement : MonoBehaviour
     public abstract void Open();
     public abstract void Delete();
 
-    private void Awake()
-    {
-        layoutElement = GetComponent<LayoutElement>();
-    }
-
     public void SetIndex(int index)
     {
         this.index = index;
         indexText.text = index.ToString();
     }
+
+    public virtual void Randomize() { }
 }

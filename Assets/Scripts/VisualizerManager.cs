@@ -15,6 +15,7 @@ using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
+using System.Xml;
 
 [System.Serializable]
 public struct AudioClipData
@@ -109,6 +110,27 @@ public class VisualizerManager : MonoBehaviour
     private int numSamples = 512;
     private float cachedSmoothingValue;
 
+    [Header("BPM")]
+    [SerializeField] private Vector2Int estimatedBPMRange = new Vector2Int(60, 180);
+    private int bpm;
+    private float timeSinceLastBeat;
+    private float timeBetweenBeats;
+    public int BPM 
+    { 
+        get 
+        { 
+            return bpm; 
+        }
+        set
+        {
+            bpm = value;
+            timeBetweenBeats = 60f / bpm;
+            timeSinceLastBeat = 0;
+
+            BroadcastBPM();
+        } 
+    }
+
     [Header("Normalizing")]
     [SerializeField] private bool normalizeSamples;
     [SerializeField] private float minNormalizedSampleValue = 0;
@@ -117,25 +139,6 @@ public class VisualizerManager : MonoBehaviour
     private float cachedLargestValueLeft = 0;
     private float cachedSmallestValueRight = Mathf.Infinity;
     private float cachedLargestValueRight = 0;
-
-    [Header("Tapping")]
-    [SerializeField] private int tapBufferCount = 5;
-
-    [Header("BPM Calculations")]
-    [SerializeField] private float varianceSensitivity = 1.3f;
-    private float energyBufferSize;
-    private float currentEnergy;
-    private List<float> energyBuffer = new();
-    private float localEnergy;
-    private float averageLocalEnergy;
-
-    [SerializeField] private int measureBPMOverInterval = 15;
-    private List<int> beatCountsPerSecondBuffer = new();
-    private int beatsLastSecond;
-    private float estimatedBPM;
-    private bool estimatingBPM;
-    private bool tappingBPM;
-    private bool didTap;
 
     [Header("Controls")]
     [SerializeField] private ControlScheme activeControlScheme = ControlScheme.VISUALIZER;
@@ -159,7 +162,6 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private Button loadTrackButton;
     [SerializeField] private Transform generalSettingsList;
     public Transform GeneralSettingsList => generalSettingsList;
-
 
     [Header("Tapping UI")]
     [SerializeField] private GameObject tempoMenuUI;
@@ -193,7 +195,7 @@ public class VisualizerManager : MonoBehaviour
     [SerializeField] private VisualizerElementBoolSetting boolSetting;
 
     private List<IRecieveTrackInfo> trackInfoListeners = new();
-    private List<IRecieveTempo> tempoListeners = new();
+    private List<IRecieveBPM> bpmListeners = new();
     private List<IRecieveControlScheme> controlSchemeListeners = new();
     private List<IRecieveVisualizerElementsInfo> visualizerElementsInfoListeners = new();
     private List<IRecieveVisualizerFloatValues> visualizerFloatValueListeners = new();
@@ -217,9 +219,12 @@ public class VisualizerManager : MonoBehaviour
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
+    public Action<float> OnNewAmplitudePeak;
+    public Action OnBeat;
+
+    // Unimplemented
     public Action<float> OnSnareHit;
     public Action<float> OnEnergySpike;
-    public Action<float> OnNewAmplitudePeak;
 
     private float[] leftAudioSamples = new float[512];
     private float[] rightAudioSamples = new float[512];
@@ -300,8 +305,6 @@ public class VisualizerManager : MonoBehaviour
         // populate dictionaries
         foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in baseVisualizerElements)
         {
-
-            Debug.Log("(Base) Adding: " + kvp.Key);
             visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
 
             // always instantiate ui elements
@@ -311,8 +314,6 @@ public class VisualizerManager : MonoBehaviour
 
         foreach (SerializableKeyValuePair<VisualizerElementLabel, SetupElementInfo> kvp in visualizerSpecificElements)
         {
-
-            Debug.Log("(Visualizer Specific) Adding: " + kvp.Key);
             visualizerElementsInfo.Add(kvp.Key, kvp.Value.DefaultSettings);
 
             // always instantiate ui elements
@@ -365,6 +366,13 @@ public class VisualizerManager : MonoBehaviour
 
         if (audioSource.isPlaying)
         {
+            if (timeSinceLastBeat >= timeBetweenBeats)
+            {
+                OnBeat?.Invoke();
+                timeSinceLastBeat = 0;
+            }
+            timeSinceLastBeat += Time.deltaTime;
+
             // Spectrum Data
             if (visualizerBoolValues["ENABLE_SMOOTHING"])
             {
@@ -390,9 +398,6 @@ public class VisualizerManager : MonoBehaviour
 
             // Calculate Amplitude
             GetAmplitude();
-
-            // Check Beat
-            CheckBeat();
         }
 
         // Determine if Song has Started
@@ -581,51 +586,10 @@ public class VisualizerManager : MonoBehaviour
             highestValuePerFrequencyBand[i] = beginningHighestFrequencyBandValue;
     }
 
-    private void CheckBeat()
-    {
-        energyBufferSize = measureBPMOverInterval * 60;
-        currentEnergy = 0;
-        for (int i = 0; i < 512; ++i)
-        {
-            switch (channel)
-            {
-                case AudioChannel.STEREO:
-                    currentEnergy += leftAudioSamples[i] + rightAudioSamples[i];
-                    break;
-                case AudioChannel.LEFT:
-                    currentEnergy += leftAudioSamples[i];
-                    break;
-                case AudioChannel.RIGHT:
-                    currentEnergy += rightAudioSamples[i];
-                    break;
-            }
-        }
-
-        // calculate local energy
-        localEnergy = 0;
-        foreach (float v in energyBuffer) { localEnergy += v; }
-
-        // calculate average local energy
-        averageLocalEnergy = localEnergy / energyBufferSize;
-
-        // add current energy to energy buffer
-        energyBuffer.Add(currentEnergy);
-
-        // if there are more samples in the energy buffer than are allowed, remove the oldest value
-        if (energyBuffer.Count > energyBufferSize) { energyBuffer.RemoveAt(0); }
-
-        // check for energy spike
-        if (currentEnergy > averageLocalEnergy * varianceSensitivity)
-        {
-            OnEnergySpike?.Invoke(currentEnergy);
-        }
-    }
-
     public float GetFrequencyBandValue(int band, bool useBuffer) { return useBuffer ? frequencyBandBuffer[band] : frequencyBands[band]; }
     public float GetAudioBandValue(int band, bool useBuffer) { return useBuffer ? audioBandsBuffer[band] : audioBands[band]; }
     public float GetAmplitudeValue(bool useBuffer) { return useBuffer ? amplitudeBuffer : amplitude; }
     public float GetAverageAmplitudeValue(bool useBuffer) { return useBuffer ? AverageAmplitudeBuffer : AverageAmplitude; }
-    public float GetEstimatedBPM() { return estimatedBPM; }
 
     public void BeginPlayback()
     {
@@ -913,7 +877,7 @@ public class VisualizerManager : MonoBehaviour
                 yield return StartCoroutine(DownloadTrackFromYouTube(url,
                     (url, clip, name, duration) =>
                     {
-                        SetTrack(url, clip, name, duration);
+                        SetTrack(clip, url, name, duration);
 
                         loadTrackButton.interactable = true;
                     }, null));
@@ -1136,7 +1100,7 @@ public class VisualizerManager : MonoBehaviour
                 StartCoroutine(LoadAudioClipFromFile(x,
                     (filePath, clip) =>
                     {
-                        SetTrack(filePath, clip);
+                        SetTrack(clip, filePath);
                     },
                     x =>
                     {
@@ -1150,9 +1114,20 @@ public class VisualizerManager : MonoBehaviour
     }
 
     // duration will take the format of mm:ss
-    private void SetTrack(string filePath, AudioClip clip, string trackName = "", string durationSeconds = "")
+    public void SetTrack(AudioClip clip, string filePath = "", string trackName = "", string durationSeconds = "")
     {
         audioSource.clip = clip;
+        int bpm = UniBpmAnalyzer.AnalyzeBpm(clip);
+        if (bpm < estimatedBPMRange.x)
+        {
+            while (bpm < estimatedBPMRange.x) bpm *= 2;
+        }
+        if (bpm > estimatedBPMRange.y)
+        {
+            while (bpm > estimatedBPMRange.y) bpm /= 2;
+        }
+        BPM = bpm;
+
         prePlaybackPositionTracker = 0;
 
         if (string.IsNullOrEmpty(trackName))
@@ -1165,7 +1140,8 @@ public class VisualizerManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(durationSeconds))
         {
-            trackInfo.DurationString = StringHelper.GetDurationText(audioSource.clip.length);
+            trackInfo.DurationString = StringHelper.GetDurationText(clip.length);
+            Debug.Log(trackInfo.DurationString);
         }
         else
         {
@@ -1737,6 +1713,19 @@ public class VisualizerManager : MonoBehaviour
         if (trackInfo.Gradients.Count < index) return;
         trackInfo.Gradients.RemoveAt(index);
 
+        // update the indexes of elements which would have been affected by this deletion
+        VisualizerElementLabel[] elements = visualizerElementsInfo.Keys.ToArray();
+        foreach (VisualizerElementLabel key in elements)
+        {
+            VisualizerElementsSettings s = visualizerElementsInfo[key];
+            if ((s.ColorType == VisualizerColorType.TIME_BASED_GRADIENT || s.ColorType == VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT)
+                && s.ColorIndex > index)
+            {
+                s.ColorIndex -= 1;
+                visualizerElementsInfo[key] = s;
+            }
+        }
+
         ClearColorsList();
         PopulateColorsList();
 
@@ -1747,6 +1736,18 @@ public class VisualizerManager : MonoBehaviour
     {
         if (trackInfo.Colors.Count < index) return;
         trackInfo.Colors.RemoveAt(index);
+
+        // update the indexes of elements which would have been affected by this deletion
+        VisualizerElementLabel[] elements = visualizerElementsInfo.Keys.ToArray();
+        foreach (VisualizerElementLabel key in elements)
+        {
+            VisualizerElementsSettings s = visualizerElementsInfo[key];
+            if (s.ColorType == VisualizerColorType.COLOR && s.ColorIndex > index)
+            {
+                s.ColorIndex -= 1;
+                visualizerElementsInfo[key] = s;
+            }
+        }
 
         ClearColorsList();
         PopulateColorsList();
@@ -1759,11 +1760,11 @@ public class VisualizerManager : MonoBehaviour
         if (trackInfo.Fonts.Count < index) return;
 
         // remove from tracking
-        string key = GetFontName(index);
+        string fontName = GetFontName(index);
 
-        loadedFontData.Remove(key);
-        loadedTMPFontAssets.Remove(key);
-        loadedFontIndices.Remove(key);
+        loadedFontData.Remove(fontName);
+        loadedTMPFontAssets.Remove(fontName);
+        loadedFontIndices.Remove(fontName);
         trackInfo.Fonts.RemoveAt(index);
 
         string[] indexKeys = loadedFontIndices.Keys.ToArray();
@@ -1773,6 +1774,18 @@ public class VisualizerManager : MonoBehaviour
             if (loadedFontIndices[indexKey] >= index)
             {
                 loadedFontIndices[indexKey] -= 1;
+            }
+        }
+
+        // update the indexes of elements which would have been affected by this deletion
+        VisualizerElementLabel[] elements = visualizerElementsInfo.Keys.ToArray();
+        foreach (VisualizerElementLabel key in elements)
+        {
+            VisualizerElementsSettings s = visualizerElementsInfo[key];
+            if (s.FontIndex > index)
+            {
+                s.FontIndex -= 1;
+                visualizerElementsInfo[key] = s;
             }
         }
 
@@ -2189,12 +2202,12 @@ public class VisualizerManager : MonoBehaviour
     }
 
     [ContextMenu("BroadcastTempo")]
-    private void BroadcastTempo()
+    private void BroadcastBPM()
     {
-        tempoListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveTempo>().ToList();
+        bpmListeners = FindObjectsOfType<MonoBehaviour>(true).OfType<IRecieveBPM>().ToList();
 
         // Send data out
-        tempoListeners.ForEach(item => item.RecieveTempo(estimatedBPM));
+        bpmListeners.ForEach(item => item.RecieveBPM(bpm));
     }
 
     [ContextMenu("BroadcastControlScheme")]
@@ -2275,11 +2288,6 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    public void SyncTempoListeners()
-    {
-        BroadcastTempo();
-    }
-
     public void OpenTempoMenu()
     {
         tempoMenuUI.SetActive(true);
@@ -2288,164 +2296,6 @@ public class VisualizerManager : MonoBehaviour
     public void CloseTempoMenu()
     {
         tempoMenuUI.SetActive(false);
-    }
-
-    public void UpdateEstimatedBPM(string s)
-    {
-        float v;
-        if (float.TryParse(s, out v))
-        {
-            UpdateEstimatedBPM(v);
-        }
-    }
-
-    public void UpdateEstimatedBPM(float v)
-    {
-        estimatedBPM = v;
-        BroadcastTempo();
-    }
-
-
-    [ContextMenu("Start Tapping BPM")]
-    public void StartTappingBPM()
-    {
-        StartCoroutine(TapBPM());
-    }
-
-    [ContextMenu("Stop Tapping BPM")]
-    public void StopTappingBPM()
-    {
-        tappingBPM = false;
-    }
-
-    [ContextMenu("Start Estimating BPM")]
-    public void StartEstimateBPM()
-    {
-        StartCoroutine(EstimateBPM());
-    }
-
-    [ContextMenu("Stop Estimating BPM")]
-    public void StopEstimatingBPM()
-    {
-        estimatingBPM = false;
-    }
-
-    private void IncrementBeatsLastSecond(float v)
-    {
-        beatsLastSecond++;
-    }
-
-    public void TapButtonPressed()
-    {
-        if (!tappingBPM)
-        {
-            StartTappingBPM();
-        }
-        else
-        {
-            didTap = true;
-        }
-    }
-
-    private IEnumerator TapBPM()
-    {
-        float lastTap = 0;
-        float averageSecondsBetweenTaps = 0;
-        float timer = 0;
-        List<float> secondsBetweenTaps = new();
-
-        tappingBPM = true;
-        while (tappingBPM)
-        {
-            if (estimatingBPM)
-            {
-                yield break;
-            }
-
-            timer += Time.deltaTime;
-
-            // space or left mosue button to tap
-            if (didTap)
-            {
-                didTap = false;
-
-                // find the time since the last tap and add it to the list
-                secondsBetweenTaps.Add(Mathf.Abs(timer - lastTap));
-
-                if (secondsBetweenTaps.Count > tapBufferCount)
-                {
-                    secondsBetweenTaps.RemoveAt(0);
-                }
-
-                // find average
-                foreach (float f in secondsBetweenTaps)
-                {
-                    averageSecondsBetweenTaps += f;
-                }
-                averageSecondsBetweenTaps /= secondsBetweenTaps.Count;
-
-                // calculate
-                estimatedBPM = 60 / averageSecondsBetweenTaps; // minutes conversion
-
-                SetTapperInputFieldText();
-
-                // update last tap time
-                lastTap = timer;
-            }
-
-            yield return null;
-        }
-
-        BroadcastTempo();
-    }
-
-    private IEnumerator EstimateBPM()
-    {
-        beatsLastSecond = 0;
-        beatCountsPerSecondBuffer.Clear();
-
-        tempoTapperInputField.interactable = false;
-        tempoTapperButton.interactable = false;
-
-        OnEnergySpike += IncrementBeatsLastSecond;
-        estimatingBPM = true;
-
-        while (estimatingBPM)
-        {
-            // wait a second
-            yield return new WaitForSeconds(1);
-
-            // add new value for however many beats occurred since last iteration
-            beatCountsPerSecondBuffer.Add(beatsLastSecond);
-
-            // reset counter
-            beatsLastSecond = 0;
-
-            // remove old value if neccessary
-            if (beatCountsPerSecondBuffer.Count > measureBPMOverInterval)
-            {
-                beatCountsPerSecondBuffer.RemoveAt(0);
-            }
-
-            // calculate bpm
-            float beatsOverLastInterval = 0;
-            foreach (int value in beatCountsPerSecondBuffer) { beatsOverLastInterval += value; }
-            estimatedBPM = beatsOverLastInterval * (60 / measureBPMOverInterval);
-
-            SetTapperInputFieldText();
-        }
-
-        tempoTapperInputField.interactable = true;
-        tempoTapperButton.interactable = true;
-
-        OnEnergySpike -= IncrementBeatsLastSecond;
-
-        BroadcastTempo();
-    }
-
-    private void SetTapperInputFieldText()
-    {
-        tempoTapperInputField.text = Math.Round(estimatedBPM, 2).ToString();
     }
 
     public void SetLightColorToVisualizerElement(VisualizerElementLabel label, Light light)

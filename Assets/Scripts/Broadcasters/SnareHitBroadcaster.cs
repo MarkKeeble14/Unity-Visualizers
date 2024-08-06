@@ -11,7 +11,7 @@ public class SnareHitBroadcaster : SignalBroadcaster
 
     private void Start()
     {
-        VisualizerManager._Instance.OnSnareHit +=
+        AudioSamplingManager._Instance.OnSnareHit +=
             x =>
             {
                 currentValue = baseSpikeValue + (x * energySpikeValueMultiplier);

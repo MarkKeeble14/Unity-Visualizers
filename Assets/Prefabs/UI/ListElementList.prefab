@@ -161,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2502686216699873373}
   m_Layer: 5
-  m_Name: AddListSelectionElementContainer
+  m_Name: Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1862,6 +1862,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   listSelectionElementsHolder: {fileID: 7624440788505953706}
+  listLabel: 
 --- !u!1001 &2806744062792631897
 PrefabInstance:
   m_ObjectHideFlags: 0

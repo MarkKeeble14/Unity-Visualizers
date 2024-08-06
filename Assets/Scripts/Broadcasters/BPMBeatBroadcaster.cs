@@ -13,7 +13,7 @@ public class BPMBeatBroadcaster : SignalBroadcaster
 
     private void Start()
     {
-        VisualizerManager._Instance.OnBeat += () =>
+        AudioSamplingManager._Instance.OnBeat += () =>
         {
             signalsSinceLastBeat++;
             if (signalsSinceLastBeat >= beatsPerSignal)

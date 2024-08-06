@@ -1203,14 +1203,6 @@ MonoBehaviour:
   - jpg
   - jpeg
   - png
-  channel: 0
-  defaultBandBufferDecrease: 0.005
-  bandBufferDecreaseMultPerFrame: 1.1
-  beginningHighestFrequencyBandValue: 0
-  estimatedBPMRange: {x: 60, y: 180}
-  normalizeSamples: 0
-  minNormalizedSampleValue: 0
-  maxNormalizedSampleValue: 1
   activeControlScheme: 0
   availableControlSchemes:
   - key: 0
@@ -1218,7 +1210,6 @@ MonoBehaviour:
   - key: 2
     value: FreeCam
   escapeMenuFunctions: {fileID: 4848897836633688607}
-  ampSpikeDetectionSensitivity: 0.9
   initialTransition:
     transition: {fileID: 5576446422959847681}
     direction: 1
@@ -1855,6 +1846,7 @@ Transform:
   - {fileID: 6289191421548404866}
   - {fileID: 2941840320922746069}
   - {fileID: 3258532389751122950}
+  - {fileID: 8514595990391451533}
   m_Father: {fileID: 1209412595206947815}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3201,6 +3193,60 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &5316143428023038476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8514595990391451533}
+  - component: {fileID: 3998802012531832116}
+  m_Layer: 0
+  m_Name: AudioSamplingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8514595990391451533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5316143428023038476}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2995968968946638640}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3998802012531832116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5316143428023038476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e13e60ca25e92343b672ddbd0a49ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  channel: 0
+  defaultBandBufferDecrease: 0.005
+  bandBufferDecreaseMultPerFrame: 1.2
+  beginningHighestFrequencyBandValue: 5
+  normalizeSamples: 0
+  minNormalizedSampleValue: 0
+  maxNormalizedSampleValue: 1
+  estimatedBPMRange: {x: 60, y: 180}
+  ampSpikeDetectionSensitivity: 0.9
+  audioSource: {fileID: 1209412595206947814}
 --- !u!1 &5333266230911691494
 GameObject:
   m_ObjectHideFlags: 0
@@ -5217,6 +5263,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3169971850967768010, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
+      propertyPath: listLabel
+      value: colors
+      objectReference: {fileID: 0}
     - target: {fileID: 3903310938001832030, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -6239,6 +6289,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3169971850967768010, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
+      propertyPath: listLabel
+      value: fonts
+      objectReference: {fileID: 0}
     - target: {fileID: 3903310938001832030, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -6486,6 +6540,10 @@ PrefabInstance:
     - target: {fileID: 6750246188963595671, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6848722451006837664, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7099205197200683740, guid: 6bdb08cfdf65c964b902afdec390eb50, type: 3}
       propertyPath: m_IsActive
@@ -12190,7 +12248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8448139195802346359, guid: d89e61bbfd6299a4f9f38d31087894c5, type: 3}
       propertyPath: m_text
-      value: Basic Visualizer Elements
+      value: Base Visualizer Elements
       objectReference: {fileID: 0}
     - target: {fileID: 8553087662241023305, guid: d89e61bbfd6299a4f9f38d31087894c5, type: 3}
       propertyPath: m_Pivot.x
@@ -12425,6 +12483,10 @@ PrefabInstance:
       value: GeneralSettingsUI
       objectReference: {fileID: 0}
     - target: {fileID: 2397503796810190694, guid: d89e61bbfd6299a4f9f38d31087894c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316340089564202107, guid: d89e61bbfd6299a4f9f38d31087894c5, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

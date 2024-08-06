@@ -32,7 +32,7 @@ public class ColorListElement : ListSelectionElement
         VisualizerManager._Instance.DeleteColor(Index);
     }
 
-    public override void Randomize()
+    protected override void Randomize()
     {
         OnColorSelected(RandomHelper.GetRandomOpaqueColor());
     }

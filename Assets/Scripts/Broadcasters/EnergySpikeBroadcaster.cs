@@ -11,7 +11,7 @@ public class EnergySpikeBroadcaster : SignalBroadcaster
 
     private void Start()
     {
-        VisualizerManager._Instance.OnEnergySpike += 
+        AudioSamplingManager._Instance.OnEnergySpike += 
             x =>
             {
                 currentValue = baseSpikeValue + (x * energySpikeValueMultiplier);

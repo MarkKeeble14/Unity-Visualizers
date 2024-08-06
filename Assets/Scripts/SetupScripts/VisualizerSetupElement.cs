@@ -71,6 +71,15 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
     private RectTransform rect => transform as RectTransform;
     public Transform ExtraSettingsHolder => extraSettingsHolder;
 
+    [SerializeField] private GameObject randomizeButton;
+    [SerializeField] private Image lockButtonImage;
+    [SerializeField] private Sprite lockSprite;
+    [SerializeField] private Sprite unlockSprite;
+
+    private bool allowPositionBasedGradient;
+
+    private bool locked;
+
     protected bool active = true;
     private float expandedHeight;
     private float defaultHeight;
@@ -115,6 +124,8 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
         setSolidColorTypeButton.gameObject.SetActive(info.AllowSolidColor);
         setTimeBasedGradientButton.gameObject.SetActive(info.AllowTimeBasedGradient);
         setPositionBasedGradientButton.gameObject.SetActive(info.AllowPositionBasedGradient);
+
+        allowPositionBasedGradient = info.AllowPositionBasedGradient;
 
         for (int i = 0; i < info.HelperButtons.Length; i++)
         {
@@ -220,11 +231,39 @@ public class VisualizerSetupElement : DatabaseSetter, IRecieveVisualizerElements
         SetFont();
     }
 
-    public void Randomize()
+    public void SetLocked(bool b)
     {
+        locked = b;
+    }
+
+    public void ToggleLocked()
+    {
+        SetLocked(!locked);
+        lockButtonImage.sprite = locked ? unlockSprite : lockSprite;
+        randomizeButton.SetActive(!locked);
+    }
+
+    public void TryRandomize()
+    {
+        if (locked) return;
+
         VisualizerElementsSettings newSettings = GetElementSettings();
         newSettings.FontIndex = RandomHelper.RandomIntExclusive(0, VisualizerManager._Instance.TrackInfo.Fonts.Count);
-        newSettings.ColorType = (VisualizerColorType)RandomHelper.RandomIntExclusive(0, 2);
+
+        if (RandomHelper.RandomBool())
+        {
+            // Set color
+            newSettings.ColorType = VisualizerColorType.COLOR;
+
+        } else
+        {
+            List<VisualizerColorType> possibleGradientTypes = new List<VisualizerColorType>() { VisualizerColorType.TIME_BASED_GRADIENT };
+            if (allowPositionBasedGradient) possibleGradientTypes.Add(VisualizerColorType.POSITIONAL_INDEX_BASED_GRADIENT);
+
+            // Set gradient
+            newSettings.ColorType = RandomHelper.GetRandomFromList(possibleGradientTypes);
+        }
+
         if (newSettings.ColorType == VisualizerColorType.COLOR)
         {
             newSettings.ColorIndex = RandomHelper.RandomIntExclusive(0, VisualizerManager._Instance.TrackInfo.Colors.Count);

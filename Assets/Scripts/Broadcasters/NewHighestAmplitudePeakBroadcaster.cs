@@ -11,7 +11,7 @@ public class NewHighestAmplitudePeakBroadcaster : SignalBroadcaster
 
     private void Start()
     {
-        VisualizerManager._Instance.OnNewAmplitudePeak +=
+        AudioSamplingManager._Instance.OnNewAmplitudePeak +=
             x =>
             {
                 currentValue = baseSpikeValue + (x * ampSpikeValueMultiplier);

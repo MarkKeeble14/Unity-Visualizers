@@ -38,7 +38,7 @@ public class GradientListElement : ListSelectionElement
         VisualizerManager._Instance.DeleteGradient(Index);
     }
 
-    public override void Randomize()
+    protected override void Randomize()
     {
         gradient = RandomHelper.GetRandomOpaqueGradient();
 

@@ -12,9 +12,9 @@ public class BandFalloffBroadcaster : FalloffBroadcaster
         switch (bandType)
         {
             case BandType.FREQUENCY:
-                return VisualizerManager._Instance.GetFrequencyBandValue(band, false) * signalMultiplier;
+                return AudioSamplingManager._Instance.GetFrequencyBandValue(band, false) * signalMultiplier;
             case BandType.AUDIO:
-                return VisualizerManager._Instance.GetAudioBandValue(band, false) * signalMultiplier;
+                return AudioSamplingManager._Instance.GetAudioBandValue(band, false) * signalMultiplier;
             default:
                 throw new UncaughtSwitchTypeException(typeof(BandType), bandType.ToString());
         }

@@ -305,6 +305,34 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 307626170865457544}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleLocked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ListSelectionElement, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549498313964678607, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6597314176735197424, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_Name
       value: ColorListElement
@@ -395,6 +423,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+--- !u!1 &1432285735859653364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9024288884524066458, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+  m_PrefabInstance: {fileID: 7988319918231006318}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1758163147295862992 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8555280964011859134, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
@@ -429,4 +462,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexText: {fileID: 3842248804784832979}
+  lockButtonImage: {fileID: 8267802216483301187}
+  lockIcon: {fileID: 21300000, guid: 59f236a1e1872684eb6ab3dce77dfbd3, type: 3}
+  unlockIcon: {fileID: 21300000, guid: 71cb02331353da54688f9b7fccc7e970, type: 3}
+  randomizeButton: {fileID: 1432285735859653364}
   image: {fileID: 4586584847444073149}
+--- !u!114 &8267802216483301187 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2044938709328628525, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
+  m_PrefabInstance: {fileID: 7988319918231006318}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

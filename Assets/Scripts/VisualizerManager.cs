@@ -15,6 +15,7 @@ using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
+using UnityEditor.Presets;
 
 [System.Serializable]
 public struct AudioClipData
@@ -297,7 +298,9 @@ public class VisualizerManager : MonoBehaviour
 
         AudioSamplingManager._Instance.NormalizeSamples = visualizerBoolValues["ENABLE_NORMALIZATION"];
         AudioSamplingManager._Instance.SmoothSamples = visualizerBoolValues["ENABLE_SMOOTHING"];
-        AudioSamplingManager._Instance.SmoothingStrength = visualizerFloatValues["SMOOTHING_STRENGTH"];
+        AudioSamplingManager._Instance.SamplingLoudnessMultiplier = visualizerFloatValues["SAMPLING_LOUDNESS_MULTIPLIER"];
+        AudioSamplingManager._Instance.MinNormalizedSampleValue = visualizerFloatValues["MIN_NORMALIZED_AUDIO_SAMPLE_VALUE"];
+        AudioSamplingManager._Instance.MaxNormalizedSampleValue = visualizerFloatValues["MAX_NORMALIZED_AUDIO_SAMPLE_VALUE"];
         AudioSamplingManager._Instance.SmoothingShift = visualizerFloatValues["SMOOTHING_SHIFT"];
         AudioSamplingManager._Instance.SmoothingScale = visualizerFloatValues["SMOOTHING_SCALE"];
 
@@ -862,7 +865,6 @@ public class VisualizerManager : MonoBehaviour
         if (string.IsNullOrEmpty(durationSeconds))
         {
             trackInfo.DurationString = StringHelper.GetDurationText(clip.length);
-            Debug.Log(trackInfo.DurationString);
         }
         else
         {
@@ -1644,42 +1646,21 @@ public class VisualizerManager : MonoBehaviour
 
     public void UpdateSetting(string key, float v)
     {
-        if (!visualizerFloatValues.ContainsKey(key))
-        {
-            RegisterFloatValue(key, v);
-        }
-        else
-        {
-            visualizerFloatValues[key] = v;
-        }
+        visualizerFloatValues[key] = v;
 
         BroadcastVisualizerFloatValues();
     }
 
     public void UpdateSetting(string key, int v)
     {
-        if (!visualizerIntValues.ContainsKey(key))
-        {
-            RegisterIntValue(key, v);
-        }
-        else
-        {
-            visualizerIntValues[key] = v;
-        }
+        visualizerIntValues[key] = v;
 
         BroadcastVisualizerIntValues();
     }
 
     public void UpdateSetting(string key, bool v)
     {
-        if (!visualizerBoolValues.ContainsKey(key))
-        {
-            RegisterBoolValue(key, v);
-        }
-        else
-        {
-            visualizerBoolValues[key] = v;
-        }
+        visualizerBoolValues[key] = v;
 
         BroadcastVisualizerBoolValues();
     }
@@ -1712,25 +1693,6 @@ public class VisualizerManager : MonoBehaviour
     public bool GetBoolSetting(string key)
     {
         return visualizerBoolValues[key];
-    }
-
-
-    public void RegisterFloatValue(string key, float v)
-    {
-        visualizerFloatValues.Add(key, v);
-        BroadcastVisualizerFloatValues();
-    }
-
-    public void RegisterIntValue(string key, int v)
-    {
-        visualizerIntValues.Add(key, v);
-        BroadcastVisualizerIntValues();
-    }
-
-    public void RegisterBoolValue(string key, bool v)
-    {
-        visualizerBoolValues.Add(key, v);
-        BroadcastVisualizerBoolValues();
     }
 
     public VisualizerElementsSettings GetVisualizerElementSettings(VisualizerElementLabel label)
@@ -1901,16 +1863,20 @@ public class VisualizerManager : MonoBehaviour
         }
 
         // Set other visualizer data
-        visualizerFloatValues = preset.VisualizerFloatValues;
-        visualizerIntValues = preset.VisualizerIntValues;
-        visualizerBoolValues = preset.VisualizerBoolValues;
-        foreach (KeyValuePair<VisualizerElementLabel, VisualizerElementsSettings> kvp in preset.BaseVisualizerElements)
-        {
-            visualizerElementsInfo[kvp.Key] = kvp.Value;
-            Debug.Log("Loaded: " + kvp.Key + " - from Preset");
-        }
+        PopulateDatabase(visualizerBoolValues, preset.VisualizerBoolValues);
+        PopulateDatabase(visualizerIntValues, preset.VisualizerIntValues);
+        PopulateDatabase(visualizerFloatValues, preset.VisualizerFloatValues);
+        PopulateDatabase(visualizerElementsInfo, preset.BaseVisualizerElements);
 
         BroadcastSetupValues();
+    }
+
+    private void PopulateDatabase<X, Y>(Dictionary<X, Y> toPopulate, Dictionary<X, Y> readFrom)
+    {
+        foreach (KeyValuePair<X, Y> kvp in readFrom)
+        {
+            toPopulate[kvp.Key] = kvp.Value;
+        }
     }
 
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)

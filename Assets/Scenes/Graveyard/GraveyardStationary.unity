@@ -10404,6 +10404,7 @@ MonoBehaviour:
   defaultValue: 0
   multiplier: 1
   rotateOn: 2
+  rotateTarget: {fileID: 2144958501}
 --- !u!114 &2144958517
 MonoBehaviour:
   m_ObjectHideFlags: 0

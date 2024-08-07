@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-public abstract class AddGeneralSetting : MonoBehaviour
+public abstract class AddGeneralSetting : AddSetting
 {
     [SerializeField] protected SettingType settingType;
     public abstract VisualizerElementSettingType Type { get; }
 
-    private void Start()
+    public override void MakeSetting()
     {
         VisualizerSetting toSpawn = VisualizerSetupManager._Instance.GetSettingOfType(Type);
         VisualizerSetting spawned = Instantiate(toSpawn, VisualizerManager._Instance.GeneralSettingsList);

@@ -12,5 +12,6 @@
     PERSONAL_LIGHT,
     RAVENS,
     GHOSTS,
-    FOG
+    FOG,
+    RAIN
 }

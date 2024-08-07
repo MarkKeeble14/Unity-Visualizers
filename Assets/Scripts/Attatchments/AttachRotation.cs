@@ -3,6 +3,7 @@
 public class AttachRotation : AttachParameter
 {
     [SerializeField] private Axis rotateOn;
+    [SerializeField] private Transform rotateTarget;
 
     protected override void SetParameter(float value)
     {
@@ -10,13 +11,13 @@ public class AttachRotation : AttachParameter
         switch (rotateOn)
         {
             case Axis.X:
-                transform.localEulerAngles = new Vector3(value, 0, 0);
+                rotateTarget.localEulerAngles = new Vector3(value, 0, 0);
                 break;
             case Axis.Y:
-                transform.localEulerAngles = new Vector3(0, value, 0);
+                rotateTarget.localEulerAngles = new Vector3(0, value, 0);
                 break;
             case Axis.Z:
-                transform.localEulerAngles = new Vector3(0, 0, value);
+                rotateTarget.localEulerAngles = new Vector3(0, 0, value);
                 break;
         }
     }

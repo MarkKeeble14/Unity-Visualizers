@@ -9,10 +9,10 @@ public class CallShowDesktopFunctions : MonoBehaviour
 
     public void ShowDesktopFunctions()
     {
-        StartCoroutine(UIManager._Instance.PopupActionSelection("...?", "Cancel", null, new List<ActionSelection>()
+        StartCoroutine(UIManager._Instance.PopupActionSelection("Load Menu", "Cancel", null, new List<ActionSelection>()
         {
-            new ActionSelection("Load Desktop Background", () => loadDesktopBackground.LoadFile()),
-            new ActionSelection("Load Track", () => loadDesktopTrack.LoadFile())
+            new ActionSelection("Desktop Background", () => loadDesktopBackground.LoadFile()),
+            new ActionSelection("Track", () => loadDesktopTrack.LoadFile())
         }));
     }
 }

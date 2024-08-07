@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Graveyard/GraveyardWalking.unity
     guid: f1a2c610362219b439d639596f878782
+  - enabled: 1
+    path: Assets/Scenes/Bliss/BlissVisualizer.unity
+    guid: 503463f4833e4334683d506c71de18ce
   m_configObjects: {}

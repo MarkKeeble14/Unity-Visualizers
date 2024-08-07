@@ -27,10 +27,10 @@ public class AudioSamplingManager : MonoBehaviour
     [SerializeField] private float bandBufferDecreaseMultPerFrame = 1.2f;
     [SerializeField] private float beginningHighestFrequencyBandValue = 5;
     private int numSamples = 512;
+    private float samplingLoudnessMultiplier;
     private bool smoothSamples;
     private float smoothingShift;
     private float smoothingScale;
-    private float smoothingStrength;
     private float cachedSmoothingValue;
 
     [Header("Normalizing")]
@@ -70,7 +70,9 @@ public class AudioSamplingManager : MonoBehaviour
     public bool SmoothSamples { get { return smoothSamples; } set { smoothSamples = value; } }
     public float SmoothingShift { get { return smoothingShift; } set { smoothingShift = value; } }
     public float SmoothingScale { get { return smoothingScale; } set { smoothingScale = value; } }
-    public float SmoothingStrength { get { return smoothingStrength; } set { smoothingStrength = value; } }
+    public float MinNormalizedSampleValue { get { return minNormalizedSampleValue; } set { minNormalizedSampleValue = value; } }
+    public float MaxNormalizedSampleValue { get { return maxNormalizedSampleValue; } set { maxNormalizedSampleValue = value; } }
+    public float SamplingLoudnessMultiplier { get { return samplingLoudnessMultiplier; } set { samplingLoudnessMultiplier = value; } }
 
     private void Awake()
     {
@@ -171,15 +173,21 @@ public class AudioSamplingManager : MonoBehaviour
         {
             // smooth
             cachedSmoothingValue = GetSmoothedValue(i, numSamples);
-            leftAudioSamples[i] = leftAudioSamples[i] * cachedSmoothingValue;
-            rightAudioSamples[i] = rightAudioSamples[i] * cachedSmoothingValue;
+            leftAudioSamples[i] = leftAudioSamples[i] * cachedSmoothingValue * samplingLoudnessMultiplier;
+            rightAudioSamples[i] = rightAudioSamples[i] * cachedSmoothingValue * samplingLoudnessMultiplier;
         }
     }
 
     private void OnlyGetSpectrumData()
     {
         audioSource.GetSpectrumData(leftAudioSamples, 0, FFTWindow.Blackman);
-        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);   
+        audioSource.GetSpectrumData(rightAudioSamples, 1, FFTWindow.Blackman);
+
+        for (int i = 0; i < numSamples; ++i)
+        {
+            leftAudioSamples[i] *= samplingLoudnessMultiplier;
+            rightAudioSamples[i] *= samplingLoudnessMultiplier;
+        }
     }
 
     private void MakeCombinedSpectrumData()
@@ -189,7 +197,7 @@ public class AudioSamplingManager : MonoBehaviour
 
     private float GetSmoothedValue(int i, int total)
     {
-        return Mathf.Pow((((float)i / total) * smoothingScale) + smoothingShift, 2) * smoothingStrength;
+        return Mathf.Pow((((float)i / total) * smoothingScale) + smoothingShift, 2);
     }
 
     private void MakeFrequencyBands()

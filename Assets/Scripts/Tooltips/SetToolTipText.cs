@@ -2,6 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SettingType
+{
+    CUSTOM,
+    INTENSITY_DEFAULT_VALUE,
+    INTENSITY_MULTIPLIER,
+    RANGE_DEFAULT_VALUE,
+    RANGE_MULTIPLIER,
+    ATTACHED_TO_BAND,
+    EMISSION_INTENSITY,
+    SCALE,
+    ENABLE_NORMALIZATION,
+    ENABLE_SMOOTHING,
+    SMOOTHING_SCALE,
+    SAMPLING_LOUDNESS_MULTIPLIER,
+    SMOOTHING_SHIFT,
+    MIN_AUDIO_INPUT,
+    MAX_AUDIO_INPUT,
+    MIN_NORMALIZED_OUTPUT,
+    MAX_NORMALIZED_OUTPUT,
+    SIGNAL_MULTIPLIER,
+    DEFAULT_VALUE,
+    ADJUST_SPEED,
+    SPACING,
+    VISUALIZER_SEGMENT_TYPE,
+    SEGMENT_WIDTH,
+    RADIAL_DISTANCE,
+    MINIMUM_EMISSION,
+    MAXIMUM_EMISSION,
+    MIN_NORMALIZED_AUDIO_SAMPLE_VALUE,
+    MAX_NORMALIZED_AUDIO_SAMPLE_VALUE,
+    CAMERA_MOVE_SPEED,
+    CAMERA_ROTATE_SPEED
+}
+
+
 public class SetToolTipText : MonoBehaviour
 {
     [SerializeField] private SpawnToolTip spawnToolTip;
@@ -42,8 +77,8 @@ public class SetToolTipText : MonoBehaviour
                 return "Scales the elements size";
             case SettingType.SMOOTHING_SHIFT:
                 return "Shifts the smoothing equation";
-            case SettingType.SMOOTHING_STRENGTH:
-                return "Multiplies the result of the smoothing equation";
+            case SettingType.SAMPLING_LOUDNESS_MULTIPLIER:
+                return "Multiplies the audio sample data";
             case SettingType.SMOOTHING_SCALE:
                 return "Controls the scale of the smoothing equation";
             case SettingType.ENABLE_SMOOTHING:
@@ -72,6 +107,18 @@ public class SetToolTipText : MonoBehaviour
                 return "The diameter of the circle";
             case SettingType.VISUALIZER_SEGMENT_TYPE:
                 return "The type of attachment for the Visualizer";
+            case SettingType.MINIMUM_EMISSION:
+                return "The minimum number of particles emitted";
+            case SettingType.MAXIMUM_EMISSION:
+                return "The maximum number of particles emitted";
+            case SettingType.MIN_NORMALIZED_AUDIO_SAMPLE_VALUE:
+                return "The minimum bound that audio data will be normalized to";
+            case SettingType.MAX_NORMALIZED_AUDIO_SAMPLE_VALUE:
+                return "The maximum bound that audio data will be normalized to";
+            case SettingType.CAMERA_MOVE_SPEED:
+                return "The speed the camera moves at";
+            case SettingType.CAMERA_ROTATE_SPEED:
+                return "The speed the camera rotates at";
             default:
                 throw new UncaughtSwitchTypeException(typeof(SettingType), key.ToString());
         }

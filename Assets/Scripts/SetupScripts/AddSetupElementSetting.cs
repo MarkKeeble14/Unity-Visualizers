@@ -2,13 +2,25 @@
 using System.Globalization;
 using UnityEngine;
 
-public abstract class AddSetupElementSetting : MonoBehaviour, IRecieveVisualizerElementsInfo
+public abstract class AddSetupElementSetting : AddSetting
 {
     [SerializeField] protected VisualizerElementLabel label;
     [SerializeField] protected SettingType settingType;
     public abstract VisualizerElementSettingType Type { get; }
 
-    private bool hasCreatedSetupElement;
+    private VisualizerSetting setting;
+
+    public override void MakeSetting()
+    {
+        VisualizerSetting toSpawn = VisualizerSetupManager._Instance.GetSettingOfType(Type);
+        VisualizerSetupElement element = VisualizerManager._Instance.GetSetupElement(label);
+        setting = Instantiate(toSpawn, element.ExtraSettingsHolder);
+
+        setting.SetLabel(MakeLabel());
+        setting.SetToolTip(settingType);
+
+        InitializeSetting(setting);
+    }
 
     protected abstract void InitializeSetting(VisualizerSetting obj);
 
@@ -20,20 +32,5 @@ public abstract class AddSetupElementSetting : MonoBehaviour, IRecieveVisualizer
     protected string MakeLabel()
     {
         return StringHelper.EnumToTitleCase(settingType.ToString());
-    }
-
-    public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
-    {
-        if (hasCreatedSetupElement) return;
-        hasCreatedSetupElement = true;
-
-        VisualizerSetting toSpawn = VisualizerSetupManager._Instance.GetSettingOfType(Type);
-        VisualizerSetupElement element = VisualizerManager._Instance.GetSetupElement(label);
-        VisualizerSetting spawned = Instantiate(toSpawn, element.ExtraSettingsHolder);
-
-        spawned.SetLabel(MakeLabel());
-        spawned.SetToolTip(settingType);
-
-        InitializeSetting(spawned);
     }
 }

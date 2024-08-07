@@ -5965,7 +5965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: glitchClips.Array.data[0]
@@ -5993,7 +5993,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: defaultSelections.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].key
@@ -6016,12 +6016,20 @@ PrefabInstance:
       value: GraveyardOverhead
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].key
+      value: Bliss
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: defaultSelections.Array.data[0]
       value: Basic
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: defaultSelections.Array.data[1]
       value: Graveyard
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: defaultSelections.Array.data[2]
+      value: Bliss
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].value.TextFont
@@ -6043,6 +6051,10 @@ PrefabInstance:
       propertyPath: allSelections.Array.data[4].value.TextFont
       value: 
       objectReference: {fileID: 11400000, guid: e0600c64401221440bda365c90c396ee, type: 2}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TextFont
+      value: 
+      objectReference: {fileID: 11400000, guid: 0c7b04634c6e681459232bf7e4a89269, type: 2}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].value.TextColor.a
       value: 1
@@ -6124,6 +6136,22 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TextColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TextColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TextColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TextColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].value.ScenarioName
       value: Basic
       objectReference: {fileID: 0}
@@ -6142,6 +6170,10 @@ PrefabInstance:
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[4].value.ScenarioName
       value: Overhead
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ScenarioName
+      value: Bliss
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].value.BorderColor.a
@@ -6184,6 +6216,14 @@ PrefabInstance:
       value: GraveyardOverhead
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.BorderColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.LoadSceneName
+      value: BlissVisualizer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[0].value.TransitionName
       value: ComputerBlink
       objectReference: {fileID: 0}
@@ -6201,6 +6241,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: allSelections.Array.data[4].value.TransitionName
+      value: ComputerBlink
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.TransitionName
       value: ComputerBlink
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
@@ -6368,6 +6412,38 @@ PrefabInstance:
       value: 0.5019608
       objectReference: {fileID: 0}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonHoveredColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonHoveredColor.b
+      value: 0.24528301
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonHoveredColor.g
+      value: 0.24528301
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonHoveredColor.r
+      value: 0.24528301
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonPressedColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonPressedColor.b
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonPressedColor.g
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ButtonPressedColor.r
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: availableSelections.Array.data[1].scenarios.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -6403,6 +6479,10 @@ PrefabInstance:
       propertyPath: allSelections.Array.data[4].value.ScenarioBackgroundSprite
       value: 
       objectReference: {fileID: 21300000, guid: a8ce307902512844f84f80b96053fdb9, type: 3}
+    - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
+      propertyPath: allSelections.Array.data[5].value.ScenarioBackgroundSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 25ab21882e93d9d4d81bf7de0d8d1c44, type: 3}
     - target: {fileID: 8952290059247821629, guid: 7dfd0cffac798364da1586cb056ba616, type: 3}
       propertyPath: availableSelections.Array.data[1].scenarios.Array.data[0].TextFont
       value: 
@@ -7625,27 +7705,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1010
       objectReference: {fileID: 0}
     - target: {fileID: 231460196112901170, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 257921932418228572, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
@@ -8657,27 +8737,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 910
       objectReference: {fileID: 0}
     - target: {fileID: 2550567891023457164, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 2619135549429019370, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
       propertyPath: m_Alpha

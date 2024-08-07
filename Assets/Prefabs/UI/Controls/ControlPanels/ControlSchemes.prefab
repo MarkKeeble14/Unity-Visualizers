@@ -45,7 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3529917f9f7f04495aa6aeb4d6db50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   key: 9
+  action: 
+  PartOfScheme: 0
   controlSchemes:
   - {fileID: 3235359116626784124}
 --- !u!1001 &1436580156420755931
@@ -142,6 +145,10 @@ PrefabInstance:
     - target: {fileID: 4542319976937815719, guid: be0db060ed4dd9147b12b01cbdd64f24, type: 3}
       propertyPath: m_Name
       value: VisualizationControlPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387038459623410266, guid: be0db060ed4dd9147b12b01cbdd64f24, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be0db060ed4dd9147b12b01cbdd64f24, type: 3}

@@ -43,8 +43,8 @@ public class FreeCameraController : MonoBehaviour
     {
         Active = true;
         Pause = false;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
 
         instructionsText.SetActive(true);
 
@@ -63,8 +63,8 @@ public class FreeCameraController : MonoBehaviour
     {
         Active = false;
         Pause = false;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
 
         instructionsText.SetActive(false);
 
@@ -146,7 +146,7 @@ public class FreeCameraController : MonoBehaviour
     {
         if (!Active) return;
 
-        if (EscapeMenuFunctions._Instance.IsOpen && Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetMouseButtonDown(1))
         {
             VisualizerManager._Instance.SelectControlScheme(ControlScheme.VISUALIZER);
         }

@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 528547257777524281}
   - component: {fileID: 528547257777524282}
   - component: {fileID: 528547257777524283}
-  - component: {fileID: 528547257777524228}
   - component: {fileID: 528547257777524229}
   - component: {fileID: 2591833105812018720}
+  - component: {fileID: 5658868830749726455}
+  - component: {fileID: 3216973419757946477}
+  - component: {fileID: 2350100055946936252}
   m_Layer: 0
   m_Name: GraveyardRain
   m_TagString: Untagged
@@ -121,7 +123,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -3617,7 +3619,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 4
     type: 1
     collisionMode: 0
@@ -4766,8 +4768,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f40f67881b1eace4cb465e8ae3ea9e3b, type: 2}
-  - {fileID: 2100000, guid: f40f67881b1eace4cb465e8ae3ea9e3b, type: 2}
+  - {fileID: 2100000, guid: 6a37eaf5c33fe764799e085217691319, type: 2}
+  - {fileID: 2100000, guid: 6a37eaf5c33fe764799e085217691319, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4792,7 +4794,7 @@ ParticleSystemRenderer:
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
-  m_MaxParticleSize: 0.5
+  m_MaxParticleSize: 0.035
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
@@ -4852,26 +4854,13 @@ MonoBehaviour:
   adjustSpeed: 0.1
   defaultValue: 0
   multiplier: 1
-  conditionLock: {fileID: 528547257777524228}
+  conditionLock: {fileID: 3216973419757946477}
   minMaxValue: {x: 0, y: 750}
   increaseSpeed: 0.5
   increaseAlterationBy: 0
   decreaseSpeed: 0.35
   decreaseAlterationBy: 0
   system: {fileID: 528547257777524280}
---- !u!114 &528547257777524228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 528547257777524231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  greaterThan: 18
 --- !u!114 &528547257777524229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4901,4 +4890,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followSpeed: 15
   mathMethod: 0
-  offset: {x: -2.5, y: 25, z: -2.5}
+  offset: {x: 0, y: 25, z: 0}
+--- !u!114 &5658868830749726455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528547257777524231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17ce8285141199b49bebe5d9d18d2ba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: 13
+  system: {fileID: 528547257777524280}
+--- !u!114 &3216973419757946477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528547257777524231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 18
+--- !u!114 &2350100055946936252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528547257777524231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4b178b4fa6f0dc46bcf8be893db90f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: 13
+  intermediate: {fileID: 528547257777524283}

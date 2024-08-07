@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,14 +26,15 @@ public class EscapeMenuFunctions : MonoBehaviour
     public static EscapeMenuFunctions _Instance { get; private set; }
     public bool IsOpen => cv.alpha == 1;
 
+    public Action OnOpen;
+    public Action OnClose;
+
     private void Awake()
     {
         if (_Instance != null) Destroy(_Instance.gameObject);
         _Instance = this;
     }
 
-    public Action OnOpen;
-    public Action OnClose;
 
     private void Start()
     {
@@ -104,6 +106,15 @@ public class EscapeMenuFunctions : MonoBehaviour
         StartCoroutine(UIManager._Instance.PopupActionSelection("Select Control Scheme", "Cancel", null, possibleActions));
     }
 
+    private bool IsSchemeAvailable(ControlScheme scheme)
+    {
+        foreach (SerializableKeyValuePair<ControlScheme, string> kvp in availableControlSchemes)
+        {
+            if (kvp.Key == scheme) return true;
+        }
+        return false;
+    }
+
     private void MakeControls()
     {
         // Clear
@@ -116,6 +127,8 @@ public class EscapeMenuFunctions : MonoBehaviour
         foreach (KeyControl control in keyControls)
         {
             if (control.Hidden) continue;
+
+            if (!IsSchemeAvailable(control.PartOfScheme)) continue;
 
             Transform list;
             if (!controlSchemeScrollViews.ContainsKey(control.PartOfScheme))

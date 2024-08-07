@@ -4,11 +4,17 @@ public class BouncingFloatBroadcaster : SignalBroadcaster
 {
     [SerializeField] private AnimationDirection startDirection;
     [SerializeField] private float speed;
+    public float Speed { get { return speed; } set {  speed = value; } }
     [SerializeField] private Vector2 minMaxValue;
     private float currentValue;
     private float targetValue;
 
     private void Start()
+    {
+        DecideTarget();
+    }
+
+    private void DecideTarget()
     {
         switch (startDirection)
         {
@@ -42,5 +48,11 @@ public class BouncingFloatBroadcaster : SignalBroadcaster
     public override float GetBroadcastValue()
     {
         return currentValue * signalMultiplier;
+    }
+
+    public void ResetValues()
+    {
+        currentValue = 0;
+        DecideTarget();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ImageColorConditionalAttachment : ConditionalExecutionAttachParameter
+public class ImageColorConditionalAttachment : ConditionalExecutionAttachment
 {
     [SerializeField] private Image image;
     [SerializeField] private Color lockedColor;

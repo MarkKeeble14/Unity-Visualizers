@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5272247644856282991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8075448878200780396}
+  - component: {fileID: 361480761011325966}
+  - component: {fileID: 4600387237129622225}
+  - component: {fileID: 6781422407949517745}
+  - component: {fileID: 2359003320709451609}
+  m_Layer: 0
+  m_Name: SkyboxBlender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8075448878200780396
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5272247644856282991}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &361480761011325966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5272247644856282991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2188c1e1a74fe3144880e8ca78fa7825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skyBox1: {fileID: 2100000, guid: c56e28e54cac24b04ae3dd957d214534, type: 2}
+  skyBox2: {fileID: 2100000, guid: 9af23ba5fa5364ff598888460e0e2759, type: 2}
+  blendedSkybox: {fileID: 2100000, guid: 897e931260dff4a4b91cee74f1074026, type: 2}
+  exposure: 0.5
+  rotation: 0
+  tint: {r: 1, g: 1, b: 1, a: 1}
+  invertColors: 0
+  blendMode: 1
+  blend: 0
+  bindOnStart: 1
+  updateLightingOnStart: 1
+  updateLightingEveryFrame: 1
+  updateReflectionsOnStart: 1
+  updateReflectionsEveryFrame: 1
+  reflectionResolution: 3
+--- !u!114 &4600387237129622225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5272247644856282991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 2359003320709451609}
+    value:
+    - {fileID: 6781422407949517745}
+--- !u!114 &6781422407949517745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5272247644856282991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56f56a7ec2cf73d4287b8f43ec1c740e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 0}
+  slowAdust: 0
+  adjustSpeed: 25
+  defaultValue: 0
+  multiplier: 1
+  blender: {fileID: 0}
+--- !u!114 &2359003320709451609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5272247644856282991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeddafca9203a8f4894d761633c90f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  hour: 12

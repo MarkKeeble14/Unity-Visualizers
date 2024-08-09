@@ -21,6 +21,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Graveyard/GraveyardWalking.unity
     guid: f1a2c610362219b439d639596f878782
   - enabled: 1
-    path: Assets/Scenes/Bliss/BlissVisualizer.unity
-    guid: 503463f4833e4334683d506c71de18ce
+    path: Assets/Scenes/Serenity/SerenityCycleVisualizer.unity
+    guid: 329efb6890afe3f4aa1c3e4b967c62c9
+  - enabled: 1
+    path: Assets/Scenes/Serenity/SerenityDayVisualizer.unity
+    guid: bf05f2d1e8179f94b84b9f2b81b683a5
+  - enabled: 1
+    path: Assets/Scenes/Serenity/SerenityNightVisualizer.unity
+    guid: 90f8126f48ba3a64e9e11a6418f31d30
   m_configObjects: {}

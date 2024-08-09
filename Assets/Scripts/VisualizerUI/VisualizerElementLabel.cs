@@ -13,5 +13,10 @@
     RAVENS,
     GHOSTS,
     FOG,
-    RAIN
+    RAIN,
+    WIND,
+    SKYLIGHT,
+    CLOUDS,
+    SUN,
+    MOON,
 }

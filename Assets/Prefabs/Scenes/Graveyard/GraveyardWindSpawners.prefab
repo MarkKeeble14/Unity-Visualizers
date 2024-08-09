@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5263408139538773363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5263408139538773364}
+  - component: {fileID: 5263408139538773367}
+  - component: {fileID: 5263408139538773369}
+  - component: {fileID: 5263408139538773368}
+  - component: {fileID: 2834971681241430008}
+  m_Layer: 0
+  m_Name: GraveyardWindSpawners
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5263408139538773364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263408139538773363}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5263408139538773367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263408139538773363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: 6383be531580a39438213d6ba91f5ae0, type: 3}
+  chanceToSpawnBatch: {x: 2, y: 5}
+  minMaxInBatch: {x: 3, y: 5}
+  batchMinMaxXSpawn: {x: -10, y: 10}
+  batchMinMaxYSpawn: {x: 0, y: 10}
+  batchMinMaxZSpawn: {x: -10, y: 20}
+  minMaxXOffset: {x: -2.5, y: 2.5}
+  minMaxYOffset: {x: -2.5, y: 2.5}
+  minMaxZOffset: {x: -2.5, y: 2.5}
+  timeBetweenSpawningBatches: 3
+  minMaxDelayInBatch: {x: 0, y: 1}
+--- !u!114 &5263408139538773369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263408139538773363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: 6383be531580a39438213d6ba91f5ae0, type: 3}
+  chanceToSpawnBatch: {x: 8, y: 9}
+  minMaxInBatch: {x: 3, y: 6}
+  batchMinMaxXSpawn: {x: -10, y: 10}
+  batchMinMaxYSpawn: {x: 0, y: 10}
+  batchMinMaxZSpawn: {x: -10, y: 20}
+  minMaxXOffset: {x: -2.5, y: 2.5}
+  minMaxYOffset: {x: -2.5, y: 2.5}
+  minMaxZOffset: {x: -2.5, y: 2.5}
+  timeBetweenSpawningBatches: 7
+  minMaxDelayInBatch: {x: 0, y: 3}
+--- !u!114 &5263408139538773368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263408139538773363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: 6383be531580a39438213d6ba91f5ae0, type: 3}
+  chanceToSpawnBatch: {x: 10, y: 11}
+  minMaxInBatch: {x: 1, y: 7}
+  batchMinMaxXSpawn: {x: -10, y: 10}
+  batchMinMaxYSpawn: {x: 0, y: 10}
+  batchMinMaxZSpawn: {x: -10, y: 20}
+  minMaxXOffset: {x: -2.5, y: 2.5}
+  minMaxYOffset: {x: -2.5, y: 2.5}
+  minMaxZOffset: {x: -2.5, y: 2.5}
+  timeBetweenSpawningBatches: 11
+  minMaxDelayInBatch: {x: 1, y: 2}
+--- !u!114 &2834971681241430008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263408139538773363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4218aea6c5384c14b82691f0ee4abe26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followSpeed: 25
+  mathMethod: 0
+  offset: {x: 0, y: 5, z: 0}

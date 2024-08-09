@@ -1,0 +1,218 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3418191551209913058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6865260923555850097}
+  - component: {fileID: 1594635045201897501}
+  m_Layer: 0
+  m_Name: ForcedGhosts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6865260923555850097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418191551209913058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5063604211751984527}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1594635045201897501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418191551209913058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: cf6d4aa9063bfdb43bcdec06aacb6b5b, type: 3}
+  chanceToSpawnBatch: {x: 0, y: 1}
+  minMaxInBatch: {x: 1, y: 3}
+  batchMinMaxXSpawn: {x: 0, y: 0}
+  batchMinMaxYSpawn: {x: 0, y: 0}
+  batchMinMaxZSpawn: {x: 0, y: 0}
+  minMaxXOffset: {x: 0, y: 0}
+  minMaxYOffset: {x: 0, y: 0}
+  minMaxZOffset: {x: 0, y: 0}
+  timeBetweenSpawningBatches: 0
+  minMaxDelayInBatch: {x: 0, y: 0.125}
+--- !u!1 &4170141221895067581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5063604211751984527}
+  - component: {fileID: 928101706865757247}
+  - component: {fileID: 4503172622710537087}
+  - component: {fileID: 8997447869632615505}
+  - component: {fileID: 4073138910822149282}
+  m_Layer: 0
+  m_Name: GraveyardGhostSystemSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5063604211751984527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5950266607511233606}
+  - {fileID: 6865260923555850097}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &928101706865757247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 4503172622710537087}
+    value:
+    - {fileID: 8997447869632615505}
+--- !u!114 &4503172622710537087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  useBuffer: 0
+  bypass: 0
+  band: 7
+--- !u!114 &8997447869632615505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60f394ab47ba4a24e804f5b7e17edac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 4073138910822149282}
+  slowAdust: 0
+  defaultValue: 0
+  adjustSpeed: 25
+  multiplier: 1
+  spawner: {fileID: 1594635045201897501}
+  useCooldown: 1
+  cooldown: 3
+  cooldownRate: 1
+--- !u!114 &4073138910822149282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170141221895067581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 3
+--- !u!1 &4602946957525573646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5950266607511233606}
+  - component: {fileID: 5861573362114379992}
+  m_Layer: 0
+  m_Name: AmbientGhosts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5950266607511233606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4602946957525573646}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5063604211751984527}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5861573362114379992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4602946957525573646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: 77c5413371b0b5144a1eabb7ee647bea, type: 3}
+  chanceToSpawnBatch: {x: 1, y: 175}
+  minMaxInBatch: {x: 2, y: 4}
+  batchMinMaxXSpawn: {x: 0, y: 0}
+  batchMinMaxYSpawn: {x: 0, y: 0}
+  batchMinMaxZSpawn: {x: 0, y: 0}
+  minMaxXOffset: {x: 0, y: 0}
+  minMaxYOffset: {x: 0, y: 0}
+  minMaxZOffset: {x: 0, y: 0}
+  timeBetweenSpawningBatches: 6
+  minMaxDelayInBatch: {x: 0.5, y: 0.75}

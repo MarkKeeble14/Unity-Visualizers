@@ -11,6 +11,11 @@ GameObject:
   - component: {fileID: 4829050097096759787}
   - component: {fileID: 4829050097096759784}
   - component: {fileID: 4829050097096759785}
+  - component: {fileID: 4930027524306819910}
+  - component: {fileID: 6105034453020993545}
+  - component: {fileID: 7808992435198830940}
+  - component: {fileID: 4118150497147590849}
+  - component: {fileID: 1085628313932441126}
   m_Layer: 0
   m_Name: BlissSkylight
   m_TagString: Untagged
@@ -45,7 +50,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.65
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -115,3 +120,84 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!114 &4930027524306819910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829050097096759790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7002ea36bfafded4c93e2382f0ad97d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 0}
+  slowAdust: 0
+  adjustSpeed: 1
+  defaultValue: 0
+  multiplier: 2.5
+  light: {fileID: 4829050097096759784}
+--- !u!114 &6105034453020993545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829050097096759790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 4118150497147590849}
+    value:
+    - {fileID: 4930027524306819910}
+--- !u!114 &7808992435198830940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829050097096759790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10794a658f47d04b8565262b366c424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: 15
+  light: {fileID: 4829050097096759784}
+--- !u!114 &4118150497147590849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829050097096759790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d151952c2cfb184886e793e141f1ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  normalizingValueOf: {fileID: 1085628313932441126}
+  minimumInput: 0
+  maximumInput: 12
+  minimumOutput: 0.5
+  maximumOutput: 0
+--- !u!114 &1085628313932441126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829050097096759790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeddafca9203a8f4894d761633c90f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  hour: 12

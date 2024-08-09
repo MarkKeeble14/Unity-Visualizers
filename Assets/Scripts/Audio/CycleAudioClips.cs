@@ -32,7 +32,7 @@ public class CycleAudioClips : MonoBehaviour
         VisualizerManager._Instance.SetTrack(clips[currentId]);
     }
 
-    private void Awake()
+    private void Start()
     {
         VisualizerManager._Instance.SetTrack(clips[currentId]);
     }

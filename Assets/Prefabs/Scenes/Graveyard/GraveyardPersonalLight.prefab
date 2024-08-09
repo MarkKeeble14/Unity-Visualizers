@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementLabel: 9
-  lightAttachment: {fileID: 2524593381381155647}
+  lightAttachment: {fileID: 2524593381381155640}
   defaultValue: 1
   multiplier: 2
 --- !u!114 &7332758849650738569
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementLabel: 9
-  lightAttachment: {fileID: 2524593381381155640}
+  lightAttachment: {fileID: 2524593381381155647}
   defaultValue: 3
   multiplier: 4
 --- !u!114 &4417893412816094159

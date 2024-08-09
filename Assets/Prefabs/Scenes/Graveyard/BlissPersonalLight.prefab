@@ -54,7 +54,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 25
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -97,7 +97,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 20000
+  m_ColorTemperature: 10000
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementLabel: 9
-  lightAttachment: {fileID: 2524593381381155647}
+  lightAttachment: {fileID: 2524593381381155640}
   defaultValue: 1
   multiplier: 2
 --- !u!114 &7332758849650738569
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementLabel: 9
-  lightAttachment: {fileID: 2524593381381155640}
+  lightAttachment: {fileID: 2524593381381155647}
   defaultValue: 3
   multiplier: 4
 --- !u!114 &4417893412816094159

@@ -19,4 +19,6 @@
     CLOUDS,
     SUN,
     MOON,
+    MOUNTAINS,
+    BLOOM
 }

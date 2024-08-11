@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 186382659258146347}
   - component: {fileID: 2083985838812705784}
+  - component: {fileID: 3779997343779777708}
+  - component: {fileID: 7678053016762660104}
   m_Layer: 0
   m_Name: DayNightCycleManager
   m_TagString: Untagged
@@ -44,5 +46,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895944ee3fb99874d9a41b01e22ead5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 2.5
+  timeScale: 3
   startHour: 10
+--- !u!114 &3779997343779777708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4216606446656501439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 027b23b288f9495408b5c7207d514692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7678053016762660104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4216606446656501439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf38467aaaa61f442bd59d12570b4cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

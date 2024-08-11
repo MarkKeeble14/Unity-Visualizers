@@ -33,7 +33,16 @@ public enum SettingType
     MIN_NORMALIZED_AUDIO_SAMPLE_VALUE,
     MAX_NORMALIZED_AUDIO_SAMPLE_VALUE,
     CAMERA_MOVE_SPEED,
-    CAMERA_ROTATE_SPEED
+    CAMERA_ROTATE_SPEED,
+    LIGHT_INTENSITY,
+    LIGHT_RANGE,
+    EMISSION_INTENSITY_MULTIPLIER,
+    EMISSION_INTENSITY_DEFAULT_VALUE,
+    DAY_NIGHT_TIME_SCALE,
+    TIME_OF_DAY,
+    BLOOM_THRESHOLD,
+    BLOOM_INTENSITY,
+    BLOOM_SCATTER,
 }
 
 
@@ -119,6 +128,24 @@ public class SetToolTipText : MonoBehaviour
                 return "The speed the camera moves at";
             case SettingType.CAMERA_ROTATE_SPEED:
                 return "The speed the camera rotates at";
+            case SettingType.LIGHT_INTENSITY:
+                return "The intensity of the light";
+            case SettingType.LIGHT_RANGE:
+                return "The range of the light";
+            case SettingType.EMISSION_INTENSITY_MULTIPLIER:
+                return "Controls the brightness of the emitter when it recieves a strong signal";
+            case SettingType.EMISSION_INTENSITY_DEFAULT_VALUE:
+                return "Controls the minimum brightness of the emitter";
+            case SettingType.TIME_OF_DAY:
+                return "Sets the time of day by hour (0-24)";
+            case SettingType.DAY_NIGHT_TIME_SCALE:
+                return "Controls how quickly time passes";
+            case SettingType.BLOOM_INTENSITY:
+                return "Controls the strength of the bloom";
+            case SettingType.BLOOM_SCATTER:
+                return "Controls the distance light from bloom travels";
+            case SettingType.BLOOM_THRESHOLD:
+                return "Controls the value at which bloom is filtered at";
             default:
                 throw new UncaughtSwitchTypeException(typeof(SettingType), key.ToString());
         }

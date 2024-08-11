@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(GameObjectSpawner))]
+[RequireComponent(typeof(GameObjectCycleSpawner))]
 public class AttachGameObjectSpawnerChanceToSpawn : AttachParameter
 {
-    private GameObjectSpawner spawner;
+    private GameObjectCycleSpawner spawner;
 
     private void Awake()
     {
-        spawner = GetComponent<GameObjectSpawner>();
+        spawner = GetComponent<GameObjectCycleSpawner>();
     }
 
     protected override void SetParameter(float value)

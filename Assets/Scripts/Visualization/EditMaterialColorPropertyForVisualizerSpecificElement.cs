@@ -6,6 +6,7 @@ public class EditMaterialColorPropertyForVisualizerSpecificElement : DatabaseSet
     [SerializeField] private VisualizerElementLabel label;
     [SerializeField] private string colorProperty = "_Color";
     [SerializeField] private Material mat;
+    private Color color;
     private float emissionIntensity;
 
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
@@ -15,15 +16,16 @@ public class EditMaterialColorPropertyForVisualizerSpecificElement : DatabaseSet
             emissionIntensity = x;
         });
 
-        mat.SetColor(colorProperty, mat.GetColor(colorProperty) * emissionIntensity);
+        mat.SetColor(colorProperty, color * emissionIntensity);
     }
 
     public void RecieveVisualizerElementsInfo(Dictionary<VisualizerElementLabel, VisualizerElementsSettings> info)
     {
         TrySet(info, label, x =>
         {
-            Color c = VisualizerManager._Instance.GetColor(x.ColorType, x.ColorIndex);
-            mat.SetColor(colorProperty, c * emissionIntensity);
+            color = VisualizerManager._Instance.GetColor(x.ColorType, x.ColorIndex);
+
+            mat.SetColor(colorProperty, color * emissionIntensity);
         });
     }
 }

@@ -3,7 +3,7 @@
 public class AttachForceSpawnGameObjects : AttachParameter
 {
     [Header("References")]
-    [SerializeField] private GameObjectSpawner spawner;
+    [SerializeField] private GameObjectCycleSpawner spawner;
 
     [Header("Cooldown Settings")]
     [SerializeField] private bool useCooldown;

@@ -135,7 +135,7 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  adjustSpeed: 25
+  adjustSpeed: 5
   defaultValue: 0
   multiplier: 10
   light: {fileID: 2524593381381155642}
@@ -154,7 +154,7 @@ MonoBehaviour:
   bypass: 0
   shouldExecuteLock: {fileID: 0}
   slowAdust: 1
-  adjustSpeed: 25
+  adjustSpeed: 5
   defaultValue: 250
   multiplier: 5
   light: {fileID: 2524593381381155642}
@@ -255,7 +255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followSpeed: 25
   mathMethod: 0
-  offset: {x: 0, y: 5, z: 0}
+  offset: {x: 0, y: 0, z: 0}
 --- !u!114 &5970763906555326712
 MonoBehaviour:
   m_ObjectHideFlags: 0

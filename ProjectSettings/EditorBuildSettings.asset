@@ -25,8 +25,8 @@ EditorBuildSettings:
     guid: 329efb6890afe3f4aa1c3e4b967c62c9
   - enabled: 1
     path: Assets/Scenes/Serenity/SerenityDayVisualizer.unity
-    guid: bf05f2d1e8179f94b84b9f2b81b683a5
+    guid: dabbc9ad2625e624c9300ac664c5f099
   - enabled: 1
     path: Assets/Scenes/Serenity/SerenityNightVisualizer.unity
-    guid: 90f8126f48ba3a64e9e11a6418f31d30
+    guid: f21c72d5bb8d5c147a0a42b65489c91d
   m_configObjects: {}

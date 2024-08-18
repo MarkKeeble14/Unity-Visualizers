@@ -6,17 +6,14 @@ public class VisualizerElementBoolSetting : VisualizerSetting, IRecieveVisualize
 {
     [SerializeField] private Checkbox checkbox;
 
-    protected override void Initialize()
-    {
-        // 
-    }
-
     public void RecieveVisualizerBoolValues(Dictionary<string, bool> values)
     {
         if (!values.ContainsKey(key))
         {
             return;
         }
+
+        TrySetDefaultValue(values[key]);
 
         checkbox.Active = values[key];
     }
@@ -27,8 +24,22 @@ public class VisualizerElementBoolSetting : VisualizerSetting, IRecieveVisualize
         VisualizerManager._Instance.UpdateSetting(key, b);
     }
 
+    public override void SetToDefaultValue()
+    {
+        bool b;
+        if (bool.TryParse(defaultValue, out b))
+        {
+            checkbox.Active = b;
+        }
+    }
+
     public void Toggle()
     {
         VisualizerManager._Instance.UpdateSetting(key, !checkbox.Active);
+    }
+
+    protected override void Initialize()
+    {
+        // 
     }
 }

@@ -169,6 +169,9 @@ public class VisualizerManager : MonoBehaviour
     private Dictionary<string, int> visualizerIntValues = new();
     private Dictionary<string, bool> visualizerBoolValues = new();
 
+    private bool isSettingDefaultValues;
+    public bool IsSettingDefaultValues => isSettingDefaultValues;
+
     private bool hasSongStarted;
     private float lastAudioSourceTime;
     private float prePlaybackPositionTracker;
@@ -270,7 +273,9 @@ public class VisualizerManager : MonoBehaviour
             SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "StreamingAssets", "DefaultPresets", defaultPresetName + ".dat"), true,
                 (path, preset) =>
                 {
+                    isSettingDefaultValues = true;
                     SetFromPreset(preset);
+                    isSettingDefaultValues = false;
                 }, path =>
                 {
                     BasicInitialization();

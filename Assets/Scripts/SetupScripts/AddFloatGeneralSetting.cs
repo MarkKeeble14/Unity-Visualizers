@@ -11,6 +11,6 @@ public class AddFloatGeneralSetting : AddGeneralSetting
     {
         floatSetting = (VisualizerElementFloatSetting)obj;
         floatSetting.SetKey(MakeKey());
-        floatSetting.UpdateSetting(defaultValue.ToString());
+        floatSetting.OnInput(defaultValue.ToString());
     }
 }

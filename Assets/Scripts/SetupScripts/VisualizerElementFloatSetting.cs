@@ -2,10 +2,8 @@
 using TMPro;
 using UnityEngine;
 
-public class VisualizerElementFloatSetting : VisualizerSetting, IRecieveVisualizerFloatValues
+public class VisualizerElementFloatSetting : VisualizerElementInputSetting, IRecieveVisualizerFloatValues
 {
-    [SerializeField] private TMP_InputField inputField;
-
     public void RecieveVisualizerFloatValues(Dictionary<string, float> values)
     {
         if (!values.ContainsKey(key))
@@ -13,10 +11,12 @@ public class VisualizerElementFloatSetting : VisualizerSetting, IRecieveVisualiz
             return;
         }
 
+        TrySetDefaultValue(values[key]);
+
         SetInputFieldText(values[key]);
     }
 
-    public void UpdateSetting(string s)
+    protected override void UpdateSetting(string s)
     {
         float v;
         if (float.TryParse(s, out v))

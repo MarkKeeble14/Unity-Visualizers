@@ -18,6 +18,8 @@ public class VisualizerElementTextDropdownSetting : VisualizerSetting, IRecieveV
             return;
         }
 
+        TrySetDefaultValue(settings[key]);
+
         dropdown.ActivateElementAtIndex(settings[key]);
     }
 
@@ -33,5 +35,14 @@ public class VisualizerElementTextDropdownSetting : VisualizerSetting, IRecieveV
     protected override void Initialize()
     {
         dropdown.OnSelectElement += v => VisualizerManager._Instance.UpdateSetting(key, v);
+    }
+
+    public override void SetToDefaultValue()
+    {
+        int i;
+        if (int.TryParse(defaultValue, out i))
+        {
+            VisualizerManager._Instance.UpdateSetting(key, i);
+        }
     }
 }

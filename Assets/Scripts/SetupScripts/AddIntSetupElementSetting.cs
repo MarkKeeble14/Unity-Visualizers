@@ -11,6 +11,6 @@ public class AddIntSetupElementSetting : AddSetupElementSetting
     {
         intSetting = (VisualizerElementIntSetting)obj;
         intSetting.SetKey(MakeKey());
-        intSetting.UpdateSetting(defaultValue.ToString());
+        intSetting.OnInput(defaultValue.ToString());
     }
 }

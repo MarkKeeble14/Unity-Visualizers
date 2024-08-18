@@ -1,17 +1,19 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class VisualizerElementInputSetting : VisualizerSetting
+public abstract class VisualizerElementInputSetting : VisualizerSetting
 {
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] protected TMP_InputField inputField;
 
     public void OnInput(string str)
     {
-        throw new System.NotImplementedException();
+        UpdateSetting(str);
     }
 
-    protected override void Initialize()
+    protected abstract void UpdateSetting(string str);
+
+    public override void SetToDefaultValue()
     {
-        // 
+        OnInput(defaultValue);
     }
 }

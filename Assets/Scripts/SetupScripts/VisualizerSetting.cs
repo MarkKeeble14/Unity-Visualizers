@@ -10,6 +10,7 @@ public abstract class VisualizerSetting : MonoBehaviour
     [Header("References")]
     [SerializeField] private TextMeshProUGUI labelText;
     [SerializeField] private SetToolTipText setToolTipText;
+    protected string defaultValue { get; private set; }
 
     private void Awake()
     {
@@ -51,5 +52,18 @@ public abstract class VisualizerSetting : MonoBehaviour
         Vector2 sizeDelta = rectTransform.sizeDelta;
         sizeDelta.y = height;
         rectTransform.sizeDelta = sizeDelta;
+    }
+
+
+    public abstract void SetToDefaultValue();
+
+    private void SetDefaultValue<X>(X x) { defaultValue = x.ToString(); }
+
+    protected void TrySetDefaultValue<X>(X x)
+    {
+        if (VisualizerManager._Instance.IsSettingDefaultValues)
+        {
+            SetDefaultValue(x);
+        }
     }
 }

@@ -1,63 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4225171806203897678
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8896540373470071582}
-  - component: {fileID: 6813618827807897521}
-  m_Layer: 0
-  m_Name: ButtonHolder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8896540373470071582
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225171806203897678}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8858486462034559345}
-  m_Father: {fileID: 3217036923961110516}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -155, y: 0}
-  m_SizeDelta: {x: 300, y: -10}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6813618827807897521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225171806203897678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: 2
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1001 &1022473718604325426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149,6 +91,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3050671697418883278, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4867272318161954682, guid: d00f19ca18ab0674e83847103c591575, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -177,6 +123,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoolSetting
       objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 3946221960357183652}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetToDefaultValue
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: VisualizerElementBoolSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812270791450779652, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8078244269315955949, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d00f19ca18ab0674e83847103c591575, type: 3}
 --- !u!114 &957869239620151121 stripped
@@ -190,9 +168,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58e1727119f8b67419fd8dedc0aa52ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &3217036923961110516 stripped
+--- !u!224 &2622968348667343612 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2492100724286098886, guid: d00f19ca18ab0674e83847103c591575, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3050671697418883278, guid: d00f19ca18ab0674e83847103c591575, type: 3}
   m_PrefabInstance: {fileID: 1022473718604325426}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &5456508839643769307 stripped
@@ -233,7 +211,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 8896540373470071582}
+    m_TransformParent: {fileID: 2622968348667343612}
     m_Modifications:
     - target: {fileID: 2620359638873132321, guid: c11ce3daa578d7e4cb0dfe6a509580f0, type: 3}
       propertyPath: m_Name
@@ -245,6 +223,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6951659595047660787, guid: c11ce3daa578d7e4cb0dfe6a509580f0, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951659595047660787, guid: c11ce3daa578d7e4cb0dfe6a509580f0, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7535515493568728846, guid: c11ce3daa578d7e4cb0dfe6a509580f0, type: 3}
@@ -356,8 +338,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c166787815fad1d468625be8ddcabde5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &8858486462034559345 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7698676207036300457, guid: c11ce3daa578d7e4cb0dfe6a509580f0, type: 3}
-  m_PrefabInstance: {fileID: 1168855319221845464}
-  m_PrefabAsset: {fileID: 0}

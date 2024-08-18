@@ -15,7 +15,7 @@ public class AddFloatSetupElementSetting : AddSetupElementSetting
         if (!VisualizerManager._Instance.HasFloatSetting(MakeKey()))
         {
             floatSetting.SetInputFieldText(defaultValue);
-            floatSetting.UpdateSetting(defaultValue.ToString());
+            floatSetting.OnInput(defaultValue.ToString());
         }
     }
 }

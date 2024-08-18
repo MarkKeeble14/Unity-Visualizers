@@ -129,7 +129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8734234059815918761, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
       propertyPath: m_Name
-      value: LookAroundControlPanel
+      value: MoveAroundControlPanel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
@@ -138,6 +138,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8734234059815918761, guid: 7dd572f8e1673af4dbcc94728bb8c5cd, type: 3}
   m_PrefabInstance: {fileID: 552090761830017939}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &116315498546436000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0601836acf2d2c84a86b89809a62e3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subject: {fileID: 0}
+  moveSpeed: 2.5
+  alignOnLayer: 1
+  walkOnLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  height: 3
 --- !u!114 &175882703997671122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,8 +170,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hidden: 0
-  key: 97
-  action: Left
+  key: 276
+  action: Look Left
   PartOfScheme: 1
   func:
     m_PersistentCalls:
@@ -182,8 +201,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hidden: 0
-  key: 119
-  action: Up
+  key: 273
+  action: Look Up
   PartOfScheme: 1
   func:
     m_PersistentCalls:
@@ -212,82 +231,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590810afe71b8274691d696c8003685a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookSpeed: 1
-  clampX: 1
+  lookSpeed: 75
+  clampX: 0
   clampY: 1
-  minMaxLookX: {x: -37.5, y: 37.5}
-  minMaxLookY: {x: -25, y: 25}
-  enableReturnTimer: 1
+  minMaxLookX: {x: 0, y: 0}
+  minMaxLookY: {x: -25, y: 75}
+  enableReturnTimer: 0
   returnTimerDuration: 1
   subject: {fileID: 0}
---- !u!114 &1829857722673057831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9124099359306495802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c61036470a9e33647898a33b48651381, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  automating: {fileID: 1249675808180266892}
-  availableSequences:
-    options:
-    - key:
-        input:
-        - keys:
-            options:
-            - key: 61000000
-              value: 50
-            - key: 64000000
-              value: 50
-          minMaxDuration: {x: 3.5, y: 5}
-      value: 40
-    - key:
-        input:
-        - keys:
-            options:
-            - key: 7700000061000000
-              value: 50
-            - key: 7700000064000000
-              value: 50
-          minMaxDuration: {x: 3.5, y: 5}
-      value: 40
-    - key:
-        input:
-        - keys:
-            options:
-            - key: 61000000
-              value: 100
-          minMaxDuration: {x: 3.5, y: 5}
-        - keys:
-            options:
-            - key: 77000000
-              value: 50
-            - key: 64000000
-              value: 50
-          minMaxDuration: {x: 3.5, y: 5}
-      value: 10
-    - key:
-        input:
-        - keys:
-            options:
-            - key: 64000000
-              value: 100
-          minMaxDuration: {x: 3.5, y: 5}
-        - keys:
-            options:
-            - key: 77000000
-              value: 50
-            - key: 61000000
-              value: 50
-          minMaxDuration: {x: 3.5, y: 5}
-      value: 10
-  minMaxTimeBetweenActivations: {x: 10, y: 30}
-  chanceToActivate: {x: 2, y: 3}
---- !u!114 &6270254255788524821
+--- !u!114 &3263225354462390079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -301,7 +253,131 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hidden: 0
   key: 115
-  action: Down
+  action: Move Backwards
+  PartOfScheme: 1
+  func:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 116315498546436000}
+        m_TargetAssemblyTypeName: MoveAround, Assembly-CSharp
+        m_MethodName: MoveBackward
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4254325057998380459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hidden: 0
+  key: 100
+  action: Move Right
+  PartOfScheme: 1
+  func:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 116315498546436000}
+        m_TargetAssemblyTypeName: MoveAround, Assembly-CSharp
+        m_MethodName: MoveRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4370048796447607582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hidden: 0
+  key: 97
+  action: Move Left
+  PartOfScheme: 1
+  func:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 116315498546436000}
+        m_TargetAssemblyTypeName: MoveAround, Assembly-CSharp
+        m_MethodName: MoveLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5842713940655082887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hidden: 0
+  key: 119
+  action: Move Forward
+  PartOfScheme: 1
+  func:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 116315498546436000}
+        m_TargetAssemblyTypeName: MoveAround, Assembly-CSharp
+        m_MethodName: MoveForward
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6270254255788524821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124099359306495802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3494a7b277057d846ad7ba178860602d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hidden: 0
+  key: 274
+  action: Look Down
   PartOfScheme: 1
   func:
     m_PersistentCalls:
@@ -331,8 +407,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hidden: 0
-  key: 100
-  action: Right
+  key: 275
+  action: Look Right
   PartOfScheme: 1
   func:
     m_PersistentCalls:

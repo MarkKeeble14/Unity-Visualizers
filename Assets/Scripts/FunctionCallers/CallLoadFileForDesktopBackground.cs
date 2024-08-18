@@ -7,7 +7,6 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
 {
     public void LoadFile()
     {
-        Cursor.visible = true;
         StartCoroutine(VisualizerManager._Instance.RunBackgroundSelection(sprite =>
         {
             if (sprite != null)
@@ -28,7 +27,6 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
                     VisualizerManager._Instance.UpdateVisualizerElementSettings(VisualizerElementLabel.BACKGROUND, cur);
                 }
             }
-            Cursor.visible = false;
         }));
     }
 }

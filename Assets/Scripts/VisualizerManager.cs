@@ -15,7 +15,6 @@ using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
-using UnityEditor.Presets;
 
 [System.Serializable]
 public struct AudioClipData
@@ -75,12 +74,14 @@ public class VisualizerManager : MonoBehaviour
 {
     public static VisualizerManager _Instance { get; private set; }
 
+    [SerializeField] private bool enableCursorOnAwake = true;
+
     [Header("Track Info")]
     [SerializeField] private Gradient defaultGradient;
     [SerializeField] private TMP_FontAsset defaultFont;
     [SerializeField] private bool loadDefaultPreset = true;
     [SerializeField] private string defaultPresetName;
-    [SerializeField] private TrackInfo trackInfo;
+    [SerializeField] private TrackInfo trackInfo = new();
     public TrackInfo TrackInfo => trackInfo;
 
     private Dictionary<string, int> loadedFontIndices = new();
@@ -223,6 +224,12 @@ public class VisualizerManager : MonoBehaviour
             _Instance = this;
         }
 
+        if (enableCursorOnAwake)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
         Initialize();
 
         // Set variables from scene
@@ -260,7 +267,7 @@ public class VisualizerManager : MonoBehaviour
 
         if (loadDefaultPreset)
         {
-            SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "DefaultPresets", defaultPresetName + ".dat"),
+            SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "StreamingAssets", "DefaultPresets", defaultPresetName + ".dat"),
                 (path, preset) =>
                 {
                     SetFromPreset(preset);
@@ -878,7 +885,7 @@ public class VisualizerManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Setting track to " + trackInfo.Title);
+        // Debug.Log("Setting track to " + trackInfo.Title);
 
         if (startImmedietelyUponLoadingTrack)
         {
@@ -1342,7 +1349,7 @@ public class VisualizerManager : MonoBehaviour
 
     private Font LoadFontFromByteArray(byte[] bytes)
     {
-        string filePath = Application.dataPath + "/Fonts/LoadingFont.ttf";
+        string filePath = Application.dataPath + "/StreamingAssets/LoadingFont.ttf";
         Debug.Log("Loading font from byte array - Helper file at: " + filePath);
         File.WriteAllBytes(filePath, bytes);
         return new Font(filePath);

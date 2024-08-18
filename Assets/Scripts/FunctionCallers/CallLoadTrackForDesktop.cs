@@ -9,7 +9,6 @@ public class CallLoadTrackForDesktop : MonoBehaviour
 
     public void LoadFile()
     {
-        Cursor.visible = true;
-        StartCoroutine(VisualizerManager._Instance.RunTrackSelection(clip => Cursor.visible = false));
+        StartCoroutine(VisualizerManager._Instance.RunTrackSelection(null));
     }
 }

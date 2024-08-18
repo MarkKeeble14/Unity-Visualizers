@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public abstract class Checkbox : MonoBehaviour
 {
+    [SerializeField] private UnityEvent<bool> onClickEvent;
+
     private bool active;
     public bool Active
     {
@@ -24,6 +28,7 @@ public abstract class Checkbox : MonoBehaviour
     public void OnClick()
     {
         active = !active;
+        onClickEvent?.Invoke(active);
         UpdateUI();
     }
 

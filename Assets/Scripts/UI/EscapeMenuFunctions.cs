@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class EscapeMenuFunctions : MonoBehaviour
 {
@@ -16,6 +19,10 @@ public class EscapeMenuFunctions : MonoBehaviour
     [SerializeField] private GameObject prevSchemeButton;
     [SerializeField] private GameObject nextSchemeButton;
     [SerializeField] private string outTransition;
+    [SerializeField] private GameObject optionsPanel;
+    [SerializeField] private AudioMixer mixer;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
+    private Resolution[] resolutions;
 
     private int currentlyDisplayedControlSchemeIndex = 0;
     private List<SerializableKeyValuePair<ControlScheme, string>> availableControlSchemes = new();
@@ -29,6 +36,11 @@ public class EscapeMenuFunctions : MonoBehaviour
     public Action OnOpen;
     public Action OnClose;
 
+    private bool musicMuted;
+    private float savedMusicVolume;
+    private bool sfxMuted;
+    private float savedSFXVolume;
+
     private void Awake()
     {
         if (_Instance != null) Destroy(_Instance.gameObject);
@@ -39,6 +51,8 @@ public class EscapeMenuFunctions : MonoBehaviour
     private void Start()
     {
         MakeControls();
+
+        MakeResolutionDropdown();
     }
 
     private void Update()
@@ -58,6 +72,8 @@ public class EscapeMenuFunctions : MonoBehaviour
     {
         cv.alpha = 0;
         cv.blocksRaycasts = false;
+
+        SetOptionsMenuActive(false);
 
         OnClose?.Invoke();
     }
@@ -91,6 +107,11 @@ public class EscapeMenuFunctions : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         });
+    }
+
+    public void SetOptionsMenuActive(bool value)
+    {
+        optionsPanel.SetActive(value);
     }
 
     public void SwitchControlScheme()
@@ -212,5 +233,86 @@ public class EscapeMenuFunctions : MonoBehaviour
     public void SetAvailableControlSchemes(List<SerializableKeyValuePair<ControlScheme, string>> dict)
     {
         availableControlSchemes = dict;
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        savedMusicVolume = volume;
+        if (!musicMuted)
+            mixer.SetFloat("MusicVolume", ConvertPercentToDB(volume));
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        savedSFXVolume = volume;
+        if (!sfxMuted)
+            mixer.SetFloat("SFXVolume", ConvertPercentToDB(volume));
+    }
+
+    public void SetGraphicsQuality(int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex);
+    }
+
+    public void SetFullscreen(bool fullscreen)
+    {
+        Screen.fullScreen = fullscreen;
+    }
+
+    public void SetMusicMuted(bool value)
+    {
+        musicMuted = value;
+        if (musicMuted)
+        {
+            mixer.SetFloat("MusicVolume", ConvertPercentToDB(0.0001f));
+        } else
+        {
+            mixer.SetFloat("MusicVolume", ConvertPercentToDB(savedMusicVolume));
+        }
+    }
+
+    public void SetSFXMuted(bool value)
+    {
+        sfxMuted = value;
+        if (sfxMuted)
+        {
+            mixer.SetFloat("SFXVolume", ConvertPercentToDB(0.0001f));
+        }
+        else
+        {
+            mixer.SetFloat("SFXVolume", ConvertPercentToDB(savedSFXVolume));
+        }
+    }
+
+    private float ConvertPercentToDB(float value)
+    {
+        return Mathf.Log10(value) * 20;
+    }
+
+    private void MakeResolutionDropdown()
+    {
+        resolutions = Screen.resolutions;
+        resolutionDropdown.ClearOptions();
+
+        int curResolution = 0;
+        List<string> options = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            Resolution res = resolutions[i];
+            options.Add(res.width + " x " + res.height);
+            if (res.width == Screen.currentResolution.width && res.height == Screen.currentResolution.height)
+            {
+                curResolution = i;
+            }
+        }
+        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.value = curResolution;
+        resolutionDropdown.RefreshShownValue();
+    }
+
+    public void SetResolution(int resolutionIndex)
+    {
+        Resolution res = resolutions[resolutionIndex];
+        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
     }
 }

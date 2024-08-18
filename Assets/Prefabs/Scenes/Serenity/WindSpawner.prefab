@@ -1,0 +1,358 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2020893830980079370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2020893830980079364}
+  - component: {fileID: 2020893830980079371}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2020893830980079364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893830980079370}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2020893831078655159}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020893830980079371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893830980079370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab0638ae4e7444fb1358e8d6fa90f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAtType: 0
+  spawningObject: {fileID: 4979128660123056593, guid: 6383be531580a39438213d6ba91f5ae0, type: 3}
+  chanceToSpawnBatch: {x: 2, y: 5}
+  minMaxInBatch: {x: 6, y: 10}
+  batchMinMaxXSpawn: {x: -100, y: 100}
+  batchMinMaxYSpawn: {x: 0, y: 10}
+  batchMinMaxZSpawn: {x: 0, y: 100}
+  minMaxXOffset: {x: -2.5, y: 2.5}
+  minMaxYOffset: {x: -2.5, y: 2.5}
+  minMaxZOffset: {x: -2.5, y: 2.5}
+  timeBetweenSpawningBatches: 3
+  minMaxDelayInBatch: {x: 0, y: 3}
+--- !u!1 &2020893831078655162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2020893831078655159}
+  - component: {fileID: 2020893831078655158}
+  - component: {fileID: 2020893831078655157}
+  - component: {fileID: 2020893831078655156}
+  - component: {fileID: 2020893831078655163}
+  m_Layer: 0
+  m_Name: WindSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2020893831078655159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893831078655162}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2020893830980079364}
+  - {fileID: 5024025514353632788}
+  - {fileID: 3812834150322546311}
+  - {fileID: 3812834149073453401}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020893831078655158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893831078655162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0269af2fe8b1b2d48945d980f139303d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directions:
+  - key: {fileID: 2020893831078655157}
+    value:
+    - {fileID: 2020893831078655156}
+--- !u!114 &2020893831078655157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893831078655162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b493420c1780c174380834f88f50fa31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalMultiplier: 1
+  useBuffer: 0
+  bandType: 0
+  band: 7
+--- !u!114 &2020893831078655156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893831078655162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60f394ab47ba4a24e804f5b7e17edac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypass: 0
+  shouldExecuteLock: {fileID: 2020893831078655163}
+  slowAdust: 0
+  adjustSpeed: 25
+  defaultValue: 0
+  multiplier: 1
+  spawner: {fileID: 2020893830980079371}
+  useCooldown: 1
+  cooldown: 3
+  cooldownRate: 1
+--- !u!114 &2020893831078655163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020893831078655162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5163194b8347f342a754a87d54436c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greaterThan: 3
+--- !u!1001 &3812834150637021488
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2020893831078655159}
+    m_Modifications:
+    - target: {fileID: 8165312973707841315, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_Name
+      value: BlissWindSpawners
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+--- !u!4 &5024025514353632788 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+  m_PrefabInstance: {fileID: 3812834150637021488}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5024025513602754979
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2020893831078655159}
+    m_Modifications:
+    - target: {fileID: 8165312973707841315, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_Name
+      value: BlissWindSpawners (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841319, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: timeBetweenSpawningBatches
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+--- !u!4 &3812834150322546311 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+  m_PrefabInstance: {fileID: 5024025513602754979}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5024025514910551677
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2020893831078655159}
+    m_Modifications:
+    - target: {fileID: 8165312973707841315, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_Name
+      value: BlissWindSpawners (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165312973707841319, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+      propertyPath: timeBetweenSpawningBatches
+      value: 17.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+--- !u!4 &3812834149073453401 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8165312973707841316, guid: b4cec1d0d283ba4469d4fc7e4f3e10f4, type: 3}
+  m_PrefabInstance: {fileID: 5024025514910551677}
+  m_PrefabAsset: {fileID: 0}

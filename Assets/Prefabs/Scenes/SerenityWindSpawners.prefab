@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8165312973707841319}
   - component: {fileID: 8165312973707841312}
   m_Layer: 0
-  m_Name: BlissWindSpawners
+  m_Name: SerenityWindSpawners
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,8 +50,8 @@ MonoBehaviour:
   chanceToSpawnBatch: {x: 2, y: 5}
   minMaxInBatch: {x: 3, y: 5}
   batchMinMaxXSpawn: {x: -100, y: 100}
-  batchMinMaxYSpawn: {x: 0, y: 10}
-  batchMinMaxZSpawn: {x: 0, y: 50}
+  batchMinMaxYSpawn: {x: 0, y: 25}
+  batchMinMaxZSpawn: {x: -50, y: 50}
   minMaxXOffset: {x: -2.5, y: 2.5}
   minMaxYOffset: {x: -2.5, y: 2.5}
   minMaxZOffset: {x: -2.5, y: 2.5}

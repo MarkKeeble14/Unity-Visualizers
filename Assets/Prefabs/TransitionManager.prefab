@@ -89,6 +89,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd9807e823919c64dade27d03389b67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inSpeed: 1
+  outSpeed: 1
   transitionInSpeed: 0.5
   transitionOutSpeed: 0.5
   moveBy: 1
@@ -138,6 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e7db84d385faf547a2602a50d62fd40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inSpeed: 1
+  outSpeed: 1
   inStartingDigitalIntensity: 1
   inStartingAnalogColorDrift: 1
   inStartingAnalogHorizontalShake: 1
@@ -299,9 +303,6 @@ MonoBehaviour:
   - key: Glitch
     value: {fileID: 3534016615244082363}
   audioSource: {fileID: 288019837801800842}
-  initialTransition:
-    transition: {fileID: 0}
-    direction: 0
 --- !u!82 &288019837801800842
 AudioSource:
   m_ObjectHideFlags: 0
@@ -311,7 +312,7 @@ AudioSource:
   m_GameObject: {fileID: 8518492385895798487}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -127363237884121779, guid: 52a498d874076bb45b331a0ddd050bdf, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

@@ -813,7 +813,7 @@ AudioSource:
   m_GameObject: {fileID: 1209412595206947812}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 3909368663944237422, guid: 52a498d874076bb45b331a0ddd050bdf, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -912,6 +912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac123a333f1a2e044be7c2a896f21fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableCursorOnAwake: 1
   defaultGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4171,7 +4172,7 @@ AudioSource:
   m_GameObject: {fileID: 7434902756147594189}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -127363237884121779, guid: 52a498d874076bb45b331a0ddd050bdf, type: 2}
   m_audioClip: {fileID: 8300000, guid: 710a8330e2fb0ea4ba5fbfa52bff7fae, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -9003,6 +9004,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8698162375822803906, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758254248125768699, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758254248125768699, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758254248125768699, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758254248125768699, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8777329454594468902, guid: db4f8e429a21e934bb9a1335bffd6e21, type: 3}

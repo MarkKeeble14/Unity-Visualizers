@@ -5,11 +5,15 @@ using UnityEngine;
 public class LookAround : RecievesInput
 {
     [SerializeField] private float lookSpeed;
-    [SerializeField] private Vector2 minMaxLook;
-    private Vector2 currentLookVector;
-    private float returnTimer;
+    [SerializeField] private bool clampX;
+    [SerializeField] private bool clampY;
+    [SerializeField] private Vector2 minMaxLookX;
+    [SerializeField] private Vector2 minMaxLookY;
+    [SerializeField] private bool enableReturnTimer = true;
     [SerializeField] private float returnTimerDuration = .25f;
     [SerializeField] private Transform subject;
+    private Vector2 currentLookVector;
+    private float returnTimer;
 
     public void LookUp()
     {
@@ -52,25 +56,36 @@ public class LookAround : RecievesInput
 
     private void LookHorizontal(float dir)
     {
-        currentLookVector.x = Mathf.Lerp(currentLookVector.x, minMaxLook.x * dir, lookSpeed * Time.deltaTime);
+        currentLookVector.x += lookSpeed * dir * Time.deltaTime;
         returnTimer = returnTimerDuration;
     }
 
     private void LookVertical(float dir)
     {
-        currentLookVector.y = Mathf.Lerp(currentLookVector.y, minMaxLook.y * dir, lookSpeed * Time.deltaTime);
+        currentLookVector.y += lookSpeed * dir * Time.deltaTime;
         returnTimer = returnTimerDuration;
     }
 
     private void Update()
     {
-        // Reset if no input is found
-        if (returnTimer <= 0)
-            currentLookVector = Vector2.Lerp(currentLookVector, Vector2.zero, lookSpeed * Time.deltaTime);
-        else
-            returnTimer -= Time.deltaTime;
+        if (enableReturnTimer)
+        {
+            // Reset if no input is found
+            if (returnTimer <= 0)
+                currentLookVector = Vector2.Lerp(currentLookVector, Vector2.zero, lookSpeed * Time.deltaTime);
+            else
+                returnTimer -= Time.deltaTime;
+        }
 
         // Set rotation
+        if (clampX)
+        {
+            currentLookVector.x = Mathf.Clamp(currentLookVector.x, minMaxLookX.x, minMaxLookX.y);
+        }
+        if (clampY)
+        {
+            currentLookVector.y = Mathf.Clamp(currentLookVector.y, minMaxLookY.x, minMaxLookY.y);
+        }
         subject.localEulerAngles = new Vector3(-currentLookVector.y, currentLookVector.x, 0);
     }
 }

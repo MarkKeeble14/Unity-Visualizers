@@ -12,7 +12,6 @@ public class FreeCameraController : MonoBehaviour
     [SerializeField] private KeyCode speedUpButton = KeyCode.LeftShift;
 
     [Header("References")]
-    [SerializeField] private GameObject instructionsText;
     [SerializeField] private PositionedCamera freeCam;
     private PositionedCamera prevCamera;
 
@@ -46,8 +45,6 @@ public class FreeCameraController : MonoBehaviour
         //Cursor.visible = false;
         //Cursor.lockState = CursorLockMode.Locked;
 
-        instructionsText.SetActive(true);
-
         prevCamera = Camera.main.GetComponent<PositionedCamera>();
 
         freeCam.Positioner.position = prevCamera.Positioner.position;
@@ -65,8 +62,6 @@ public class FreeCameraController : MonoBehaviour
         Pause = false;
         //Cursor.visible = true;
         //Cursor.lockState = CursorLockMode.None;
-
-        instructionsText.SetActive(false);
 
         prevCamera.Positioner.position = freeCam.Positioner.position;
         prevCamera.Camera.transform.position = freeCam.Camera.transform.position;

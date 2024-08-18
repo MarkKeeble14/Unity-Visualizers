@@ -156,8 +156,26 @@ public class SaveManager : MonoBehaviour
         return true;
     }
 
-    public async Task LoadPreset(string loadFromPath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
+    public async Task LoadPreset(string loadFromPath, bool isDefaultPreset, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
     {
+        string fileName = StringHelper.GetFileName(loadFromPath);
+        if (!File.Exists(loadFromPath))
+        {
+            Debug.Log("File could not be found at: " + loadFromPath);
+
+            if (isDefaultPreset)
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Could not locate default preset - " +
+                    "was a file deleted from the StreamingAssets folder?");
+            } else
+            {
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Could not locate requested file");
+            }
+
+                onFailure?.Invoke(loadFromPath);
+            return;
+        }
+
         Debug.Log("Attempting to load data from: " + loadFromPath);
         string fileExtension = StringHelper.GetFileExtension(loadFromPath);
         int loadingKey = UIManager._Instance.AddLoading("Loading Preset=" 
@@ -170,6 +188,7 @@ public class SaveManager : MonoBehaviour
                 "- Preset files will have the .dat file extension");
 
             UIManager._Instance.RemoveLoading(loadingKey);
+            onFailure?.Invoke(loadFromPath);
             return;
         }
 

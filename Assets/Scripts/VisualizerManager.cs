@@ -267,7 +267,7 @@ public class VisualizerManager : MonoBehaviour
 
         if (loadDefaultPreset)
         {
-            SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "StreamingAssets", "DefaultPresets", defaultPresetName + ".dat"),
+            SaveManager._Instance.LoadPreset(Path.Combine(Application.dataPath, "StreamingAssets", "DefaultPresets", defaultPresetName + ".dat"), true,
                 (path, preset) =>
                 {
                     SetFromPreset(preset);
@@ -1888,7 +1888,7 @@ public class VisualizerManager : MonoBehaviour
 
     public void LoadPreset(string filePath, Action<string, VisualizerPreset> onSuccess, Action<string> onFailure)
     {
-        SaveManager._Instance.LoadPreset(filePath,
+        SaveManager._Instance.LoadPreset(filePath, false,
             (filePath, loadedPreset) =>
             {
                 SetFromPreset(loadedPreset);

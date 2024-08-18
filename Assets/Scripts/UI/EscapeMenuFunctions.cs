@@ -300,13 +300,14 @@ public class EscapeMenuFunctions : MonoBehaviour
         {
             Resolution res = resolutions[i];
             options.Add(res.width + " x " + res.height);
-            if (res.width == Screen.currentResolution.width && res.height == Screen.currentResolution.height)
+            if (res.width == Screen.width && res.height == Screen.height)
             {
                 curResolution = i;
+                break;
             }
         }
         resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = curResolution;
+        resolutionDropdown.SetValueWithoutNotify(curResolution);
         resolutionDropdown.RefreshShownValue();
     }
 

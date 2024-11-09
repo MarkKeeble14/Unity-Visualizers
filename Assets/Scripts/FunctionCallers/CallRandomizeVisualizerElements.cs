@@ -8,17 +8,14 @@ public class CallRandomizeVisualizerElements : MonoBehaviour
 
     public void RandomizeVisualizerElements()
     {
-        StartCoroutine(UIManager._Instance.PopupActionSelection("Confirm randomization of elements", "Cancel", null,
-            new List<ActionSelection>()
+        UIManager._Instance.PopupAreYouSureMessage("Randomize ALL Visualizer Elements?",
+            () =>
             {
-                new ActionSelection("Confirm", () =>
+                foreach (Transform t in visualizerElementsHolder)
                 {
-                    foreach (Transform t in visualizerElementsHolder)
-                    {
-                        VisualizerSetupElement element = t.GetComponent<VisualizerSetupElement>();
-                        element.TryRandomize();
-                    }
-                })
-            }));
+                    VisualizerSetupElement element = t.GetComponent<VisualizerSetupElement>();
+                    element.TryRandomize();
+                }
+            }, null);
     }
 }

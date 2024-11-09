@@ -36,7 +36,7 @@ RenderSettings:
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
-  m_CustomReflection: {fileID: 1875144886}
+  m_CustomReflection: {fileID: 1525048207}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.11310591, g: 0.32584566, b: 0.70483917, a: 1}
   m_UseRadianceAmbientProbe: 0
@@ -271,6 +271,10 @@ PrefabInstance:
       propertyPath: subject
       value: 
       objectReference: {fileID: 1574986238}
+    - target: {fileID: 1249675808180266892, guid: 3902673d25104ee41be4a19de38c35a3, type: 3}
+      propertyPath: childFreeCamera
+      value: 
+      objectReference: {fileID: 4347229794919961453}
     - target: {fileID: 2815549808907666375, guid: 3902673d25104ee41be4a19de38c35a3, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -375,46 +379,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3025494604430352291, guid: 44eb6db3e96e2124faa362d4693817bb, type: 3}
   m_PrefabInstance: {fileID: 3025494605190168262}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1574986238 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4873408715405848081, guid: b71d13cf4a1abab449fdeebd2239e46c, type: 3}
-  m_PrefabInstance: {fileID: 4347229794919961451}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1587039180
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1587039181}
-  m_Layer: 0
-  m_Name: Environment
-  m_TagString: VisualizerScenario
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1587039181
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1587039180}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1273620841}
-  - {fileID: 1389814117}
-  - {fileID: 639485002}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!89 &1875144886
+--- !u!89 &1525048207
 Cubemap:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -468,6 +433,45 @@ Cubemap:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!4 &1574986238 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4873408715405848081, guid: b71d13cf4a1abab449fdeebd2239e46c, type: 3}
+  m_PrefabInstance: {fileID: 4347229794919961451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1587039180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1587039181}
+  m_Layer: 0
+  m_Name: Environment
+  m_TagString: VisualizerScenario
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1587039181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587039180}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1273620841}
+  - {fileID: 1389814117}
+  - {fileID: 639485002}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3025494605190168262
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1409,7 +1413,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3043268436094161373, guid: b71d13cf4a1abab449fdeebd2239e46c, type: 3}
   m_PrefabInstance: {fileID: 4347229794919961451}
   m_PrefabAsset: {fileID: 0}
---- !u!215 &4347229794919961454
+--- !u!4 &4347229794919961453 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7654943502008899477, guid: b71d13cf4a1abab449fdeebd2239e46c, type: 3}
+  m_PrefabInstance: {fileID: 4347229794919961451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!215 &4347229794919961455
 ReflectionProbe:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -256,6 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 3
   rect: {fileID: 6530560252967410752}
   button: {fileID: 2970374430172110008}
 --- !u!114 &2788847393479700184

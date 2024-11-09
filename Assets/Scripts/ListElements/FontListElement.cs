@@ -35,7 +35,7 @@ public class FontListElement : ListSelectionElement
         VisualizerManager._Instance.DeleteFont(Index);
     }
 
-    protected override void Randomize()
+    protected override void Randomize(bool skipConfirmation)
     {
         //
     }

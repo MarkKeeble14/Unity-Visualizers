@@ -9,12 +9,14 @@ using System.IO;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-using VideoLibrary;
+using YoutubeExplode;
 using MediaToolkit;
 using MediaToolkit.Model;
 using SoundCloudExplode;
 using SoundCloudExplode.Tracks;
 using System.Threading.Tasks;
+using YoutubeExplode.Videos.Streams;
+using YoutubeExplode.Videos;
 
 [System.Serializable]
 public struct AudioClipData
@@ -179,6 +181,10 @@ public class VisualizerManager : MonoBehaviour
     private bool coverArtSelectionActive;
     private bool backgroundSelectionActive;
 
+    [SerializeField] private GameObject playSongText;
+    private bool hasLoadedTrack;
+    private bool hasPlayedTrack;
+
     // Events
     public Action OnSongEnd;
     public Action OnSongStart;
@@ -316,6 +322,51 @@ public class VisualizerManager : MonoBehaviour
         AudioSamplingManager._Instance.SmoothingShift = visualizerFloatValues["SMOOTHING_SHIFT"];
         AudioSamplingManager._Instance.SmoothingScale = visualizerFloatValues["SMOOTHING_SCALE"];
 
+        // if there are loading elements queued to be added
+        if (mainThreadQueuedLoads.Count > 0)
+        {
+            // loop through them
+            foreach (string str in mainThreadQueuedLoads)
+            {
+                // for each one,
+                int i = UIManager._Instance.AddLoading(str);
+                
+                mainThreadQueuedUnloads.Add(str, new QueuedLoadingData(i, false));
+            }
+
+            foreach (KeyValuePair<string, QueuedLoadingData> kvp in mainThreadQueuedUnloads)
+            {
+                if (mainThreadQueuedLoads.Contains(kvp.Key))
+                {
+                    mainThreadQueuedLoads.Remove(kvp.Key);
+                }
+            }
+        }
+
+        // if there are loading elements queued to be removed
+        if (mainThreadQueuedUnloads.Count > 0)
+        {
+            List<string> removedLoadings = new List<string>();
+            foreach (KeyValuePair<string, QueuedLoadingData> kvp in mainThreadQueuedUnloads)
+            {
+                if (kvp.Value.CanUnload)
+                {
+                    UIManager._Instance.RemoveLoading(kvp.Value.LoadingId);
+                    removedLoadings.Add(kvp.Key);
+                }
+            }
+
+            foreach (string s in removedLoadings)
+            {
+                mainThreadQueuedUnloads.Remove(s);
+            }
+        }
+
+        if (mainThreadActions.Count > 0)
+        {
+            mainThreadActions.Dequeue()?.Invoke();
+        }
+
         // Determine if Song has Started
         if (!hasSongStarted && audioSource.time != lastAudioSourceTime)
         {
@@ -334,10 +385,14 @@ public class VisualizerManager : MonoBehaviour
         }
 
         lastAudioSourceTime = audioSource.time;
+
+        playSongText.SetActive(!hasLoadedTrack || !hasPlayedTrack);
     }
 
     public void BeginPlayback()
     {
+        hasPlayedTrack = true;
+
         if (audioSource.clip == null)
         {
             Debug.LogWarning("Attempted to start the Visualizer with no track loaded");
@@ -575,7 +630,7 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator OnFailDownloadTrackFromURL()
     {
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track from URL");
+        // UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download Track from URL");
 
         loadTrackButton.interactable = true;
 
@@ -595,7 +650,7 @@ public class VisualizerManager : MonoBehaviour
             origin = GetAudioFileOrigin(url);
         } catch (Exception e)
         {
-            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download track from URL");
+            UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to download track from URL - Couldn't resolve origin");
 
             loadTrackButton.interactable = true;
 
@@ -625,7 +680,11 @@ public class VisualizerManager : MonoBehaviour
                         SetTrack(clip, url, name, duration);
 
                         loadTrackButton.interactable = true;
-                    }, null));
+                    },
+                    url =>
+                    {
+                    loadTrackButton.interactable = true;
+                    }));
                 break;
             default:
                 Debug.Log("Unsupported Origin: " + origin);
@@ -661,36 +720,66 @@ public class VisualizerManager : MonoBehaviour
         }
     }
 
-    private ValueTask<string[]> YouTubeToMP3(string mediaUrl, string directoryPath)
+    private Queue<Action> mainThreadActions = new Queue<Action>();
+    private List<string> mainThreadQueuedLoads = new List<string>();
+    private Dictionary<string, QueuedLoadingData> mainThreadQueuedUnloads = new Dictionary<string, QueuedLoadingData>();
+
+    private struct QueuedLoadingData
     {
-        YouTube youtube = YouTube.Default;
-        YouTubeVideo vid = youtube.GetVideo(mediaUrl);
+        public int LoadingId;
+        public bool CanUnload;
 
-        // determine mp4 path
-        string inputFilePath = Path.Combine(directoryPath, "tmp");
-        inputFilePath = inputFilePath.Replace("/", @"\");
+        public QueuedLoadingData(int loadingId, bool canUnload)
+        {
+            LoadingId = loadingId;
+            CanUnload = canUnload;
+        }
+    }
 
-        // determine mp3 path & add extensions
-        string outputFilePath = inputFilePath + ".mp3";
-        inputFilePath += ".mp4";
-
-        // write to video file
-        File.WriteAllBytes(inputFilePath, vid.GetBytes());
-
+    private ValueTask<bool> ConvertFile(string inputFilePath, string outputFilePath)
+    {
         MediaFile inputFile = new MediaFile { Filename = inputFilePath };
         MediaFile outputFile = new MediaFile { Filename = outputFilePath };
-        
-        // convert mp4 to mp3
-        using (var engine = new Engine())
+
+        string loadingText = "Processing audio...";
+        mainThreadQueuedLoads.Add(loadingText);
+        QueuedLoadingData data;
+
+        try
         {
-            engine.GetMetadata(inputFile);
+            // convert webm to mp3
+            using (var engine = new Engine())
+            {
+                engine.GetMetadata(inputFile);
 
-            engine.Convert(inputFile, outputFile);
+                engine.Convert(inputFile, outputFile);
 
-            engine.GetMetadata(outputFile);
+                engine.GetMetadata(outputFile);
+            }
+        }
+        catch (Exception e)
+        {
+            mainThreadActions.Enqueue(() =>
+            {
+                // error
+                UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "An error occurred while processing the audio - " +
+                    "Please try a different video or instead load from a file");
+            });
+
+            data = mainThreadQueuedUnloads[loadingText];
+            data.CanUnload = true;
+            mainThreadQueuedUnloads[loadingText] = data;
+
+            Debug.LogError(e);
+
+            return new ValueTask<bool>(false);
         }
 
-        return new ValueTask<string[]>(new string[] { inputFilePath, outputFilePath, vid.Title, vid.Info.LengthSeconds.ToString() });
+        data = mainThreadQueuedUnloads[loadingText];
+        data.CanUnload = true;
+        mainThreadQueuedUnloads[loadingText] = data;
+
+        return new ValueTask<bool>(true);
     }
 
     private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
@@ -702,32 +791,65 @@ public class VisualizerManager : MonoBehaviour
             Directory.CreateDirectory(directoryPath);
         }
 
-        int loadingKey = UIManager._Instance.AddLoading("Fetching audio from URL...");
+        var youtube = new YoutubeClient();
 
-        var task = Task.Run(async () => await YouTubeToMP3(mediaUrl, directoryPath));
-        await task;
+        int loadingKey = UIManager._Instance.AddLoading("Fetching video from url...");
+
+        // You can specify either the video URL or its ID
+        Video video = await youtube.Videos.GetAsync(mediaUrl);
 
         UIManager._Instance.RemoveLoading(loadingKey);
 
-        string mp4FilePath = task.Result[0];
-        string mp3FilePath = task.Result[1];
-        string trackName = task.Result[2];
-        string trackDuration = task.Result[3];
+        loadingKey = UIManager._Instance.AddLoading("Fetching streams...");
 
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched Audio from YouTube Video: " + trackName);
+        var streamManifest = await youtube.Videos.Streams.GetManifestAsync(mediaUrl);
 
-        // delete input file
-        File.Delete(mp4FilePath);
+        UIManager._Instance.RemoveLoading(loadingKey);
 
-        // Delete output files
-        onSuccess += (path, name, duration, clip) => File.Delete(mp3FilePath);
-        onFailure += path => File.Delete(mp3FilePath);
+        loadingKey = UIManager._Instance.AddLoading("Fetching audio stream...");
+
+        // Select best audio stream (highest bitrate)
+        var audioStreamInfo = streamManifest
+            .GetAudioStreams()
+            .GetWithHighestBitrate();
+
+        // Get the actual stream
+        var stream = await youtube.Videos.Streams.GetAsync(audioStreamInfo);
+
+        UIManager._Instance.RemoveLoading(loadingKey);
+
+        // determine mp4 path
+        string inputFilePath = Path.Combine(directoryPath, "tmp.webm");
+        inputFilePath = inputFilePath.Replace("/", @"\");
+
+        // determine mp3 path & add extensions
+        string outputFilePath = Path.Combine(directoryPath, "tmp.mp3");
+
+        loadingKey = UIManager._Instance.AddLoading("Downloading audio...");
+
+        // Download the stream to a file
+        await youtube.Videos.Streams.DownloadAsync(audioStreamInfo, inputFilePath);
+
+        UIManager._Instance.RemoveLoading(loadingKey);
+
+        // setup 
+        var getTask = Task.Run(async () => await ConvertFile(inputFilePath, outputFilePath));
+        await getTask;
+
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched Audio from YouTube Video: " + video.Title);
+
+        // Delete input file
+        File.Delete(inputFilePath);
+
+        // Set to delete output file
+        onSuccess += (path, name, duration, clip) => File.Delete(outputFilePath);
+        onFailure += path => File.Delete(outputFilePath);
 
         // load data from output file
-        StartCoroutine(LoadAudioClipFromFile(mp3FilePath, 
+        StartCoroutine(LoadAudioClipFromFile(outputFilePath, 
             (path, clip) =>
             {
-                onSuccess?.Invoke(path, clip, trackName, trackDuration);
+                onSuccess?.Invoke(path, clip, video.Title, video.Duration.Value.TotalSeconds.ToString());
             }, onFailure));
     }
 
@@ -826,10 +948,17 @@ public class VisualizerManager : MonoBehaviour
         return StringHelper.AppendTextToAll(fileTypes, ".", "");
     }
 
+private void AddQuickLinksToFileBrowser()
+    {
+        FileBrowser.AddQuickLink("Downloads", Environment.GetEnvironmentVariable("USERPROFILE") + @"\" + "Downloads");
+        FileBrowser.AddQuickLink("Presets", SaveManager._Instance.PresetsPath);
+    }
+
     private IEnumerator BrowseForTrack()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Audio", MakeFileBrowserFilterArray(audioFileExtensions)));
         FileBrowser.SetDefaultFilter("Audio");
+        AddQuickLinksToFileBrowser();
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
@@ -889,6 +1018,8 @@ public class VisualizerManager : MonoBehaviour
                 Debug.Log("Unable to parse duration - ensure durationSeconds represents a numerical value");
             }
         }
+
+        hasLoadedTrack = true;
 
         // Debug.Log("Setting track to " + trackInfo.Title);
 
@@ -973,7 +1104,7 @@ public class VisualizerManager : MonoBehaviour
                     }, 
                     () =>
                     {
-                        UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Cancelled load image from URL");
+                        // UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Cancelled load image from URL");
                     });
 
         if (string.IsNullOrEmpty(url))
@@ -1010,6 +1141,7 @@ public class VisualizerManager : MonoBehaviour
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", MakeFileBrowserFilterArray(imageFileExtensions)));
         FileBrowser.SetDefaultFilter("Images");
+        AddQuickLinksToFileBrowser();
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
@@ -1180,6 +1312,7 @@ public class VisualizerManager : MonoBehaviour
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Preset Files", ".dat"));
         FileBrowser.SetDefaultFilter("Preset Files");
+        AddQuickLinksToFileBrowser();
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
@@ -1199,6 +1332,7 @@ public class VisualizerManager : MonoBehaviour
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Fonts", MakeFileBrowserFilterArray(fontFileExtensions)));
         FileBrowser.SetDefaultFilter("Fonts");
+        AddQuickLinksToFileBrowser();
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
@@ -1217,6 +1351,11 @@ public class VisualizerManager : MonoBehaviour
 
     private IEnumerator BrowseForSingleFile(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
     {
+        if (ComputerCursor._Instance != null)
+        {
+            ComputerCursor._Instance.Disable();
+        }
+
         yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders,
             false, null, null, dialogTitle, loadButtonText);
 
@@ -1224,6 +1363,11 @@ public class VisualizerManager : MonoBehaviour
             OnFileSucessfullySelected(FileBrowser.Result[0], toDoWithFile);
         else
             OnFailureToSelectFiles();
+
+        if (ComputerCursor._Instance != null)
+        {
+            ComputerCursor._Instance.Enable();
+        }
     }
 
     private IEnumerator BrowseForMultipleFiles(Action<string> toDoWithFile, string dialogTitle, string loadButtonText)
@@ -1275,24 +1419,24 @@ public class VisualizerManager : MonoBehaviour
 
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, audioFileType))
         {
-            int loadingKey = UIManager._Instance.AddLoading("Attempting to load audio from file");
+            int loadingKey = UIManager._Instance.AddLoading("Attempting to load audio from file...");
 
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Failed to load Track");
-                Debug.Log("Failed to download Track from path: " + filePath);
+                UIManager._Instance.RemoveLoading(loadingKey);
+                Debug.Log("Failed to load Track from path: " + filePath + ", " + www.result);
                 onFailure?.Invoke(filePath);
             }
             else
             {
                 UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully loaded Track");
-                Debug.Log("Successfully downloaded Track from path: " + filePath);
+                UIManager._Instance.RemoveLoading(loadingKey);
+                Debug.Log("Successfully loaded Track from path: " + filePath);
                 onSuccess?.Invoke(filePath, DownloadHandlerAudioClip.GetContent(www));
             }
-
-            UIManager._Instance.RemoveLoading(loadingKey);
         }
     }
 
@@ -1394,7 +1538,7 @@ public class VisualizerManager : MonoBehaviour
     {
         trackInfo.Colors.Add(c);
         ColorListElement spawned = Instantiate(colorListElement, colorsList);
-        spawned.Set(trackInfo.Colors.Count - 1, c);
+        spawned.Set(trackInfo.Colors.Count - 1, c, false);
     }
 
     private void AddGradientElement()
@@ -1404,7 +1548,7 @@ public class VisualizerManager : MonoBehaviour
         newGradient.SetKeys(defaultGradient.colorKeys, defaultGradient.alphaKeys);
         trackInfo.Gradients.Add(newGradient);
         GradientListElement spawned = Instantiate(gradientListElement, colorsList);
-        spawned.Set(trackInfo.Gradients.Count - 1, newGradient);
+        spawned.Set(trackInfo.Gradients.Count - 1, newGradient, false);
     }
 
     private void PopulateColorsList()
@@ -1412,13 +1556,28 @@ public class VisualizerManager : MonoBehaviour
         for (int i = 0; i < trackInfo.Colors.Count; ++i)
         {
             ColorListElement spawned = Instantiate(colorListElement, colorsList);
-            spawned.Set(i, trackInfo.Colors[i]);
+            spawned.Set(i, trackInfo.Colors[i], false);
         }
 
         for (int i = 0; i < trackInfo.Gradients.Count; ++i)
         {
             GradientListElement spawned = Instantiate(gradientListElement, colorsList);
-            spawned.Set(i, trackInfo.Gradients[i]);
+            spawned.Set(i, trackInfo.Gradients[i], false);
+        }
+    }
+
+    private void PopulateColorsList(Dictionary<int, bool> colorLockStates, Dictionary<int, bool> gradientLockStates)
+    {
+        for (int i = 0; i < trackInfo.Colors.Count; ++i)
+        {
+            ColorListElement spawned = Instantiate(colorListElement, colorsList);
+            spawned.Set(i, trackInfo.Colors[i], colorLockStates[i]);
+        }
+
+        for (int i = 0; i < trackInfo.Gradients.Count; ++i)
+        {
+            GradientListElement spawned = Instantiate(gradientListElement, colorsList);
+            spawned.Set(i, trackInfo.Gradients[i], gradientLockStates[i]);
         }
     }
 
@@ -1462,8 +1621,24 @@ public class VisualizerManager : MonoBehaviour
             }
         }
 
+        Dictionary<int, bool> colorElementLockStates = new Dictionary<int, bool>();
+        ColorListElement[] colorListElements = colorsList.GetComponentsInChildren<ColorListElement>();
+        for (int i = 0; i < colorListElements.Length; i++)
+        {
+            colorElementLockStates.Add(i, colorListElements[i].IsLocked);
+        }
+
+        Dictionary<int, bool> gradientElementLockStates = new Dictionary<int, bool>();
+        GradientListElement[] gradientListElements = colorsList.GetComponentsInChildren<GradientListElement>();
+        for (int i = 0; i < gradientListElements.Length; i++)
+        {
+            if (i == index) continue;
+            if (i > index) { gradientElementLockStates.Add(i - 1, gradientListElements[i].IsLocked); }
+            else { gradientElementLockStates.Add(i, gradientListElements[i].IsLocked); }
+        }
+
         ClearColorsList();
-        PopulateColorsList();
+        PopulateColorsList(colorElementLockStates, gradientElementLockStates);
 
         BroadcastVisualizerElementsInfo();
     }
@@ -1485,8 +1660,24 @@ public class VisualizerManager : MonoBehaviour
             }
         }
 
+        Dictionary<int, bool> colorElementLockStates = new Dictionary<int, bool>();
+        ColorListElement[] colorListElements = colorsList.GetComponentsInChildren<ColorListElement>();
+        for (int i = 0; i < colorListElements.Length; i++)
+        {
+            if (i == index) continue;
+            if (i > index) { colorElementLockStates.Add(i-1, colorListElements[i].IsLocked); }
+            else { colorElementLockStates.Add(i, colorListElements[i].IsLocked); }
+        }
+
+        Dictionary<int, bool> gradientElementLockStates = new Dictionary<int, bool>();
+        GradientListElement[] gradientListElements = colorsList.GetComponentsInChildren<GradientListElement>();
+        for (int i = 0; i < gradientListElements.Length; i++)
+        {
+            gradientElementLockStates.Add(i, gradientListElements[i].IsLocked);
+        }
+
         ClearColorsList();
-        PopulateColorsList();
+        PopulateColorsList(colorElementLockStates, gradientElementLockStates);
 
         BroadcastVisualizerElementsInfo();
     }
@@ -1555,6 +1746,7 @@ public class VisualizerManager : MonoBehaviour
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Fonts", MakeFileBrowserFilterArray(fontFileExtensions)));
         FileBrowser.SetDefaultFilter("Fonts");
+        AddQuickLinksToFileBrowser();
 
         StartCoroutine(BrowseForMultipleFiles(x =>
         {

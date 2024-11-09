@@ -5,7 +5,7 @@ public class CallPromptExit : MonoBehaviour
 {
     public void PromptExit()
     {
-        StartCoroutine(UIManager._Instance.PopupActionSelection("Confirm Disk Ejection", "Cancel", null, new List<ActionSelection>()
+        StartCoroutine(UIManager._Instance.PopupActionSelection("Eject Disk?", "Cancel", null, new List<ActionSelection>()
         {
             new ActionSelection("Confirm", () => Application.Quit())
         }));

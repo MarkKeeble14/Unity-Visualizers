@@ -85,6 +85,8 @@ public class SaveManager : MonoBehaviour
         _Instance = this;
     }
 
+    public string PresetsPath { get { return Path.Combine(Application.dataPath, "../Presets"); } }
+
     public async ValueTask<bool> SavePreset(string label, VisualizerPreset preset, Action<string> onSuccess, Action onFailure)
     {
         if (label.Contains('/') || label.Contains('\\'))
@@ -100,15 +102,13 @@ public class SaveManager : MonoBehaviour
         string encodedFilePath;
         try
         {
-            string presetsPath = Path.Combine(Application.dataPath, "../Presets");
-
-            if (!System.IO.Directory.Exists(presetsPath))
+            if (!System.IO.Directory.Exists(PresetsPath))
             {
-                System.IO.Directory.CreateDirectory(presetsPath);
-                Debug.Log("Created directory at: " + presetsPath);
+                System.IO.Directory.CreateDirectory(PresetsPath);
+                Debug.Log("Created directory at: " + PresetsPath);
             }
 
-            encodedFilePath = Path.Combine(presetsPath, label + ".dat");
+            encodedFilePath = Path.Combine(PresetsPath, label + ".dat");
         }
         catch (Exception e)
         {

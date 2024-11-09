@@ -8,10 +8,11 @@ public class ColorListElement : ListSelectionElement
 {
     [SerializeField] private Image image;
 
-    public void Set(int index, Color c)
+    public void Set(int index, Color c, bool locked)
     {
         SetIndex(index);
         image.color = c;
+        SetLocked(locked);
     }
 
     public override void Open()
@@ -29,11 +30,19 @@ public class ColorListElement : ListSelectionElement
 
     public override void Delete()
     {
-        VisualizerManager._Instance.DeleteColor(Index);
+        UIManager._Instance.PopupAreYouSureMessage("Delete this Color?",
+            () => VisualizerManager._Instance.DeleteColor(Index), null);
     }
 
-    protected override void Randomize()
+    protected override void Randomize(bool skipConfirmation)
     {
-        OnColorSelected(RandomHelper.GetRandomOpaqueColor());
+        if (skipConfirmation)
+        {
+            OnColorSelected(RandomHelper.GetRandomOpaqueColor());
+        } else
+        {
+            UIManager._Instance.PopupAreYouSureMessage("Randomize this Color?",
+                () => OnColorSelected(RandomHelper.GetRandomOpaqueColor()), null);
+        }
     }
 }

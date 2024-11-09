@@ -231,14 +231,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590810afe71b8274691d696c8003685a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookSpeed: 75
+  lookSpeed: 2250
+  returnLookSpeed: 0
   clampX: 0
   clampY: 1
   minMaxLookX: {x: 0, y: 0}
   minMaxLookY: {x: -25, y: 75}
   enableReturnTimer: 0
   returnTimerDuration: 1
+  childFreeCamera: {fileID: 0}
   subject: {fileID: 0}
+  alterationMethod: 2
 --- !u!114 &3263225354462390079
 MonoBehaviour:
   m_ObjectHideFlags: 0

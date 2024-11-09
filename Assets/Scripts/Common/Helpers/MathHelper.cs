@@ -7,7 +7,8 @@ public class MathHelper
     public enum AlterationMethod
     {
         LERP,
-        MOVE_TOWARDS
+        MOVE_TOWARDS,
+        ADD
     }
 
     public static float GetNextValue(float currentValue, float targetValue, float rateOfChange, AlterationMethod method, bool multByDeltaTime)
@@ -18,6 +19,8 @@ public class MathHelper
                 return Mathf.Lerp(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
             case AlterationMethod.MOVE_TOWARDS:
                 return Mathf.MoveTowards(currentValue, targetValue, rateOfChange * (multByDeltaTime ? Time.deltaTime : 1));
+            case AlterationMethod.ADD:
+                return currentValue + rateOfChange * (multByDeltaTime ? Time.deltaTime : 1);
             default:
                 throw new UncaughtSwitchTypeException(typeof(AlterationMethod), method.ToString());
         }

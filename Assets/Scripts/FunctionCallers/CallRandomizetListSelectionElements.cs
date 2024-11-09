@@ -8,17 +8,14 @@ public class CallRandomizetListSelectionElements : MonoBehaviour
 
     public void RandomizeElements()
     {
-        StartCoroutine(UIManager._Instance.PopupActionSelection("Confirm randomization of " + listLabel, "Cancel", null,
-            new List<ActionSelection>()
+        UIManager._Instance.PopupAreYouSureMessage("Randomize ALL " + listLabel + "?",
+            () =>
             {
-                new ActionSelection("Confirm", () =>
+                foreach (Transform t in listSelectionElementsHolder)
                 {
-                    foreach (Transform t in listSelectionElementsHolder)
-                    {
-                        ListSelectionElement element = t.GetComponent<ListSelectionElement>();
-                        element.TryRandomize();
-                    }
-                })
-            }));
+                    ListSelectionElement element = t.GetComponent<ListSelectionElement>();
+                    element.ForceRandomize();
+                }
+            }, null);
     }
 }

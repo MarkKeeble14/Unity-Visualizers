@@ -212,7 +212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590810afe71b8274691d696c8003685a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookSpeed: 1
+  lookSpeed: 30
+  returnLookSpeed: 2.5
   clampX: 1
   clampY: 1
   minMaxLookX: {x: -37.5, y: 37.5}

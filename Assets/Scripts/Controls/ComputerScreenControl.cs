@@ -7,6 +7,9 @@ public abstract class ComputerScreenControl : MonoBehaviour
     private static List<ComputerScreenControl> currentlyHovered = new();
     public static int NumHovered => currentlyHovered.Count;
 
+    [SerializeField] private int priority;
+    public int Priority => priority;
+
     [SerializeField] private RectTransform rect;
     public RectTransform Rect => rect;
 

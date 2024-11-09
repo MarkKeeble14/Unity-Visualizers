@@ -435,13 +435,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567c92f1d54ec01488430853b8dd62f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
+  key: 304
+  action: Speed Up
+  PartOfScheme: 2
   defaultMoveSpeed: 2.5
   spedUpMoveSpeed: 15
   freeLookSensitivity: 3
   zoomSensitivity: 10
   fastZoomSensitivity: 50
-  speedUpButton: 304
-  instructionsText: {fileID: 0}
   freeCam: {fileID: 2542281718230091041}
 --- !u!114 &5911627060045698808
 MonoBehaviour:

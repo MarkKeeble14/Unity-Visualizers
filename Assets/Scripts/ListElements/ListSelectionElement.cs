@@ -16,6 +16,7 @@ public abstract class ListSelectionElement : MonoBehaviour
     private int index;
     public int Index => index;
     private bool locked;
+    public bool IsLocked => locked;
 
     public abstract void Open();
     public abstract void Delete();
@@ -29,10 +30,16 @@ public abstract class ListSelectionElement : MonoBehaviour
     public void TryRandomize()
     {
         if (locked) return;
-        Randomize();
+        Randomize(false);
     }
 
-    protected abstract void Randomize();
+    public void ForceRandomize()
+    {
+        if (locked) return;
+        Randomize(true);
+    }
+
+    protected abstract void Randomize(bool skipConfirmation);
 
     public void ToggleLocked()
     {

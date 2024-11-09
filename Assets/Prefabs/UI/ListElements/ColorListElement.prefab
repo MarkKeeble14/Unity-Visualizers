@@ -295,11 +295,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3113545301660145362, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: Randomize
+      value: TryRandomize
       objectReference: {fileID: 0}
     - target: {fileID: 3113545301660145362, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ColorListElement, Assembly-CSharp
+      value: ListSelectionElement, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3113545301660145362, guid: 7e4036de0667d55459dc04e4ac8fdea5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName

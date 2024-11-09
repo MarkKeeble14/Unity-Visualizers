@@ -74,6 +74,7 @@ MonoBehaviour:
   MaxAngle: 360
   StartAngle: 0
   makePerpindicular: 0
+  reverseOrder: 0
 --- !u!114 &7214581875382840760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +88,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 4
-  ignoreBroadcasts: 0
   colorType: 0
   index: 0
   segmentPrefab: {fileID: 7142856522332667449, guid: c91b2e4cfeab7484680c1cf58fdb396c, type: 3}
@@ -96,13 +96,8 @@ MonoBehaviour:
   defaultValue: 5
   adjustSpeed: 12.5
   useSlowAdjust: 1
-  signalMultiplierKey: RadialVisualizerSignalMultiplier
-  defaultValueKey: RadialVisualizerDefaultValue
-  attachmentTypeKey: RadialVisualizerAttachmentType
   distance: 275
   segmentWidth: 10
-  distanceKey: RadialVisualizerDistance
-  segmentWidthKey: RadialVisualizerSegmentWidth
 --- !u!114 &5252503949136689349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,7 +115,7 @@ MonoBehaviour:
   slowAdust: 1
   adjustSpeed: 25
   defaultValue: 1
-  multiplier: 1
+  multiplier: 0.25
   scaleOn: 0
 --- !u!114 &109146645116770097
 MonoBehaviour:
@@ -139,7 +134,7 @@ MonoBehaviour:
   slowAdust: 1
   adjustSpeed: 25
   defaultValue: 1
-  multiplier: 1
+  multiplier: 0.25
   scaleOn: 1
 --- !u!114 &5575566752482503838
 MonoBehaviour:

@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -24,6 +25,11 @@ public class EscapeMenuFunctions : MonoBehaviour
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     private Resolution[] resolutions;
 
+    [SerializeField] private Slider musicVolumeSlider;
+    [SerializeField] private Slider sfxVolumeSlider;
+    [SerializeField] private Checkbox musicMutedCheckbox;
+    [SerializeField] private Checkbox sfxMutedCheckbox;
+
     private int currentlyDisplayedControlSchemeIndex = 0;
     private List<SerializableKeyValuePair<ControlScheme, string>> availableControlSchemes = new();
     private Dictionary<ControlScheme, ControlScrollView> controlSchemeScrollViews = new();
@@ -40,6 +46,11 @@ public class EscapeMenuFunctions : MonoBehaviour
     private float savedMusicVolume;
     private bool sfxMuted;
     private float savedSFXVolume;
+
+    public static string MusicVolumePrefsKey = "MUSIC_VOLUME";
+    public static string SFXVolumePrefsKey = "SFX_VOLUME";
+    public static string MusicMutedPrefsKey = "MUSIC_MUTED";
+    public static string SFXMutedPrefsKey = "SFX_MUTED";
 
     private void Awake()
     {
@@ -237,16 +248,91 @@ public class EscapeMenuFunctions : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
+        musicVolumeSlider.value = volume;
+
         savedMusicVolume = volume;
         if (!musicMuted)
             mixer.SetFloat("MusicVolume", ConvertPercentToDB(volume));
+
+        PlayerPrefs.SetFloat(MusicVolumePrefsKey, volume);
+    }
+
+    public void OnlySetMusicVolume(float volume)
+    {
+        mixer.SetFloat("MusicVolume", ConvertPercentToDB(volume));
+    }
+
+    public void OnlySetSFXVolume(float volume)
+    {
+        mixer.SetFloat("SFXVolume", ConvertPercentToDB(volume));
     }
 
     public void SetSFXVolume(float volume)
     {
+        sfxVolumeSlider.value = volume;
+
         savedSFXVolume = volume;
         if (!sfxMuted)
             mixer.SetFloat("SFXVolume", ConvertPercentToDB(volume));
+
+        PlayerPrefs.SetFloat(SFXVolumePrefsKey, volume);
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        mixer.SetFloat("MasterVolume", ConvertPercentToDB(volume));
+    }
+
+    public void SetMusicMuted(bool value)
+    {
+        musicMutedCheckbox.Active = value;
+        musicMuted = value;
+
+        if (musicMuted)
+        {
+            mixer.SetFloat("MusicVolume", ConvertPercentToDB(0.0001f));
+        } else
+        {
+            mixer.SetFloat("MusicVolume", ConvertPercentToDB(savedMusicVolume));
+        }
+
+        if (value)
+        {
+            PlayerPrefs.SetString(MusicMutedPrefsKey, "TRUE");
+        }
+        else
+        {
+            PlayerPrefs.SetString(MusicMutedPrefsKey, "FALSE");
+        }
+    }
+
+    public void SetSFXMuted(bool value)
+    {
+        sfxMutedCheckbox.Active = value;
+        sfxMuted = value;
+
+        if (sfxMuted)
+        {
+            mixer.SetFloat("SFXVolume", ConvertPercentToDB(0.0001f));
+        }
+        else
+        {
+            mixer.SetFloat("SFXVolume", ConvertPercentToDB(savedSFXVolume));
+        }
+
+        if (value)
+        {
+            PlayerPrefs.SetString(SFXMutedPrefsKey, "TRUE");
+        }
+        else
+        {
+            PlayerPrefs.SetString(SFXMutedPrefsKey, "FALSE");
+        }
+    }
+
+    private float ConvertPercentToDB(float value)
+    {
+        return Mathf.Log10(value) * 20;
     }
 
     public void SetGraphicsQuality(int qualityIndex)
@@ -257,36 +343,6 @@ public class EscapeMenuFunctions : MonoBehaviour
     public void SetFullscreen(bool fullscreen)
     {
         Screen.fullScreen = fullscreen;
-    }
-
-    public void SetMusicMuted(bool value)
-    {
-        musicMuted = value;
-        if (musicMuted)
-        {
-            mixer.SetFloat("MusicVolume", ConvertPercentToDB(0.0001f));
-        } else
-        {
-            mixer.SetFloat("MusicVolume", ConvertPercentToDB(savedMusicVolume));
-        }
-    }
-
-    public void SetSFXMuted(bool value)
-    {
-        sfxMuted = value;
-        if (sfxMuted)
-        {
-            mixer.SetFloat("SFXVolume", ConvertPercentToDB(0.0001f));
-        }
-        else
-        {
-            mixer.SetFloat("SFXVolume", ConvertPercentToDB(savedSFXVolume));
-        }
-    }
-
-    private float ConvertPercentToDB(float value)
-    {
-        return Mathf.Log10(value) * 20;
     }
 
     private void MakeResolutionDropdown()

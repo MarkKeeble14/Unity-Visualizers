@@ -212,7 +212,7 @@ public class RGBColorPicker : MonoBehaviour
     public void SetR(float r)
     {
         this.r = r;
-        redTextField.text = (r * 255).ToString();
+        redTextField.text = Mathf.RoundToInt((r * 255)).ToString();
 
         SetDisplayColors();
     }
@@ -220,7 +220,7 @@ public class RGBColorPicker : MonoBehaviour
     public void SetG(float g)
     {
         this.g = g;
-        greenTextField.text = (g * 255).ToString();
+        greenTextField.text = Mathf.RoundToInt((g * 255)).ToString();
 
         SetDisplayColors();
     }
@@ -228,7 +228,7 @@ public class RGBColorPicker : MonoBehaviour
     public void SetB(float b)
     {
         this.b = b;
-        blueTextField.text = (b * 255).ToString();
+        blueTextField.text = Mathf.RoundToInt((b * 255)).ToString();
 
         SetDisplayColors();
     }

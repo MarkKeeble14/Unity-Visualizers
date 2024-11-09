@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 576443291944181206}
   - component: {fileID: 9156748837003629425}
   - component: {fileID: 5034326174134644604}
+  - component: {fileID: 3545667399784809696}
+  - component: {fileID: 232182147979816705}
   m_Layer: 0
   m_Name: ActionSelectionPopup
   m_TagString: Untagged
@@ -37,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 650, y: 250}
+  m_SizeDelta: {x: 800, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9156748837003629425
 MonoBehaviour:
@@ -73,6 +75,35 @@ MonoBehaviour:
   canvasRect: {fileID: 0}
   forceLockOnScreen: 1
   autoFindCanvasInParent: 1
+--- !u!114 &3545667399784809696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791935123964693465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c8e95703f99cc04c8f2bb7d7da499a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  priority: 1
+  rect: {fileID: 3691564745139281874}
+  draggableUI: {fileID: 5034326174134644604}
+--- !u!114 &232182147979816705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791935123964693465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f4056758f20cc3489aaaaea20dd7971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controls:
+  - {fileID: 3545667399784809696}
 --- !u!1 &1168343210320666885
 GameObject:
   m_ObjectHideFlags: 0

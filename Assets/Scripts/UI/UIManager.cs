@@ -110,7 +110,9 @@ public class UIManager : MonoBehaviour
         KeyControl.Disable = true;
 
         InputFieldPopup inputFieldPopup = Instantiate(inputFieldDialogPrefab, uiStack);
-        yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, onSuccess, onFailure);
+
+        yield return inputFieldPopup.Consume(defaultText, directions, confirmButtonText, cancelButtonText, allowCopyToClipboard, 
+            onSuccess, onFailure);
 
         KeyControl.Disable = false;
     }
@@ -129,12 +131,18 @@ public class UIManager : MonoBehaviour
 
 
         // find a key
-        int messageKey = 0;
-        while (spawnedLoadingDict.ContainsKey(messageKey)) { messageKey++; }
+        int messageKey = GetNextLoadingKey();
         spawnedLoadingDict.Add(messageKey, spawned);
 
         minTimeDurationDict.Add(spawned, minDuration);
 
+        return messageKey;
+    }
+
+    private int GetNextLoadingKey()
+    {
+        int messageKey = 0;
+        while (spawnedLoadingDict.ContainsKey(messageKey)) { messageKey++; }
         return messageKey;
     }
 
@@ -218,5 +226,29 @@ public class UIManager : MonoBehaviour
     public void CopyTextToClipboard(string text)
     {
         GUIUtility.systemCopyBuffer = text;
+    }
+
+    private Dictionary<string, bool> areYouSurePrefs = new Dictionary<string, bool>();
+
+    public void PopupAreYouSureMessage(string confirming, Action onConfirm, Action onCancel)
+    {
+        if (areYouSurePrefs.ContainsKey(confirming) && areYouSurePrefs[confirming])
+        {
+            onConfirm?.Invoke();
+            return;
+        }
+
+        StartCoroutine(PopupActionSelection("Are you sure you wish to " + confirming, "Cancel", 
+            onCancel, 
+            new List<ActionSelection>() 
+            { 
+                new ActionSelection("Confirm", onConfirm),
+                new ActionSelection("Confirm and Don't Ask Again", 
+                () =>
+                {
+                    onConfirm?.Invoke();
+                    areYouSurePrefs.Add(confirming, true);
+                })
+            }));
     }
 }

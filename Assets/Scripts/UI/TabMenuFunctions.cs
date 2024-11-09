@@ -17,6 +17,7 @@ public class TabMenuFunctions : MonoBehaviour
     public void SetShowMenu()
     {
         if (!allowOpenTabMenuWithEscapeOpen && escapeMenuCV.alpha == 1) return;
+        if (!Cursor.visible) return;
         showMenu = true;
     }
 

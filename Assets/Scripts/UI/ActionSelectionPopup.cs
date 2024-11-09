@@ -74,6 +74,7 @@ public class ActionSelectionPopup : MonoBehaviour
             onCancel?.Invoke();
         });
         cancelSelection.AddAction(() => chosenSelection = cancelSelection);
+
         // and add it to the cancel button
         cancelButton.Set(cancelSelection);
 

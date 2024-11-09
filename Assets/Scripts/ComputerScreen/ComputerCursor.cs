@@ -23,6 +23,23 @@ public class ComputerCursor : MonoBehaviour
     [SerializeField] private CallPlayOneShotContainer clickRelease;
     Vector3[] elementCorners = new Vector3[4];
 
+    private bool active = true;
+    private bool clicked;
+    private bool isMouseDown;
+
+    private List<ComputerScreenControl> cursorOverElements = new();
+    private ComputerScreenControl highestPrioControl;
+
+    public void Enable()
+    {
+        active = true;
+    }
+
+    public void Disable()
+    {
+        active = false;
+    }
+
     public void AddInteractable(ComputerScreenControl i)
     {
         interactableElements.Add(i);
@@ -67,14 +84,18 @@ public class ComputerCursor : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!active)
         {
-            clickDown.PlayOneShot();
+            isMouseDown = false;
+            return;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        cursorOverElements.Clear();
+        clicked = false;
+
+        if (Input.GetMouseButtonDown(0))
         {
-            clickRelease.PlayOneShot();
+            clicked = true;
         }
 
         // check for hovers
@@ -85,14 +106,12 @@ public class ComputerCursor : MonoBehaviour
             if (element.IsHeld)
             {
                 element.Held();
-            }
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                element.Released();
+                if (Input.GetMouseButtonUp(0))
+                {
+                    element.Released();
+                }
             }
-
-            // Debug.DrawLine(element.Rect.position, cursor.position, Color.red);
 
             if (element.Disabled)
             {
@@ -101,19 +120,56 @@ public class ComputerCursor : MonoBehaviour
             }
 
             element.Rect.GetWorldCorners(elementCorners);
-            if (cursor.position.x > elementCorners[0].x && cursor.position.x < elementCorners[2].x
+            if (element.transform.GetChild(0).gameObject.activeInHierarchy &&
+                cursor.position.x > elementCorners[0].x && cursor.position.x < elementCorners[2].x
                 && cursor.position.y > elementCorners[3].y && cursor.position.y < elementCorners[1].y)
             {
-                element.Hovered();
-                if (Input.GetMouseButtonDown(0))
+                if (!isMouseDown)
                 {
-                    element.Clicked();
+                    cursorOverElements.Add(element);
                 }
             }
             else
             {
                 element.NotHovered();
             }
+        }
+
+        if (cursorOverElements.Count > 0)
+        {
+            highestPrioControl = cursorOverElements[0];
+
+            if (cursorOverElements.Count > 1)
+            {
+                for (int i = 1; i < cursorOverElements.Count; i++)
+                {
+                    ComputerScreenControl c = cursorOverElements[i];
+                    if (c.Priority > highestPrioControl.Priority)
+                    {
+                        highestPrioControl = c;
+                    }
+                }
+            }
+
+            ComputerScreenControl[] activateControls = highestPrioControl.gameObject.GetComponents<ComputerScreenControl>();
+            foreach (ComputerScreenControl c in activateControls)
+            {
+                c.Hovered();
+                if (clicked)
+                {
+                    c.Clicked();
+                }
+            }
+            foreach (ComputerScreenControl c in cursorOverElements)
+            {
+                if (c.gameObject != highestPrioControl.gameObject)
+                {
+                    c.NotHovered();
+                }
+            }
+        } else
+        {
+            highestPrioControl = null;
         }
 
         // update cursor
@@ -126,6 +182,18 @@ public class ComputerCursor : MonoBehaviour
             {
                 i.sprite = (ComputerScreenControl.NumHovered > 0 ? hoveredSprite : notHoveredSprite);
             }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            clickDown.PlayOneShot();
+            isMouseDown = true;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            clickRelease.PlayOneShot();
+            isMouseDown = false;
         }
     }
 }

@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c8e95703f99cc04c8f2bb7d7da499a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 25330341}
   draggableUI: {fileID: 25330342}
 --- !u!1 &44923626
@@ -262,6 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 44923627}
   hoverHandlers:
   - {fileID: 44923634}
@@ -278,6 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 44923627}
   button: {fileID: 44923636}
 --- !u!114 &44923633
@@ -1960,6 +1963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 3
   rect: {fileID: 296712992}
   button: {fileID: 296712994}
 --- !u!114 &296712998
@@ -5783,6 +5787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1313579956}
   hoverHandlers:
   - {fileID: 1313579963}
@@ -5799,6 +5804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1313579956}
   button: {fileID: 1313579965}
 --- !u!114 &1313579962
@@ -6093,6 +6099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c8e95703f99cc04c8f2bb7d7da499a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 1
   rect: {fileID: 225191128}
   draggableUI: {fileID: 1341193594}
 --- !u!114 &1341193598
@@ -8103,6 +8110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65625ccfe76da34a9e3c59eb5af6bd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1529466541}
   scalingFactor: 0.005
   slider: {fileID: 1062292530}
@@ -11378,6 +11386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1655965078}
   hoverHandlers:
   - {fileID: 1655965085}
@@ -11394,6 +11403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1655965078}
   button: {fileID: 1655965087}
 --- !u!114 &1655965084
@@ -11684,6 +11694,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuFunctions: {fileID: 1335904540}
+  forceSetMusicVol: 1
+  forceSetMusicVolumeTo: 1
+  forceSetSFXVol: 1
+  forceSetSFXVolumeTo: 1
+  forceSetMusicMuted: 0
+  forceSetMusicMutedTo: 0
+  forceSetSFXMuted: 0
+  forceSetSFXMutedTo: 0
+  forceSetMasterVolume: 1
+  forceSetMasterVolumeTo: 1
 --- !u!114 &1682869493 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6895025307556383919, guid: 45091a3914b88a443b3848e0f4d63718, type: 3}
@@ -12454,6 +12474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1951569806}
   button: {fileID: 662550714}
 --- !u!114 &1951569811
@@ -12468,6 +12489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c78cde37a432d143abb48a3358e418a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 662550712}
   hoverHandlers:
   - {fileID: 1951569812}
@@ -12678,6 +12700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 1817627463}
   button: {fileID: 327879091}
 --- !u!114 &1991047237

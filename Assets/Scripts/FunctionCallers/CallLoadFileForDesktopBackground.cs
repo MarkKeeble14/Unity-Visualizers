@@ -27,6 +27,8 @@ public class CallLoadFileForDesktopBackground : MonoBehaviour
                     VisualizerManager._Instance.UpdateVisualizerElementSettings(VisualizerElementLabel.BACKGROUND, cur);
                 }
             }
+
+            ComputerCursor._Instance.Enable();
         }));
     }
 }

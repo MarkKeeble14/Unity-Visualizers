@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class FreeCameraController : MonoBehaviour
+public class FreeCameraController : ActWhileKeyDown
 {
     [Header("Settings")]
     [SerializeField] private float defaultMoveSpeed;
@@ -9,7 +9,6 @@ public class FreeCameraController : MonoBehaviour
     [SerializeField] private float freeLookSensitivity = 3f;
     [SerializeField] private float zoomSensitivity = 10f;
     [SerializeField] private float fastZoomSensitivity = 50f;
-    [SerializeField] private KeyCode speedUpButton = KeyCode.LeftShift;
 
     [Header("References")]
     [SerializeField] private PositionedCamera freeCam;
@@ -42,15 +41,15 @@ public class FreeCameraController : MonoBehaviour
     {
         Active = true;
         Pause = false;
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         prevCamera = Camera.main.GetComponent<PositionedCamera>();
 
         freeCam.Positioner.position = prevCamera.Positioner.position;
         freeCam.Camera.transform.position = prevCamera.Camera.transform.position;
         freeCam.Positioner.rotation = prevCamera.Positioner.rotation;
-        freeCam.Camera.transform.rotation = prevCamera.Camera.transform.rotation;
+        freeCam.Camera.transform.rotation = Quaternion.identity;
 
         prevCamera.Camera.gameObject.SetActive(false);
         freeCam.Camera.gameObject.SetActive(true);
@@ -60,8 +59,8 @@ public class FreeCameraController : MonoBehaviour
     {
         Active = false;
         Pause = false;
-        //Cursor.visible = true;
-        //Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         prevCamera.Positioner.position = freeCam.Positioner.position;
         prevCamera.Camera.transform.position = freeCam.Camera.transform.position;
@@ -148,7 +147,7 @@ public class FreeCameraController : MonoBehaviour
 
         if (Pause) return;
 
-        bool fastMode = Input.GetKey(speedUpButton);
+        bool fastMode = Input.GetKey(key);
         currentMoveSpeed = (fastMode ? spedUpMoveSpeed : defaultMoveSpeed);
 
         float axis = Input.GetAxis("Mouse ScrollWheel");
@@ -161,5 +160,10 @@ public class FreeCameraController : MonoBehaviour
         float newRotationX = freeCam.Positioner.localEulerAngles.y + Input.GetAxis("Mouse X") * freeLookSensitivity;
         float newRotationY = freeCam.Positioner.localEulerAngles.x - Input.GetAxis("Mouse Y") * freeLookSensitivity;
         freeCam.Positioner.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
+    }
+
+    protected override void Act()
+    {
+        // 
     }
 }

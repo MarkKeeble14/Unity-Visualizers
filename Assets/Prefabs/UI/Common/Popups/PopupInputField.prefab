@@ -579,6 +579,8 @@ GameObject:
   - component: {fileID: 3729037799032154915}
   - component: {fileID: 6542063617483799250}
   - component: {fileID: 4563008815241114091}
+  - component: {fileID: 3036537499074473515}
+  - component: {fileID: 8057524631332763954}
   m_Layer: 0
   m_Name: PopupInputField
   m_TagString: Untagged
@@ -643,6 +645,35 @@ MonoBehaviour:
   canvasRect: {fileID: 0}
   forceLockOnScreen: 1
   autoFindCanvasInParent: 1
+--- !u!114 &3036537499074473515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3729037799032154940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c8e95703f99cc04c8f2bb7d7da499a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  priority: 1
+  rect: {fileID: 3729037798201404949}
+  draggableUI: {fileID: 4563008815241114091}
+--- !u!114 &8057524631332763954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3729037799032154940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f4056758f20cc3489aaaaea20dd7971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controls:
+  - {fileID: 3036537499074473515}
 --- !u!1 &3729037799052718831
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,6 +1453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 3
   rect: {fileID: 8157841345401954712}
   button: {fileID: 7862186157428785948}
 --- !u!114 &3283543869677235078
@@ -1625,6 +1657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144f0028117d2024ca20e3cca0d060d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 3
   rect: {fileID: 9162659579808745180}
   button: {fileID: 7134317034920240216}
 --- !u!114 &7134317034920240216 stripped
@@ -1791,6 +1824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ca26fcd90fc63459aa13eda1552137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   rect: {fileID: 7886939982527646419}
   inputField: {fileID: 6083558070886633809}
 --- !u!224 &4074164383762856625 stripped

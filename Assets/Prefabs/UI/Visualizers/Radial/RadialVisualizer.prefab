@@ -115,7 +115,7 @@ MonoBehaviour:
   slowAdust: 1
   adjustSpeed: 25
   defaultValue: 1
-  multiplier: 0.25
+  multiplier: 0.5
   scaleOn: 0
 --- !u!114 &109146645116770097
 MonoBehaviour:
@@ -134,7 +134,7 @@ MonoBehaviour:
   slowAdust: 1
   adjustSpeed: 25
   defaultValue: 1
-  multiplier: 0.25
+  multiplier: 0.5
   scaleOn: 1
 --- !u!114 &5575566752482503838
 MonoBehaviour:

@@ -19,7 +19,7 @@ public struct AutomationInputSequence
     public List<AutomationInput> Input { get { return input; } }
 }
 
-public class AutomateInput : MonoBehaviour
+public class AutomateInputSequences : MonoBehaviour
 {
     [SerializeField] private RecievesInput automating;
     [SerializeField] private PercentageMap<AutomationInputSequence> availableSequences;
@@ -65,5 +65,4 @@ public class AutomateInput : MonoBehaviour
         StartCoroutine(LogicLoop());
     }
 }
-
 

@@ -30,7 +30,6 @@ public class TransitionManager : MonoBehaviour
             if (kvp.Key == transitionKey)
             {
                 kvp.Value.InitiateTransition(direction, onBegin, onEnd);
-                Debug.Log(transitionKey + ", " + kvp.Value);
                 break;
             }
         }

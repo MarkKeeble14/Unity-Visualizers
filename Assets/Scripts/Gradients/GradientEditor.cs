@@ -155,6 +155,13 @@ public class GradientEditor : MonoBehaviour
 
         UpdateGradientDisplay();
 
+        // if the rgbcolorpicker is open and it was currently processing the deleted key, cancel the request
+        if (RGBColorPicker._Instance.IsInUse 
+            && RGBColorPicker._Instance.CurrentlyProcessingRequest.Label == "Gradient Key #" + currentlyEditingKeyIndex)
+        {
+            RGBColorPicker._Instance.ForceCancelSkipInvoke();
+        }
+
         SetCurrentlyEditingKeyIndex(-1);
     }
 

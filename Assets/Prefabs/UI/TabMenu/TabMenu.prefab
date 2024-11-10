@@ -764,7 +764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2264402256908671240, guid: 0a2673aa754ffde44aa70206518d6488, type: 3}
       propertyPath: m_text
-      value: Edit Base Elements
+      value: Edit Basic Elements
       objectReference: {fileID: 0}
     - target: {fileID: 5425040766940241486, guid: 0a2673aa754ffde44aa70206518d6488, type: 3}
       propertyPath: m_Name

@@ -1,4 +1,5 @@
 using Assets.SimpleZip;
+using FFMpegCore.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -122,7 +123,9 @@ public class SaveManager : MonoBehaviour
 
         Debug.Log("Saving Preset (" + label + ") to: " + encodedFilePath);
 
-        int loadingKey1 = UIManager._Instance.AddLoading("Saving Preset...");
+        string niceFilePath = Path.GetFullPath(encodedFilePath);
+
+        int loadingKey1 = UIManager._Instance.AddLoading("Saving Preset to " + Path.GetFileName(niceFilePath));
 
         int loadingKey2 = UIManager._Instance.AddLoading("Serializing Preset...");
 
@@ -149,7 +152,7 @@ public class SaveManager : MonoBehaviour
         UIManager._Instance.RemoveLoading(loadingKey2);
 
         UIManager._Instance.RemoveLoading(loadingKey1);
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Preset saved to " + encodedFilePath);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Preset saved to " + niceFilePath);
 
         onSuccess?.Invoke(encodedFilePath);
 
@@ -176,7 +179,7 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Attempting to load data from: " + loadFromPath);
+        Debug.Log("Loading data from: " + loadFromPath);
         string fileExtension = StringHelper.GetFileExtension(loadFromPath);
         int loadingKey = UIManager._Instance.AddLoading("Loading Preset=" 
             + StringHelper.GetFileName(loadFromPath) + "." + fileExtension, 3);

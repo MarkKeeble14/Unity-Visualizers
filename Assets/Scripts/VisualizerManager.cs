@@ -25,12 +25,14 @@ public struct AudioClipData
     [SerializeField] public int Frequency;
     [SerializeField] public float[] Samples;
     [SerializeField] public bool Set;
+    [SerializeField] public float DurationInSeconds;
 
-    public AudioClipData(int channels, int frequency, float[] samples)
+    public AudioClipData(int channels, int frequency, float[] samples, float durationInSeconds)
     {
         Channels = channels;
         Frequency = frequency;
         Samples = samples;
+        DurationInSeconds = durationInSeconds;
         Set = true;
     }
 }
@@ -180,10 +182,6 @@ public class VisualizerManager : MonoBehaviour
 
     private bool coverArtSelectionActive;
     private bool backgroundSelectionActive;
-
-    [SerializeField] private GameObject playSongText;
-    private bool hasLoadedTrack;
-    private bool hasPlayedTrack;
 
     // Events
     public Action OnSongEnd;
@@ -385,14 +383,10 @@ public class VisualizerManager : MonoBehaviour
         }
 
         lastAudioSourceTime = audioSource.time;
-
-        playSongText.SetActive(!hasLoadedTrack || !hasPlayedTrack);
     }
 
     public void BeginPlayback()
     {
-        hasPlayedTrack = true;
-
         if (audioSource.clip == null)
         {
             Debug.LogWarning("Attempted to start the Visualizer with no track loaded");
@@ -659,18 +653,26 @@ public class VisualizerManager : MonoBehaviour
         switch (origin)
         {
             case ImportableAudioSource.SOUNDCLOUD:
+                
                 UIManager._Instance.AddNewMessage(UIManager.MessageClass.ERROR, "Unsupported Origin, Supported Origins are: " + GetSupportedOrigins());
 
                 loadTrackButton.interactable = true;
 
                 Debug.Log("Unsupported Origin: " + origin);
                 break;
+                
                 /*
                 yield return StartCoroutine(DownloadTrackFromSoundCloud(url, false,
-                    (url, name, clip) =>
+                    (url, clip, name, duration) =>
                     {
-                        SetTrack(url, clip, name);
-                    }, null));
+                        SetTrack(clip, url, name, duration);
+
+                        loadTrackButton.interactable = true;
+                    },
+                    url =>
+                    {
+                        loadTrackButton.interactable = true;
+                    }));
                 break;
                 */
             case ImportableAudioSource.YOUTUBE:
@@ -784,6 +786,7 @@ public class VisualizerManager : MonoBehaviour
 
     private async void DownloadTrackFromYouTubeAsync(string mediaUrl, Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
+
         // create folder if neccessary
         string directoryPath = Path.Combine(Application.dataPath, "../temp");
         if (!Directory.Exists(directoryPath))
@@ -795,8 +798,11 @@ public class VisualizerManager : MonoBehaviour
 
         int loadingKey = UIManager._Instance.AddLoading("Fetching video from url...");
 
+
         // You can specify either the video URL or its ID
         Video video = await youtube.Videos.GetAsync(mediaUrl);
+
+        int longLoadingKey = UIManager._Instance.AddLoading("Fetching audio from Video=" + video.Title);
 
         UIManager._Instance.RemoveLoading(loadingKey);
 
@@ -842,8 +848,16 @@ public class VisualizerManager : MonoBehaviour
         File.Delete(inputFilePath);
 
         // Set to delete output file
-        onSuccess += (path, name, duration, clip) => File.Delete(outputFilePath);
-        onFailure += path => File.Delete(outputFilePath);
+        onSuccess += (path, name, duration, clip) =>
+        {
+            UIManager._Instance.RemoveLoading(longLoadingKey);
+            File.Delete(outputFilePath);
+        };
+        onFailure += path =>
+        {
+            UIManager._Instance.RemoveLoading(longLoadingKey);
+            File.Delete(outputFilePath);
+        };
 
         // load data from output file
         StartCoroutine(LoadAudioClipFromFile(outputFilePath, 
@@ -868,13 +882,14 @@ public class VisualizerManager : MonoBehaviour
         yield return new WaitUntil(() => completed);
     }
 
-    private async void DownloadTrackFromSoundCloudAsync(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private async void DownloadTrackFromSoundCloudAsync(string mediaUrl, bool useCover, 
+        Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         SoundCloudClient soundcloud = new SoundCloudClient();
 
         // add UI
         string tempTitle = mediaUrl.Split("https://soundcloud.com/")[1];
-        int loadingKey = UIManager._Instance.AddLoading("Attempting to fetch: " + tempTitle);
+        int loadingKey = UIManager._Instance.AddLoading("Fetching audio from: " + tempTitle);
 
         // setup fetch
         var getTask = Task.Run(async () => await soundcloud.Tracks.GetAsync(mediaUrl));
@@ -884,7 +899,7 @@ public class VisualizerManager : MonoBehaviour
         UIManager._Instance.RemoveLoading(loadingKey);
 
         // add UI
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched: " + tempTitle);
+        UIManager._Instance.AddNewMessage(UIManager.MessageClass.SUCCESS, "Successfully fetched audio from: " + tempTitle);
 
         // get track from recieved data
         Track track = getTask.Result;
@@ -901,11 +916,10 @@ public class VisualizerManager : MonoBehaviour
         outputFilePath = outputFilePath.Replace("/", @"\");
 
         // add UI
-        loadingKey = UIManager._Instance.AddLoading("Attempting to download: " + track.Title);
+        loadingKey = UIManager._Instance.AddLoading("Downloading: " + track.Title);
 
         // download the data
         var downloadTask = Task.Run(async () => await soundcloud.DownloadAsync(track, outputFilePath));
-
         await downloadTask;
 
         // add UI
@@ -914,30 +928,32 @@ public class VisualizerManager : MonoBehaviour
         if (useCover)
         {
             // load cover art on success as well
-            onSuccess += (path, name, clip) => StartCoroutine(
+            onSuccess += (path, clip, name, duration) => StartCoroutine(
                 AttemptToDownloadImageFromURL(track.ArtworkUrl.ToString(), tex => SetCoverArt(tex), null)
             );
         }
 
         StartCoroutine(LoadAudioClipFromFile(outputFilePath, (path, clip) =>
         {
-            onSuccess?.Invoke(path, track.Title, clip);
+            onSuccess?.Invoke(path, clip, track.Title, track.Duration.ToString());
         }, onFailure));
 
         // delete file
         File.Delete(outputFilePath);
     }
 
-    private IEnumerator DownloadTrackFromSoundCloud(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromSoundCloud(string mediaUrl, bool useCover, 
+        Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         DownloadTrackFromSoundCloudAsync(mediaUrl, useCover, onSuccess, onFailure);
         yield return null;
     }
 
-    private IEnumerator DownloadTrackFromSoundCloudWait(string mediaUrl, bool useCover, Action<string, string, AudioClip> onSuccess, Action<string> onFailure)
+    private IEnumerator DownloadTrackFromSoundCloudWait(string mediaUrl, bool useCover, 
+        Action<string, AudioClip, string, string> onSuccess, Action<string> onFailure)
     {
         bool completed = false;
-        onSuccess += (filePath, name, clip) => completed = true;
+        onSuccess += (filePath, clip, name, duration) => completed = true;
         onFailure += filePath => completed = true;
         DownloadTrackFromSoundCloudAsync(mediaUrl, useCover, onSuccess, onFailure);
         yield return new WaitUntil(() => completed);
@@ -969,7 +985,7 @@ private void AddQuickLinksToFileBrowser()
                 PrintUnsupportedFileTypeMessage(extension, audioFileExtensions);
             } else
             {
-                Debug.Log("Attempting to Load Audio from File: " + x);
+                Debug.Log("Loading Audio from File: " + x);
 
                 StartCoroutine(LoadAudioClipFromFile(x,
                     (filePath, clip) =>
@@ -1018,8 +1034,6 @@ private void AddQuickLinksToFileBrowser()
                 Debug.Log("Unable to parse duration - ensure durationSeconds represents a numerical value");
             }
         }
-
-        hasLoadedTrack = true;
 
         // Debug.Log("Setting track to " + trackInfo.Title);
 
@@ -1153,7 +1167,7 @@ private void AddQuickLinksToFileBrowser()
             }
             else
             {
-                Debug.Log("Attempting to Load Image from File: " + x);
+                Debug.Log("Loading Image from File: " + x);
 
                 LoadImageFromFile(x,
                     (filePath, texture) =>
@@ -1227,8 +1241,6 @@ private void AddQuickLinksToFileBrowser()
 
     private IEnumerator DownloadImage(string mediaUrl, Action<string, Texture2D> onSuccess, Action<string> onFailure)
     {
-        UIManager._Instance.AddNewMessage(UIManager.MessageClass.INFO, "Attempting to Download Image");
-
         Texture2D tex;
 
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(mediaUrl))
@@ -1316,7 +1328,7 @@ private void AddQuickLinksToFileBrowser()
 
         yield return StartCoroutine(BrowseForSingleFile(x =>
         {
-            Debug.Log("Attempting to Load Preset from File: " + x);
+            Debug.Log("Loading Preset from File: " + x);
             LoadPreset(x,
                 (filePath, visualizerPreset) =>
                 {
@@ -1419,7 +1431,7 @@ private void AddQuickLinksToFileBrowser()
 
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, audioFileType))
         {
-            int loadingKey = UIManager._Instance.AddLoading("Attempting to load audio from file...");
+            int loadingKey = UIManager._Instance.AddLoading("Loading audio from file...");
 
             yield return www.SendWebRequest();
 
@@ -1950,7 +1962,7 @@ private void AddQuickLinksToFileBrowser()
                         int samples = audioSource.clip.samples;
                         float[] samplesData = new float[samples * channels];
                         audioSource.clip.GetData(samplesData, 0);
-                        audioClip = new AudioClipData(channels, audioSource.clip.frequency, samplesData);
+                        audioClip = new AudioClipData(channels, audioSource.clip.frequency, samplesData, audioSource.clip.length);
                     } else
                     {
                         UIManager._Instance.AddNewMessage(UIManager.MessageClass.WARNING,
@@ -2013,7 +2025,7 @@ private void AddQuickLinksToFileBrowser()
             audioSource.clip = clip;
 
             trackInfo.AudioClip = clip;
-            trackInfo.DurationString = StringHelper.GetDurationText(clip.length);
+            trackInfo.DurationString = StringHelper.GetDurationText(audioClip.DurationInSeconds);
             trackInfo.Title = preset.Title;
         }
 

@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Graveyard/GraveyardStationary.unity
     guid: 1c07f1c6d5ef9d44bb7d124e5162f1d7
   - enabled: 1
+    path: Assets/Scenes/Graveyard/GraveyardSpinning.unity
+    guid: 84b025835040e044596245504f1c0f40
+  - enabled: 1
     path: Assets/Scenes/Graveyard/GraveyardOverhead.unity
     guid: f2403c35f61bba44596b5a5a370b7f75
   - enabled: 1

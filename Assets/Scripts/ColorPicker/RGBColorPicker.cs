@@ -58,7 +58,10 @@ public class RGBColorPicker : MonoBehaviour
 
     private Stack<ColorRequest> requests = new();
     private ColorRequest curRequest;
+    public ColorRequest CurrentlyProcessingRequest => curRequest;
     private bool processingRequest;
+
+    public bool IsInUse => processingRequest;
 
     private bool isDropperSelectActive;
 
@@ -184,6 +187,19 @@ public class RGBColorPicker : MonoBehaviour
     public void Cancel()
     {
         ResolveCurrentColorRequest(openColor);
+    }
+
+    public void ForceCancelSkipInvoke()
+    {
+        if (requests.Count > 0)
+        {
+            InitializeNewRequest();
+        }
+        else
+        {
+            processingRequest = false;
+            Close();
+        }
     }
 
     public void FinalizeColor()
